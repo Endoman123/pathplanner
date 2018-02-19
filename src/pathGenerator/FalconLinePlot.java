@@ -39,7 +39,6 @@ import javax.swing.*;
  * @email kevin@team2168.org
  * @date 9 Sept 2014
  */
-
 class FalconLinePlot extends JPanel implements ClipboardOwner {
 
 
@@ -453,22 +452,22 @@ class FalconLinePlot extends JPanel implements ClipboardOwner {
 
     public void yGridOn() {
         yGrid = true;
-        //super.repaint();
+        //super.update();
     }
 
     public void yGridOff() {
         yGrid = false;
-        //super.repaint();
+        //super.update();
     }
 
     public void xGridOn() {
         xGrid = true;
-        //super.repaint();
+        //super.update();
     }
 
     public void xGridOff() {
         xGrid = false;
-        //super.repaint();
+        //super.update();
     }
 
     private void drawYTickRange(Graphics2D g2, Line2D yaxis, int tickCount, double Max, double Min) {

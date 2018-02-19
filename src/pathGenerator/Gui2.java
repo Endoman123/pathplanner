@@ -4,14 +4,7 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
+import javax.swing.*;
 
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -35,18 +28,8 @@ import jaci.pathfinder.Trajectory.Segment;
 import jaci.pathfinder.modifiers.SwerveModifier;
 import jaci.pathfinder.modifiers.TankModifier;
 
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
-import javax.swing.JTabbedPane;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.UIManager;
 import javax.swing.text.Document;
 import javax.swing.text.Utilities;
-import javax.swing.JComboBox;
-import javax.swing.JRadioButton;
 
 public class Gui2 {
 
