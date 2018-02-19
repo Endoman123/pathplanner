@@ -17,6 +17,7 @@ public class SwingUI {
 
     private static JFrame frmMain;
     private static JTextField txtTimeStep, txtVelocity, txtAcceleration, txtJerk, txtWheelBaseW, txtFitMethod;
+    private static JMenuItem mnuFileNew, mnuFileSave, mnuFileSaveAs;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -57,19 +58,34 @@ public class SwingUI {
         mnuFile.setText("File");
         barMain.add(mnuFile);
 
-
-        JMenuItem mnuFileNew = new JMenuItem();
+        mnuFileNew = new JMenuItem();
         mnuFileNew.setText("New");
         mnuFileNew.addActionListener((ActionEvent e) -> {
             backend.resetValues();
             backend.clearPoints();
+            backend.clearWorkingFiles();
 
             update();
         });
 
         mnuFile.add(mnuFileNew);
 
-        JMenuItem mnuFileSaveAs = new JMenuItem();
+        mnuFileSave = new JMenuItem();
+        mnuFileSave.setText("Save");
+        mnuFileSave.setEnabled(false);
+        mnuFileSave.addActionListener((ActionEvent e) -> {
+            if (!backend.saveWorkinProject())
+                JOptionPane.showMessageDialog(
+                        frmMain,
+                        "Saving failed!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+        });
+
+        mnuFile.add(mnuFileSave);
+
+        mnuFileSaveAs = new JMenuItem();
         mnuFileSaveAs.setText("Save As...");
         mnuFileSaveAs.addActionListener((ActionEvent e) -> {
             JFileChooser saveChooser = new JFileChooser();
@@ -86,9 +102,6 @@ public class SwingUI {
                 case JFileChooser.APPROVE_OPTION:
                     File savePath = saveChooser.getSelectedFile();
 
-                    if (!savePath.getAbsolutePath().endsWith("." + ProfileGenerator.PROJECT_EXTENSION))
-                        savePath = new File(saveChooser.getSelectedFile() + "." + ProfileGenerator.PROJECT_EXTENSION);
-
                     if (savePath.exists()) {
                         boolean overwrite = JOptionPane.showConfirmDialog(
                                 frmMain,
@@ -101,23 +114,13 @@ public class SwingUI {
                             break;
                     }
 
-                    // region Try-Catch
-                    try {
-                        if (!backend.saveProjectAs(savePath))
-                            JOptionPane.showMessageDialog(
-                                    frmMain,
-                                    "Invalid location!",
-                                    "Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                    } catch (Exception ex) {
+                    if (!backend.saveProjectAs(savePath))
                         JOptionPane.showMessageDialog(
                                 frmMain,
                                 "Invalid location!",
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE
                         );
-                    }
                     // endregion
                     break;
                 case JFileChooser.ERROR_OPTION:
@@ -125,6 +128,8 @@ public class SwingUI {
                 default:
                     break;
             }
+
+            update();
         });
 
         mnuFile.add(mnuFileSaveAs);
@@ -270,6 +275,8 @@ public class SwingUI {
         txtVelocity.setText("" + backend.getVelocity());
         txtAcceleration.setText("" + backend.getAcceleration());
         txtJerk.setText("" + backend.getJerk());
+
+        mnuFileSave.setEnabled(backend.hasWorkingProject());
     }
 
     /**

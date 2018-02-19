@@ -54,21 +54,56 @@ public class ProfileGenerator {
         resetValues();
     }
 
-    public boolean saveProjectAs(File path) throws Exception {
+    public boolean saveProjectAs(File path) {
         boolean finished = true;
+
+        if (!path.getAbsolutePath().endsWith("." + PROJECT_EXTENSION))
+            path = new File(path + "." + PROJECT_EXTENSION);
 
         File dir = path.getParentFile();
 
-        if (dir != null && !dir.exists() && dir.isDirectory())
-            dir.mkdirs();
+        if (dir != null && !dir.exists() && dir.isDirectory()) {
+            if (!dir.mkdirs())
+                return false;
+        }
 
-        FileWriter out = new FileWriter(path);
-        out.write("" + timeStep + System.lineSeparator());
-        out.write("" + velocity + System.lineSeparator());
-        out.write("" + acceleration + System.lineSeparator());
-        out.write("" + jerk + System.lineSeparator());
+        if (path.exists() && !path.delete())
+            return false;
 
-        out.close();
+        try {
+            FileWriter out = new FileWriter(path);
+            out.write("" + timeStep + System.lineSeparator());
+            out.write("" + velocity + System.lineSeparator());
+            out.write("" + acceleration + System.lineSeparator());
+            out.write("" + jerk + System.lineSeparator());
+
+            out.close();
+
+            workingProject = path;
+        } catch (Exception e) {
+            finished = false;
+        }
+
+        return finished;
+    }
+
+    public boolean saveWorkinProject() {
+        boolean finished = true;
+        if (workingProject != null && workingProject.delete()) {
+            try {
+                FileWriter out = new FileWriter(workingProject);
+                out.write("" + timeStep + System.lineSeparator());
+                out.write("" + velocity + System.lineSeparator());
+                out.write("" + acceleration + System.lineSeparator());
+                out.write("" + jerk + System.lineSeparator());
+
+                out.close();
+            } catch (Exception e) {
+                finished = false;
+            }
+        } else {
+            finished = false;
+        }
 
         return finished;
     }
@@ -83,6 +118,10 @@ public class ProfileGenerator {
 
     public int getWaypointsSize() {
         return POINTS.size();
+    }
+
+    public void clearWorkingFiles() {
+        workingProject = null;
     }
 
     /**
@@ -197,6 +236,10 @@ public class ProfileGenerator {
 
     public void setWheelBaseD(double wheelBaseD) {
         this.wheelBaseD = wheelBaseD;
+    }
+
+    public boolean hasWorkingProject() {
+        return workingProject != null;
     }
     // endregion
 }
