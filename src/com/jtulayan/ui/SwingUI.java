@@ -1,7 +1,6 @@
-package com.jtulayan.swing;
+package com.jtulayan.ui;
 
 import com.jtulayan.main.ProfileGenerator;
-import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 
 import javax.swing.*;
@@ -18,8 +17,9 @@ public class SwingUI {
 
     private static JFrame frmMain;
     private static JTextField txtTimeStep, txtVelocity, txtAcceleration, txtJerk, txtWheelBaseW, txtWheelBaseD;
-    private static JMenuItem mnuFileNew, mnuFileSave, mnuFileSaveAs;
+    private static JMenuItem mnuFileNew, mnuFileSave, mnuFileSaveAs, mnuExportAsCSV, mnuFileExit;
     private static JComboBox<Trajectory.FitMethod> cboFitMethod;
+    private static JTable tblWaypointsList;
     private static ButtonGroup grpDriveBase;
 
     public static void main(String[] args) {
@@ -137,6 +137,58 @@ public class SwingUI {
         mnuFile.add(mnuFileSaveAs);
 
         mnuFile.addSeparator();
+
+        JMenu mnuFileExportAs = new JMenu();
+        mnuFileExportAs.setText("Export As...");
+        mnuFile.add(mnuFileExportAs);
+
+        mnuExportAsCSV = new JMenuItem();
+        mnuExportAsCSV.setText("Comma Separated Values (CSV)");
+        mnuExportAsCSV.addActionListener((ActionEvent e) -> {
+            JFileChooser saveChooser = new JFileChooser();
+
+            saveChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+            saveChooser.setDialogTitle("Export As CSV");
+
+            saveChooser.setFileFilter(new FileNameExtensionFilter(
+                "Comma Separated Values (.csv)",
+                "csv"
+            ));
+
+            switch (saveChooser.showSaveDialog(frmMain)) {
+                case JFileChooser.APPROVE_OPTION:
+                    File savePath = saveChooser.getSelectedFile();
+
+                    if (new File(savePath + "_left_detailed.csv").exists()) {
+                        boolean overwrite = JOptionPane.showConfirmDialog(
+                                frmMain,
+                                "File exists! Overwrite?",
+                                "Save As",
+                                JOptionPane.YES_NO_OPTION
+                        ) == JOptionPane.YES_OPTION;
+
+                        if (!overwrite)
+                            break;
+                    }
+
+                    if (!backend.exportTrajectories(savePath))
+                        JOptionPane.showMessageDialog(
+                                frmMain,
+                                "Invalid location!",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    // endregion
+                    break;
+                case JFileChooser.ERROR_OPTION:
+                case JFileChooser.CANCEL_OPTION:
+                default:
+                    break;
+            }
+
+            update();
+        });
+        mnuFileExportAs.add(mnuExportAsCSV);
         // endregion
 
         JLabel lblTimeStep = new JLabel("Time Step");
@@ -179,7 +231,7 @@ public class SwingUI {
         txtVelocity = new JTextField();
         txtVelocity.setText("4");
         txtVelocity.setToolTipText(
-                "This is the velocity to feed-forward when this trajectory point is loaded into the MPE."
+            "This is the velocity to feed-forward when this trajectory point is loaded into the MPE."
         );
         txtVelocity.setInputVerifier(new NumberVerifier());
         txtVelocity.addActionListener((ActionEvent e) -> {
@@ -343,6 +395,9 @@ public class SwingUI {
 
         pnlTrajectory.add(radTank);
         pnlTrajectory.add(radSwerve);
+
+        tblWaypointsList = new JTable();
+        pnlTrajectory.add(tblWaypointsList);
     }
 
     /**

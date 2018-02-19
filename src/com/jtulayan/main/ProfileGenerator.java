@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,10 @@ public class ProfileGenerator {
 
     // File stuff
     private File workingProject;
+
+//    static {
+//        System.loadLibrary("pathfinderjava");
+//    }
 
     public ProfileGenerator() {
         POINTS = new ArrayList<>();
@@ -111,6 +116,28 @@ public class ProfileGenerator {
         return finished;
     }
 
+    public boolean exportTrajectories(File parentPath) {
+        boolean finished = true;
+
+        File dir = parentPath.getParentFile();
+
+        if (dir != null && !dir.exists() && dir.isDirectory()) {
+            if (!dir.mkdirs())
+                return false;
+        }
+
+        try {
+            if (driveBase == DriveBase.TANK) {
+                Pathfinder.writeToCSV(new File(parentPath + "_left_detailed.csv"), fl);
+                Pathfinder.writeToCSV(new File(parentPath + "_right_detailed.csv"), fr);
+            }
+        } catch (Exception e) {
+            finished = false;
+        }
+
+        return finished;
+    }
+
     // TODO: Unfinished
     public boolean loadProject(File path) {
         boolean finished = true;
@@ -120,6 +147,14 @@ public class ProfileGenerator {
 
     public void addPoint(double x, double y, double angle) {
         POINTS.add(new Waypoint(x, y, angle));
+    }
+
+    public void editWaypoint(int index, double x, double y, double angle) {
+        Waypoint wp = POINTS.get(index);
+
+        wp.x = x;
+        wp.y = y;
+        wp.angle = angle;
     }
 
     public void removePoint(int index) {
