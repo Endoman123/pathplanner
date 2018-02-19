@@ -1,9 +1,10 @@
-package com.jtulayan.main;
+package com.jtulayan.swing;
 
-import pathGenerator.Gui2;
+import com.jtulayan.main.ProfileGenerator;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,8 +17,10 @@ public class SwingUI {
     private static ProfileGenerator backend;
 
     private static JFrame frmMain;
-    private static JTextField txtTimeStep, txtVelocity, txtAcceleration, txtJerk, txtWheelBaseW, txtFitMethod;
+    private static JTextField txtTimeStep, txtVelocity, txtAcceleration, txtJerk, txtWheelBaseW, txtWheelBaseD;
     private static JMenuItem mnuFileNew, mnuFileSave, mnuFileSaveAs;
+    private static JComboBox<Trajectory.FitMethod> cboFitMethod;
+    private static ButtonGroup grpDriveBase;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -46,8 +49,7 @@ public class SwingUI {
 
         // region JPanel
         JPanel pnlTrajectory = new JPanel();
-        pnlTrajectory.setBounds(0, 22, 450, 617);
-        frmMain.getContentPane().add(pnlTrajectory);
+        frmMain.getContentPane().add(pnlTrajectory, BorderLayout.LINE_START);
         // endregion
 
         // region JMenu
@@ -74,7 +76,7 @@ public class SwingUI {
         mnuFileSave.setText("Save");
         mnuFileSave.setEnabled(false);
         mnuFileSave.addActionListener((ActionEvent e) -> {
-            if (!backend.saveWorkinProject())
+            if (!backend.saveWorkingProject())
                 JOptionPane.showMessageDialog(
                         frmMain,
                         "Saving failed!",
@@ -137,15 +139,17 @@ public class SwingUI {
         mnuFile.addSeparator();
         // endregion
 
+        JLabel lblTimeStep = new JLabel("Time Step");
+        lblTimeStep.setLabelFor(txtTimeStep);
+        pnlTrajectory.add(lblTimeStep);
+
         txtTimeStep = new JTextField();
         txtTimeStep.setText("0.05");
         txtTimeStep.setToolTipText(
             "The time to servo trajectory points in milliseconds. " +
             "The minimum value is 1ms and the maximum is 255ms. If ‘0’ is sent, it will be interpreted as 1ms."
         );
-
         txtTimeStep.setInputVerifier(new NumberVerifier());
-
         txtTimeStep.addActionListener((ActionEvent e) -> {
             JTextField field = (JTextField) e.getSource();
 
@@ -156,7 +160,6 @@ public class SwingUI {
                 System.out.println("Update to " + backend.getTimeStep());
             }
         });
-
         txtTimeStep.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -167,17 +170,18 @@ public class SwingUI {
                 System.out.println("Update to " + backend.getTimeStep());
             }
         });
-
         pnlTrajectory.add(txtTimeStep);
+
+        JLabel lblVelocity = new JLabel("Max Velocity");
+        lblVelocity.setLabelFor(txtVelocity);
+        pnlTrajectory.add(lblVelocity);
 
         txtVelocity = new JTextField();
         txtVelocity.setText("4");
         txtVelocity.setToolTipText(
                 "This is the velocity to feed-forward when this trajectory point is loaded into the MPE."
         );
-
         txtVelocity.setInputVerifier(new NumberVerifier());
-
         txtVelocity.addActionListener((ActionEvent e) -> {
             JTextField field = (JTextField) e.getSource();
 
@@ -188,7 +192,6 @@ public class SwingUI {
                 System.out.println("Update to " + backend.getVelocity());
             }
         });
-
         txtVelocity.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -199,7 +202,6 @@ public class SwingUI {
                 System.out.println("Update to " + backend.getVelocity());
             }
         });
-
         pnlTrajectory.add(txtVelocity);
 
         txtAcceleration = new JTextField();
@@ -207,9 +209,7 @@ public class SwingUI {
         txtAcceleration.setToolTipText(
                 "Max acceleration to maintain when running through trajectory"
         );
-
         txtAcceleration.setInputVerifier(new NumberVerifier());
-
         txtAcceleration.addActionListener((ActionEvent e) -> {
             JTextField field = (JTextField) e.getSource();
 
@@ -220,7 +220,6 @@ public class SwingUI {
                 System.out.println("Update to " + backend.getAcceleration());
             }
         });
-
         txtAcceleration.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -231,7 +230,6 @@ public class SwingUI {
                 System.out.println("Update to " + backend.getAcceleration());
             }
         });
-
         pnlTrajectory.add(txtAcceleration);
 
         txtJerk = new JTextField();
@@ -239,9 +237,7 @@ public class SwingUI {
         txtJerk.setToolTipText(
                 "Derivative of acceleration; describes the max rate at which to change acceleration"
         );
-
         txtJerk.setInputVerifier(new NumberVerifier());
-
         txtJerk.addActionListener((ActionEvent e) -> {
             JTextField field = (JTextField) e.getSource();
 
@@ -252,7 +248,6 @@ public class SwingUI {
                 System.out.println("Update to " + backend.getJerk());
             }
         });
-
         txtJerk.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -263,8 +258,91 @@ public class SwingUI {
                 System.out.println("Update to " + backend.getJerk());
             }
         });
-
         pnlTrajectory.add(txtJerk);
+
+        txtWheelBaseW = new JTextField();
+        txtWheelBaseW.setText("1.464");
+        txtWheelBaseW.setToolTipText(
+                "Distance (in feet) of drive base width, " +
+                        "from the outside edge of left wheel to the outside edge of the right wheel."
+        );
+        txtWheelBaseW.setInputVerifier(new NumberVerifier());
+        txtWheelBaseW.addActionListener((ActionEvent e) -> {
+            JTextField field = (JTextField) e.getSource();
+
+            if (field.getInputVerifier().verify(field)) {
+                double value = Double.parseDouble(field.getText());
+
+                backend.setWheelBaseW(value);
+                System.out.println("Update to " + backend.getWheelBaseW());
+            }
+        });
+        txtWheelBaseW.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                JTextField field = (JTextField) e.getSource();
+                double value = Double.parseDouble(field.getText());
+
+                backend.setWheelBaseW(value);
+                System.out.println("Update to " + backend.getWheelBaseW());
+            }
+        });
+        pnlTrajectory.add(txtWheelBaseW);
+
+        txtWheelBaseD = new JTextField();
+        txtWheelBaseD.setText("0.0");
+        txtWheelBaseD.setEnabled(false);
+        txtWheelBaseD.setToolTipText(
+                "Distance (in feet) of drive base depth, " +
+                "from the front end of the front wheel to the back end of the back wheel."
+        );
+        txtWheelBaseD.setInputVerifier(new NumberVerifier());
+        txtWheelBaseD.addActionListener((ActionEvent e) -> {
+            JTextField field = (JTextField) e.getSource();
+
+            if (field.getInputVerifier().verify(field)) {
+                double value = Double.parseDouble(field.getText());
+
+                backend.setWheelBaseD(value);
+                System.out.println("Update to " + backend.getWheelBaseD());
+            }
+        });
+        txtWheelBaseD.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                JTextField field = (JTextField) e.getSource();
+                double value = Double.parseDouble(field.getText());
+
+                backend.setWheelBaseD(value);
+                System.out.println("Update to " + backend.getWheelBaseD());
+            }
+        });
+        pnlTrajectory.add(txtWheelBaseD);
+
+        cboFitMethod = new JComboBox<>(Trajectory.FitMethod.values());
+        cboFitMethod.addActionListener((ActionEvent e) -> {
+            backend.setFitMethod((Trajectory.FitMethod) cboFitMethod.getSelectedItem());
+        });
+        pnlTrajectory.add(cboFitMethod);
+
+        grpDriveBase = new ButtonGroup();
+        JRadioButton radTank = new JRadioButton("Tank", true), radSwerve = new JRadioButton("Swerve", false);
+        ActionListener radBaseListener = (ActionEvent e) -> {
+            ProfileGenerator.DriveBase newBase = ProfileGenerator.DriveBase.valueOf(e.getActionCommand().toUpperCase());
+
+            backend.setDriveBase(newBase);
+        };
+
+        radTank.setActionCommand("Tank");
+        radTank.addActionListener(radBaseListener);
+        radSwerve.setActionCommand("Swerve");
+        radSwerve.addActionListener(radBaseListener);
+
+        grpDriveBase.add(radTank);
+        grpDriveBase.add(radSwerve);
+
+        pnlTrajectory.add(radTank);
+        pnlTrajectory.add(radSwerve);
     }
 
     /**

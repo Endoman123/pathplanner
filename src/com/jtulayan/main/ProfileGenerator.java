@@ -8,7 +8,10 @@ import jaci.pathfinder.modifiers.SwerveModifier;
 import jaci.pathfinder.modifiers.TankModifier;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.ByteOrder;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +90,7 @@ public class ProfileGenerator {
         return finished;
     }
 
-    public boolean saveWorkinProject() {
+    public boolean saveWorkingProject() {
         boolean finished = true;
         if (workingProject != null && workingProject.delete()) {
             try {
@@ -108,6 +111,13 @@ public class ProfileGenerator {
         return finished;
     }
 
+    // TODO: Unfinished
+    public boolean loadProject(File path) {
+        boolean finished = true;
+
+        return finished;
+    }
+
     public void addPoint(double x, double y, double angle) {
         POINTS.add(new Waypoint(x, y, angle));
     }
@@ -118,10 +128,6 @@ public class ProfileGenerator {
 
     public int getWaypointsSize() {
         return POINTS.size();
-    }
-
-    public void clearWorkingFiles() {
-        workingProject = null;
     }
 
     /**
@@ -143,6 +149,13 @@ public class ProfileGenerator {
      */
     public void clearPoints() {
         POINTS.clear();
+    }
+
+    /**
+     * Clears the working project files
+     */
+    public void clearWorkingFiles() {
+        workingProject = null;
     }
 
     /**

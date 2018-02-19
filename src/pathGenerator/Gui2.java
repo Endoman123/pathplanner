@@ -477,8 +477,6 @@ public class Gui2 {
         velocityGraph();
     }
 
-    ;
-
     private void aboutPage() {
         JFrame about = new JFrame();
         about.setLocationByPlatform(true);
