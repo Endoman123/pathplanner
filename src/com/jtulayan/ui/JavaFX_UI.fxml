@@ -21,14 +21,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="675.0" prefWidth="1059.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="root" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="675.0" prefWidth="1039.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jtulayan.ui.MPGenController">
   <children>
     <MenuBar>
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
             <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
+            <MenuItem fx:id="mnuOpen" mnemonicParsing="false" onAction="#test" text="Open…" />
             <Menu mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Close" />
@@ -54,7 +54,7 @@
     </MenuBar>
       <HBox>
          <children>
-            <VBox prefHeight="650.0" prefWidth="361.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="650.0" prefWidth="361.0">
                <children>
                   <TitledPane alignment="BOTTOM_CENTER" animated="false" collapsible="false" contentDisplay="BOTTOM" prefHeight="327.0" prefWidth="357.0" text="Motion Variables" textAlignment="CENTER" underline="true">
                      <font>
@@ -75,10 +75,10 @@
                               <RowConstraints maxHeight="208.0" minHeight="10.0" percentHeight="25.0" prefHeight="113.0" valignment="CENTER" vgrow="ALWAYS" />
                           </rowConstraints>
                            <children>
-                              <TextField GridPane.columnIndex="1" />
+                              <TextField fx:id="txtTimeStep" GridPane.columnIndex="1" />
                               <Label alignment="CENTER_RIGHT" text="Time Step:" />
                               <Label layoutX="22.0" layoutY="36.0" text="Velocity:" GridPane.rowIndex="1" />
-                              <TextField layoutX="101.0" layoutY="24.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtVelocity" layoutX="101.0" layoutY="24.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label layoutX="33.0" layoutY="62.0" text="Acceleration:" GridPane.rowIndex="2" />
                               <TextField layoutX="111.0" layoutY="83.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label layoutX="43.0" layoutY="143.0" text="Jerk:" GridPane.rowIndex="3" />
@@ -89,8 +89,8 @@
                               <TextField layoutX="104.0" layoutY="178.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                               <Label alignment="CENTER_RIGHT" layoutX="186.0" layoutY="172.0" prefHeight="39.0" prefWidth="72.0" text="Drive Base:" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" />
                               <Label alignment="CENTER_RIGHT" layoutX="186.0" layoutY="37.0" prefHeight="39.0" prefWidth="72.0" text="Fit Method:" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              <ChoiceBox prefWidth="150.0" GridPane.columnIndex="3" />
-                              <ChoiceBox layoutX="268.0" layoutY="43.0" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                              <ChoiceBox fx:id="choDriveBase" prefWidth="150.0" GridPane.columnIndex="3" />
+                              <ChoiceBox fx:id="choFitMethod" layoutX="268.0" layoutY="43.0" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
                      </content>
@@ -100,7 +100,7 @@
                         <Font size="15.0" />
                      </font>
                      <content>
-                        <GridPane alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="289.0" prefWidth="337.0">
+                        <GridPane alignment="CENTER" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="289.0" prefWidth="337.0">
                            <columnConstraints>
                               <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="100.0" />
