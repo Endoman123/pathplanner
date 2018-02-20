@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="root" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="675.0" prefWidth="1059.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
   <children>
-    <MenuBar VBox.vgrow="NEVER">
+    <MenuBar>
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
@@ -25,11 +34,15 @@
             <MenuItem mnemonicParsing="false" text="Close" />
             <MenuItem mnemonicParsing="false" text="Save" />
             <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
+                  <Menu mnemonicParsing="false" text="Export As">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Comma Separated Values" />
+                  <MenuItem mnemonicParsing="false" text="Java Array" />
+                    </items>
+                  </Menu>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
+            <MenuItem mnemonicParsing="false" text="Exit" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
@@ -39,81 +52,100 @@
         </Menu>
       </menus>
     </MenuBar>
-      <Pane fx:id="workingRoot" prefHeight="692.0" prefWidth="1088.0" VBox.vgrow="ALWAYS">
+      <HBox>
          <children>
-            <Label fx:id="motionVariablesLabel" layoutX="123.0" layoutY="14.0" prefHeight="49.0" prefWidth="158.0" text="Motion Variables">
-               <font>
-                  <Font size="21.0" />
-               </font>
-            </Label>
-            <TextField fx:id="timeStepField" layoutX="128.0" layoutY="73.0" />
-            <Label fx:id="timeStepLabel" layoutX="43.0" layoutY="71.0" prefHeight="25.0" prefWidth="77.0" text="Time Step:">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="velocityLabel" layoutX="58.0" layoutY="108.0" prefHeight="25.0" prefWidth="59.0" text="Velocity:">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <TextField fx:id="velocityField" layoutX="128.0" layoutY="108.0" />
-            <Label fx:id="accelerationLabel" layoutX="32.0" layoutY="146.0" prefHeight="25.0" prefWidth="85.0" text="Acceleration:">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <TextField fx:id="accelerationField" layoutX="128.0" layoutY="146.0" />
-            <Label fx:id="jerkLabel" layoutX="88.0" layoutY="187.0" prefHeight="25.0" prefWidth="32.0" text="Jerk:">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <TextField fx:id="jerkField" layoutX="128.0" layoutY="187.0" prefHeight="25.0" prefWidth="149.0" />
-            <Label fx:id="wheelBaseWLabel" layoutX="24.0" layoutY="221.0" prefHeight="25.0" prefWidth="100.0" text="Wheel Base W:">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <TextField fx:id="wheelBaseWField" layoutX="128.0" layoutY="221.0" prefHeight="25.0" prefWidth="149.0" />
-            <Label fx:id="wheelBaseDLabel" layoutX="24.0" layoutY="263.0" prefHeight="25.0" prefWidth="100.0" text="Wheel Base D:">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <TextField fx:id="wheelBaseDField" editable="false" layoutX="131.0" layoutY="263.0" prefHeight="25.0" prefWidth="149.0" />
-            <Label fx:id="fitMethodLabel" layoutX="43.0" layoutY="307.0" prefHeight="25.0" prefWidth="85.0" text="Fit Method:">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <ComboBox fx:id="fitMethodComboBox" layoutX="128.0" layoutY="307.0" prefHeight="25.0" prefWidth="149.0" />
-            <RadioButton layoutX="292.0" layoutY="225.0" mnemonicParsing="false" text="Tank Drive" />
-            <RadioButton layoutX="292.0" layoutY="267.0" mnemonicParsing="false" text="Swerve Drive" />
-            <Label fx:id="motionVariablesLabel1" layoutX="127.0" layoutY="343.0" prefHeight="49.0" prefWidth="158.0" text="    Waypoints" textAlignment="CENTER">
-               <font>
-                  <Font size="21.0" />
-               </font>
-            </Label>
-            <Label layoutX="123.0" layoutY="392.0" prefHeight="27.0" prefWidth="18.0" text="X">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Label layoutX="190.0" layoutY="392.0" prefHeight="27.0" prefWidth="11.0" text="Y">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Label layoutX="238.0" layoutY="392.0" prefHeight="27.0" prefWidth="47.0" text="Angle">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <TextField layoutX="102.0" layoutY="419.0" prefHeight="25.0" prefWidth="59.0" />
-            <TextField layoutX="166.0" layoutY="419.0" prefHeight="25.0" prefWidth="59.0" />
-            <TextField layoutX="232.0" layoutY="419.0" prefHeight="25.0" prefWidth="59.0" />
+            <VBox prefHeight="650.0" prefWidth="361.0">
+               <children>
+                  <TitledPane alignment="BOTTOM_CENTER" animated="false" collapsible="false" contentDisplay="BOTTOM" prefHeight="327.0" prefWidth="357.0" text="Motion Variables" textAlignment="CENTER" underline="true">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <content>
+                        <GridPane alignment="CENTER" focusTraversable="true" hgap="10.0" prefHeight="289.0" prefWidth="311.0">
+                          <columnConstraints>
+                            <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="89.0" minWidth="10.0" percentWidth="23.0" prefWidth="80.0" />
+                              <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="80.0" minWidth="10.0" percentWidth="24.0" prefWidth="79.0" />
+                              <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="92.0" minHeight="5.0" percentHeight="25.0" prefHeight="48.0" valignment="CENTER" vgrow="ALWAYS" />
+                            <RowConstraints maxHeight="188.0" minHeight="10.0" percentHeight="25.0" prefHeight="55.0" valignment="CENTER" vgrow="ALWAYS" />
+                            <RowConstraints maxHeight="208.0" minHeight="10.0" percentHeight="25.0" prefHeight="57.0" valignment="CENTER" vgrow="ALWAYS" />
+                              <RowConstraints maxHeight="208.0" minHeight="10.0" percentHeight="25.0" prefHeight="113.0" valignment="CENTER" vgrow="ALWAYS" />
+                          </rowConstraints>
+                           <children>
+                              <TextField GridPane.columnIndex="1" />
+                              <Label alignment="CENTER_RIGHT" text="Time Step:" />
+                              <Label layoutX="22.0" layoutY="36.0" text="Velocity:" GridPane.rowIndex="1" />
+                              <TextField layoutX="101.0" layoutY="24.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label layoutX="33.0" layoutY="62.0" text="Acceleration:" GridPane.rowIndex="2" />
+                              <TextField layoutX="111.0" layoutY="83.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label layoutX="43.0" layoutY="143.0" text="Jerk:" GridPane.rowIndex="3" />
+                              <TextField layoutX="111.0" layoutY="138.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label alignment="CENTER_RIGHT" layoutX="38.0" layoutY="48.0" prefHeight="39.0" prefWidth="72.0" text="Wheel Base (Width):" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label alignment="CENTER_RIGHT" layoutX="186.0" layoutY="172.0" prefHeight="39.0" prefWidth="72.0" text="Wheel Base (Depth):" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <TextField layoutX="104.0" layoutY="43.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <TextField layoutX="104.0" layoutY="178.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <Label alignment="CENTER_RIGHT" layoutX="186.0" layoutY="172.0" prefHeight="39.0" prefWidth="72.0" text="Drive Base:" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" />
+                              <Label alignment="CENTER_RIGHT" layoutX="186.0" layoutY="37.0" prefHeight="39.0" prefWidth="72.0" text="Fit Method:" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <ChoiceBox prefWidth="150.0" GridPane.columnIndex="3" />
+                              <ChoiceBox layoutX="268.0" layoutY="43.0" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+                  <TitledPane alignment="BOTTOM_CENTER" animated="false" collapsible="false" contentDisplay="BOTTOM" layoutX="10.0" layoutY="10.0" prefHeight="324.0" prefWidth="348.0" text="Waypoints" textAlignment="CENTER" underline="true">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <content>
+                        <GridPane alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="289.0" prefWidth="337.0">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="92.0" minHeight="8.0" prefHeight="38.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="185.0" minHeight="10.0" prefHeight="178.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <TableView editable="true" prefHeight="157.0" prefWidth="318.0" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
+                                <columns>
+                                  <TableColumn prefWidth="128.0" text="X" />
+                                  <TableColumn prefWidth="145.0" text="Y" />
+                                    <TableColumn prefWidth="91.0" text="Angle" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                              <Button alignment="CENTER" minWidth="-Infinity" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Add Point" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" />
+                              <Button alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Clear Points" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" />
+                              <Button alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Delete Last" textAlignment="CENTER" GridPane.columnIndex="2" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+               </children>
+            </VBox>
+            <TabPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="650.0" prefWidth="705.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Position View">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="621.0" prefWidth="586.0" />
+                  </content>
+                </Tab>
+                <Tab text="Velocity View">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
          </children>
-      </Pane>
+      </HBox>
   </children>
 </VBox>
