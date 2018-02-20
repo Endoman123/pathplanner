@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="root" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" text="New" />
+            <MenuItem mnemonicParsing="false" text="Open…" />
+            <Menu mnemonicParsing="false" text="Open Recent" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem mnemonicParsing="false" text="Save" />
+            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem mnemonicParsing="false" text="Revert" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+      <Pane fx:id="workingRoot" prefHeight="692.0" prefWidth="1088.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Label fx:id="motionVariablesLabel" layoutX="123.0" layoutY="14.0" prefHeight="49.0" prefWidth="158.0" text="Motion Variables">
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Label>
+            <TextField fx:id="timeStepField" layoutX="128.0" layoutY="73.0" />
+            <Label fx:id="timeStepLabel" layoutX="43.0" layoutY="71.0" prefHeight="25.0" prefWidth="77.0" text="Time Step:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="velocityLabel" layoutX="58.0" layoutY="108.0" prefHeight="25.0" prefWidth="59.0" text="Velocity:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="velocityField" layoutX="128.0" layoutY="108.0" />
+            <Label fx:id="accelerationLabel" layoutX="32.0" layoutY="146.0" prefHeight="25.0" prefWidth="85.0" text="Acceleration:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="accelerationField" layoutX="128.0" layoutY="146.0" />
+            <Label fx:id="jerkLabel" layoutX="88.0" layoutY="187.0" prefHeight="25.0" prefWidth="32.0" text="Jerk:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="jerkField" layoutX="128.0" layoutY="187.0" prefHeight="25.0" prefWidth="149.0" />
+            <Label fx:id="wheelBaseWLabel" layoutX="24.0" layoutY="221.0" prefHeight="25.0" prefWidth="100.0" text="Wheel Base W:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="wheelBaseWField" layoutX="128.0" layoutY="221.0" prefHeight="25.0" prefWidth="149.0" />
+            <Label fx:id="wheelBaseDLabel" layoutX="24.0" layoutY="263.0" prefHeight="25.0" prefWidth="100.0" text="Wheel Base D:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="wheelBaseDField" editable="false" layoutX="131.0" layoutY="263.0" prefHeight="25.0" prefWidth="149.0" />
+            <Label fx:id="fitMethodLabel" layoutX="43.0" layoutY="307.0" prefHeight="25.0" prefWidth="85.0" text="Fit Method:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="fitMethodComboBox" layoutX="128.0" layoutY="307.0" prefHeight="25.0" prefWidth="149.0" />
+            <RadioButton layoutX="292.0" layoutY="225.0" mnemonicParsing="false" text="Tank Drive" />
+            <RadioButton layoutX="292.0" layoutY="267.0" mnemonicParsing="false" text="Swerve Drive" />
+            <Label fx:id="motionVariablesLabel1" layoutX="127.0" layoutY="343.0" prefHeight="49.0" prefWidth="158.0" text="    Waypoints" textAlignment="CENTER">
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Label>
+            <Label layoutX="123.0" layoutY="392.0" prefHeight="27.0" prefWidth="18.0" text="X">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="190.0" layoutY="392.0" prefHeight="27.0" prefWidth="11.0" text="Y">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="238.0" layoutY="392.0" prefHeight="27.0" prefWidth="47.0" text="Angle">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField layoutX="102.0" layoutY="419.0" prefHeight="25.0" prefWidth="59.0" />
+            <TextField layoutX="166.0" layoutY="419.0" prefHeight="25.0" prefWidth="59.0" />
+            <TextField layoutX="232.0" layoutY="419.0" prefHeight="25.0" prefWidth="59.0" />
+         </children>
+      </Pane>
+  </children>
+</VBox>
