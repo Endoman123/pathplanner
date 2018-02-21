@@ -1,4 +1,4 @@
-package com.jtulayan.ui;
+package com.jtulayan.ui.javafx;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

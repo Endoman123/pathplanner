@@ -150,11 +150,9 @@ public class ProfileGenerator {
     }
 
     public void editWaypoint(int index, double x, double y, double angle) {
-        Waypoint wp = POINTS.get(index);
-
-        wp.x = x;
-        wp.y = y;
-        wp.angle = angle;
+        POINTS.get(index).x = x;
+        POINTS.get(index).y = y;
+        POINTS.get(index).angle = angle;
     }
 
     public void removePoint(int index) {
@@ -288,6 +286,10 @@ public class ProfileGenerator {
 
     public boolean hasWorkingProject() {
         return workingProject != null;
+    }
+
+    public List<Waypoint> getWaypoints() {
+        return POINTS;
     }
     // endregion
 }
