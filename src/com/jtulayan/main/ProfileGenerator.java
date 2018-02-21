@@ -14,6 +14,7 @@ import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,10 +53,6 @@ public class ProfileGenerator {
 
     // File stuff
     private File workingProject;
-
-//    static {
-//        System.loadLibrary("pathfinderjava");
-//    }
 
     public ProfileGenerator() {
         POINTS = new ArrayList<>();

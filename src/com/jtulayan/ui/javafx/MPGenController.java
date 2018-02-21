@@ -58,6 +58,10 @@ public class MPGenController {
         txtWheelBaseD;
 
     @FXML
+    private Label
+        lblWheelBaseD;
+
+    @FXML
     private TableView<Waypoint> tblWaypoints;
 
     @FXML
@@ -246,11 +250,14 @@ public class MPGenController {
         ProfileGenerator.DriveBase db = ProfileGenerator.DriveBase.valueOf(choice);
 
         backend.setDriveBase(db);
+
+        txtWheelBaseD.setDisable(db == ProfileGenerator.DriveBase.TANK);
+        lblWheelBaseD.setDisable(db == ProfileGenerator.DriveBase.TANK);
     }
 
     private void updateFitMethod(Event e) {
         String choice = ((ChoiceBox<String>)e.getSource()).getSelectionModel().getSelectedItem().toUpperCase();
-        Trajectory.FitMethod fm = Trajectory.FitMethod.valueOf(choice);
+        Trajectory.FitMethod fm = Trajectory.FitMethod.valueOf("HERMITE_" + choice);
 
         backend.setFitMethod(fm);
     }
