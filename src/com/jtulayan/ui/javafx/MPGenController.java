@@ -94,14 +94,11 @@ public class MPGenController {
         btnDeleteLast;
 
     private ObservableList<Waypoint> waypointsList;
-
-    private SegmentSeries sourceSeries;
     private ObservableList<XYChart.Series<Double, Double>> trajPosList;
 
     @FXML
     public void initialize() {
         backend = new ProfileGenerator();
-        sourceSeries = new SegmentSeries(backend.getSource());
 
         choDriveBase.setItems(FXCollections.observableArrayList("Tank", "Swerve"));
         choDriveBase.setValue(choDriveBase.getItems().get(0));
@@ -326,9 +323,12 @@ public class MPGenController {
         XYChart.Series<Double, Double>
                 cube = new XYChart.Series<>();
 
-        SegmentSeries series = new SegmentSeries(backend.getSource());
+        SegmentSeries fl = new SegmentSeries(backend.getFrontLeftTrajectory());
+        SegmentSeries fr = new SegmentSeries(backend.getFrontLeftTrajectory());
 
         chtPosition.getData().clear();
-        chtPosition.getData().add(series.getPositionSeries());
+        chtPosition.getData().addAll(
+        		fl.getPositionSeries(), 
+        		fr.getPositionSeries());
     }
 }

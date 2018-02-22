@@ -300,8 +300,16 @@ public class ProfileGenerator {
         return POINTS;
     }
 
-    public Trajectory getSource() {
+    public Trajectory getSourceTrajectory() {
         return source;
+    }
+    
+    public Trajectory getFrontLeftTrajectory() {
+        return fl;
+    }
+    
+    public Trajectory getFrontRightTrajectory() {
+        return fr;
     }
 
     // endregion
