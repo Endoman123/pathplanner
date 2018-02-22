@@ -4,11 +4,13 @@ import com.jtulayan.main.ProfileGenerator;
 import com.sun.javafx.collections.ObservableListWrapper;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
+import javafx.beans.InvalidationListener;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableNumberValue;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -18,6 +20,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -39,8 +43,8 @@ import javax.tools.Tool;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
+import java.util.List;
 
 public class MPGenController {
     private ProfileGenerator backend;
@@ -65,6 +69,11 @@ public class MPGenController {
     private TableView<Waypoint> tblWaypoints;
 
     @FXML
+    private LineChart<Double, Double>
+        chtPosition,
+        chtVelocity;
+
+    @FXML
     private TableColumn<Waypoint, Double>
         colWaypointX,
         colWaypointY,
@@ -86,9 +95,13 @@ public class MPGenController {
 
     private ObservableList<Waypoint> waypointsList;
 
+    private SegmentSeries sourceSeries;
+    private ObservableList<XYChart.Series<Double, Double>> trajPosList;
+
     @FXML
     public void initialize() {
         backend = new ProfileGenerator();
+        sourceSeries = new SegmentSeries(backend.getSource());
 
         choDriveBase.setItems(FXCollections.observableArrayList("Tank", "Swerve"));
         choDriveBase.setValue(choDriveBase.getItems().get(0));
@@ -162,6 +175,8 @@ public class MPGenController {
         colWaypointX.setSortable(false);
         colWaypointY.setSortable(false);
         colWaypointAngle.setSortable(false);
+
+        chtPosition.setCreateSymbols(false);
     }
 
     @FXML
@@ -245,6 +260,43 @@ public class MPGenController {
         });
     }
 
+    @FXML
+    private void showClearPointsDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+        alert.setTitle("Clear Points");
+        alert.setHeaderText("Clear All Points?");
+        alert.setContentText("Are you sure you want to clear all points?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        result.ifPresent((ButtonType t) -> {
+            if (t.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+                backend.clearPoints();
+
+                tblWaypoints.refresh();
+            }
+        });
+
+    }
+
+    @FXML
+    private void generateTrajectories() {
+        if (backend.getWaypointsSize() < 2) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+
+            alert.setTitle("Error!");
+            alert.setHeaderText("Cannot Generate Trajectories!");
+            alert.setContentText("Make sure you have at least two waypoints before trying to generate a trajectory!");
+
+            alert.showAndWait();
+        } else {
+            backend.updateTrajectories();
+
+            repopulatePosChart();
+        }
+    }
+
     private void updateDriveBase(Event e) {
         String choice = ((ChoiceBox<String>)e.getSource()).getSelectionModel().getSelectedItem().toUpperCase();
         ProfileGenerator.DriveBase db = ProfileGenerator.DriveBase.valueOf(choice);
@@ -260,5 +312,15 @@ public class MPGenController {
         Trajectory.FitMethod fm = Trajectory.FitMethod.valueOf("HERMITE_" + choice);
 
         backend.setFitMethod(fm);
+    }
+
+    private void repopulatePosChart() {
+        XYChart.Series<Double, Double>
+                cube = new XYChart.Series<>();
+
+        SegmentSeries series = new SegmentSeries(backend.getSource());
+
+        chtPosition.getData().clear();
+        chtPosition.getData().add(series.getPositionSeries());
     }
 }

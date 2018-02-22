@@ -54,6 +54,10 @@ public class ProfileGenerator {
     // File stuff
     private File workingProject;
 
+//    static {
+//        System.loadLibrary("pathfinderjava");
+//    }
+
     public ProfileGenerator() {
         POINTS = new ArrayList<>();
         resetValues();
@@ -115,6 +119,13 @@ public class ProfileGenerator {
 
     public boolean exportTrajectories(File parentPath) {
         boolean finished = true;
+
+        try {
+            updateTrajectories();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
         File dir = parentPath.getParentFile();
 
@@ -288,5 +299,10 @@ public class ProfileGenerator {
     public List<Waypoint> getWaypoints() {
         return POINTS;
     }
+
+    public Trajectory getSource() {
+        return source;
+    }
+
     // endregion
 }
