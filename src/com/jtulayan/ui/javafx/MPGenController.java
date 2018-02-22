@@ -180,11 +180,19 @@ public class MPGenController {
     }
 
     @FXML
-    private void test() {
+    private void showExportAsCSVDialog() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.showOpenDialog(root.getScene().getWindow());
+
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        fileChooser.setTitle("Open");
+        fileChooser.setTitle("Export as CSV");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Comma Separated Values", "*.csv")
+        );
+
+        File result = fileChooser.showSaveDialog(root.getScene().getWindow());
+
+        if (result != null)
+            backend.exportTrajectories(result);
     }
 
     @FXML
