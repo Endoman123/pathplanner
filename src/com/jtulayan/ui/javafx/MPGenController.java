@@ -188,12 +188,8 @@ public class MPGenController {
 
         File result = fileChooser.showSaveDialog(root.getScene().getWindow());
 
-        if (result != null && generateTrajectories()) {
-            String parentPath = result.getAbsolutePath();
-            parentPath = parentPath.substring(0, parentPath.lastIndexOf(".csv"));
-
-            backend.exportTrajectories(new File(parentPath));
-        }
+        if (result != null)
+            backend.exportTrajectories(result);
     }
 
     @FXML
@@ -286,20 +282,11 @@ public class MPGenController {
                 tblWaypoints.refresh();
             }
         });
+
     }
 
     @FXML
-    private void synchronizeTextData() {
-        backend.setTimeStep(Double.parseDouble(txtTimeStep.getText().trim()));
-        backend.setVelocity(Double.parseDouble(txtVelocity.getText().trim()));
-        backend.setAcceleration(Double.parseDouble(txtAcceleration.getText().trim()));
-        backend.setJerk(Double.parseDouble(txtJerk.getText().trim()));
-        backend.setWheelBaseW(Double.parseDouble(txtWheelBaseW.getText().trim()));
-        backend.setWheelBaseD(Double.parseDouble(txtWheelBaseD.getText().trim()));
-    }
-
-    @FXML
-    private boolean generateTrajectories() {
+    private void generateTrajectories() {
         if (backend.getWaypointsSize() < 2) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
 
@@ -308,17 +295,10 @@ public class MPGenController {
             alert.setContentText("Make sure you have at least two waypoints before trying to generate a trajectory!");
 
             alert.showAndWait();
-
-            return false;
         } else {
-            synchronizeTextData();
-
             backend.updateTrajectories();
 
             repopulatePosChart();
-            repopulateVelChart();
-
-            return true;
         }
     }
 
@@ -344,31 +324,11 @@ public class MPGenController {
                 cube = new XYChart.Series<>();
 
         SegmentSeries fl = new SegmentSeries(backend.getFrontLeftTrajectory());
-        SegmentSeries fr = new SegmentSeries(backend.getFrontRightTrajectory());
-
-        XYChart.Series<Double, Double> flSeries = fl.getPositionSeries();
-        XYChart.Series<Double, Double> frSeries = fr.getPositionSeries();
+        SegmentSeries fr = new SegmentSeries(backend.getFrontLeftTrajectory());
 
         chtPosition.getData().clear();
-        chtPosition.getData().addAll(flSeries, frSeries);
-
-        flSeries.getNode().setStyle("-fx-stroke: magenta");
-        frSeries.getNode().setStyle("-fx-stroke: magenta");
-    }
-
-    private void repopulateVelChart() {
-        SegmentSeries fl = new SegmentSeries(backend.getFrontLeftTrajectory());
-        SegmentSeries fr = new SegmentSeries(backend.getFrontRightTrajectory());
-
-        XYChart.Series<Double, Double> flSeries = fl.getPositionSeries();
-        XYChart.Series<Double, Double> frSeries = fr.getPositionSeries();
-
-        flSeries.setName("Left Trajectory");
-        frSeries.setName("Right Trajectory");
-
-        chtVelocity.getData().clear();
-        chtVelocity.getData().addAll(
-                fl.getVelocitySeries(),
-                fr.getVelocitySeries());
+        chtPosition.getData().addAll(
+        		fl.getPositionSeries(), 
+        		fr.getPositionSeries());
     }
 }
