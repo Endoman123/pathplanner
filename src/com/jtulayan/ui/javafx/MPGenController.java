@@ -316,6 +316,7 @@ public class MPGenController {
             backend.updateTrajectories();
 
             repopulatePosChart();
+            repopulateVelChart();
 
             return true;
         }
@@ -347,7 +348,17 @@ public class MPGenController {
 
         chtPosition.getData().clear();
         chtPosition.getData().addAll(
-        		fl.getPositionSeries(), 
-        		fr.getPositionSeries());
+                fl.getPositionSeries(),
+                fr.getPositionSeries());
+    }
+
+    private void repopulateVelChart() {
+        SegmentSeries fl = new SegmentSeries(backend.getFrontLeftTrajectory());
+        SegmentSeries fr = new SegmentSeries(backend.getFrontRightTrajectory());
+
+        chtVelocity.getData().clear();
+        chtVelocity.getData().addAll(
+                fl.getVelocitySeries(),
+                fr.getVelocitySeries());
     }
 }
