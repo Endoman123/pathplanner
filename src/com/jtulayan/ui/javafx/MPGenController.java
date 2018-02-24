@@ -346,15 +346,25 @@ public class MPGenController {
         SegmentSeries fl = new SegmentSeries(backend.getFrontLeftTrajectory());
         SegmentSeries fr = new SegmentSeries(backend.getFrontRightTrajectory());
 
+        XYChart.Series<Double, Double> flSeries = fl.getPositionSeries();
+        XYChart.Series<Double, Double> frSeries = fr.getPositionSeries();
+
         chtPosition.getData().clear();
-        chtPosition.getData().addAll(
-                fl.getPositionSeries(),
-                fr.getPositionSeries());
+        chtPosition.getData().addAll(flSeries, frSeries);
+
+        chtPosition.getData().get(0).getNode().setStyle("-fx-stroke: magenta");
+        chtPosition.getData().get(1).getNode().setStyle("-fx-stroke: magenta");
     }
 
     private void repopulateVelChart() {
         SegmentSeries fl = new SegmentSeries(backend.getFrontLeftTrajectory());
         SegmentSeries fr = new SegmentSeries(backend.getFrontRightTrajectory());
+
+        XYChart.Series<Double, Double> flSeries = fl.getPositionSeries();
+        XYChart.Series<Double, Double> frSeries = fr.getPositionSeries();
+
+        flSeries.setName("Left Trajectory");
+        frSeries.setName("Right Trajectory");
 
         chtVelocity.getData().clear();
         chtVelocity.getData().addAll(

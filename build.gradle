@@ -1,3 +1,25 @@
+plugins {
+	id 'application'
+	id 'java'
+}
+
+sourceSets {
+	main.java {
+		srcDirs = ['src']; include '**/*.java'
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		url 'http://dev.imjac.in/maven/'
+	}
+}
+
+dependencies {
+	compile 'jaci.pathfinder:Pathfinder-Java:1.8:Pathfinder-Java-1.8'
+}
+
 task wrapper(type: Wrapper) {
-	gradleVersion = '4.4.2'
+	gradleVersion = '4.5.1'
 }
