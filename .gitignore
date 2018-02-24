@@ -42,3 +42,7 @@ junit/
 
 # Don't commit log files
 .log/
+**/*.log
+
+# Don't commit test files
+test/
