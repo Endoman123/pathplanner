@@ -259,6 +259,8 @@ public class MPGenController {
         result = waypointDialog.showAndWait();
 
         result.ifPresent((Waypoint w) -> {
+            synchronizeTextData();
+
             backend.addPoint(w.x, w.y, w.angle);
 
             tblWaypoints.refresh();
@@ -282,7 +284,16 @@ public class MPGenController {
                 tblWaypoints.refresh();
             }
         });
+    }
 
+    @FXML
+    private void synchronizeTextData() {
+        backend.setTimeStep(Double.parseDouble(txtTimeStep.getText().trim()));
+        backend.setVelocity(Double.parseDouble(txtVelocity.getText().trim()));
+        backend.setAcceleration(Double.parseDouble(txtAcceleration.getText().trim()));
+        backend.setJerk(Double.parseDouble(txtJerk.getText().trim()));
+        backend.setWheelBaseW(Double.parseDouble(txtWheelBaseW.getText().trim()));
+        backend.setWheelBaseD(Double.parseDouble(txtWheelBaseD.getText().trim()));
     }
 
     @FXML
@@ -324,7 +335,7 @@ public class MPGenController {
                 cube = new XYChart.Series<>();
 
         SegmentSeries fl = new SegmentSeries(backend.getFrontLeftTrajectory());
-        SegmentSeries fr = new SegmentSeries(backend.getFrontLeftTrajectory());
+        SegmentSeries fr = new SegmentSeries(backend.getFrontRightTrajectory());
 
         chtPosition.getData().clear();
         chtPosition.getData().addAll(
