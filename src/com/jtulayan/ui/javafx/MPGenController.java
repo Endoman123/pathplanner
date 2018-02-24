@@ -352,8 +352,8 @@ public class MPGenController {
         chtPosition.getData().clear();
         chtPosition.getData().addAll(flSeries, frSeries);
 
-        chtPosition.getData().get(0).getNode().setStyle("-fx-stroke: magenta");
-        chtPosition.getData().get(1).getNode().setStyle("-fx-stroke: magenta");
+        flSeries.getNode().setStyle("-fx-stroke: magenta");
+        frSeries.getNode().setStyle("-fx-stroke: magenta");
     }
 
     private void repopulateVelChart() {
