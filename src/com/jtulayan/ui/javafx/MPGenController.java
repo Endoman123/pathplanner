@@ -188,8 +188,12 @@ public class MPGenController {
 
         File result = fileChooser.showSaveDialog(root.getScene().getWindow());
 
-        if (result != null)
-            backend.exportTrajectories(result);
+        if (result != null && generateTrajectories()) {
+            String parentPath = result.getAbsolutePath();
+            parentPath = parentPath.substring(0, parentPath.lastIndexOf(".csv"));
+
+            backend.exportTrajectories(new File(parentPath));
+        }
     }
 
     @FXML
@@ -259,8 +263,6 @@ public class MPGenController {
         result = waypointDialog.showAndWait();
 
         result.ifPresent((Waypoint w) -> {
-            synchronizeTextData();
-
             backend.addPoint(w.x, w.y, w.angle);
 
             tblWaypoints.refresh();
@@ -297,7 +299,7 @@ public class MPGenController {
     }
 
     @FXML
-    private void generateTrajectories() {
+    private boolean generateTrajectories() {
         if (backend.getWaypointsSize() < 2) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
 
@@ -306,10 +308,16 @@ public class MPGenController {
             alert.setContentText("Make sure you have at least two waypoints before trying to generate a trajectory!");
 
             alert.showAndWait();
+
+            return false;
         } else {
+            synchronizeTextData();
+
             backend.updateTrajectories();
 
             repopulatePosChart();
+
+            return true;
         }
     }
 

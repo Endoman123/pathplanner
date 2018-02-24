@@ -135,11 +135,17 @@ public class ProfileGenerator {
         }
 
         try {
-            if (driveBase == DriveBase.TANK) {
+            if (driveBase == DriveBase.SWERVE) {
+                Pathfinder.writeToCSV(new File(parentPath + "_fl_detailed.csv"), fl);
+                Pathfinder.writeToCSV(new File(parentPath + "_fr_detailed.csv"), fr);
+                Pathfinder.writeToCSV(new File(parentPath + "_bl_detailed.csv"), bl);
+                Pathfinder.writeToCSV(new File(parentPath + "_br_detailed.csv"), br);
+            } else {
                 Pathfinder.writeToCSV(new File(parentPath + "_left_detailed.csv"), fl);
                 Pathfinder.writeToCSV(new File(parentPath + "_right_detailed.csv"), fr);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             finished = false;
         }
 
