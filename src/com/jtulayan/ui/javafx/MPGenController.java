@@ -54,44 +54,44 @@ public class MPGenController {
 
     @FXML
     private TextField
-        txtTimeStep,
-        txtVelocity,
-        txtAcceleration,
-        txtJerk,
-        txtWheelBaseW,
-        txtWheelBaseD;
+            txtTimeStep,
+            txtVelocity,
+            txtAcceleration,
+            txtJerk,
+            txtWheelBaseW,
+            txtWheelBaseD;
 
     @FXML
     private Label
-        lblWheelBaseD;
+            lblWheelBaseD;
 
     @FXML
     private TableView<Waypoint> tblWaypoints;
 
     @FXML
     private LineChart<Double, Double>
-        chtPosition,
-        chtVelocity;
+            chtPosition,
+            chtVelocity;
 
     @FXML
     private TableColumn<Waypoint, Double>
-        colWaypointX,
-        colWaypointY,
-        colWaypointAngle;
+            colWaypointX,
+            colWaypointY,
+            colWaypointAngle;
 
     @FXML
     private MenuItem mnuOpen;
 
     @FXML
     private ChoiceBox
-        choDriveBase,
-        choFitMethod;
+            choDriveBase,
+            choFitMethod;
 
     @FXML
     private Button
-        btnAddPoint,
-        btnClearPoints,
-        btnDeleteLast;
+            btnAddPoint,
+            btnClearPoints,
+            btnDeleteLast;
 
     private ObservableList<Waypoint> waypointsList;
     private ObservableList<XYChart.Series<Double, Double>> trajPosList;
@@ -109,26 +109,26 @@ public class MPGenController {
         choFitMethod.setOnAction(this::updateFitMethod);
 
         Callback<TableColumn<Waypoint, Double>, TableCell<Waypoint, Double>> doubleCallback =
-            (TableColumn<Waypoint, Double> param) -> {
-                TextFieldTableCell<Waypoint, Double> cell = new TextFieldTableCell<>();
+                (TableColumn<Waypoint, Double> param) -> {
+                    TextFieldTableCell<Waypoint, Double> cell = new TextFieldTableCell<>();
 
-                cell.setConverter(new DoubleStringConverter());
+                    cell.setConverter(new DoubleStringConverter());
 
-                return cell;
-            };
+                    return cell;
+                };
 
         EventHandler<TableColumn.CellEditEvent<Waypoint, Double>> editHandler =
-            (TableColumn.CellEditEvent<Waypoint, Double> t) -> {
-                int ind = t.getTablePosition().getRow();
-                Waypoint newWaypoint = t.getRowValue();
+                (TableColumn.CellEditEvent<Waypoint, Double> t) -> {
+                    int ind = t.getTablePosition().getRow();
+                    Waypoint newWaypoint = t.getRowValue();
 
-                if (t.getTableColumn() == colWaypointAngle)
-                    backend.editWaypoint(ind, newWaypoint.x, newWaypoint.y, t.getNewValue());
-                else if (t.getTableColumn() == colWaypointY)
-                    backend.editWaypoint(ind, newWaypoint.x, t.getNewValue(), newWaypoint.angle);
-                else
-                    backend.editWaypoint(ind, t.getNewValue(), newWaypoint.y, newWaypoint.angle);
-            };
+                    if (t.getTableColumn() == colWaypointAngle)
+                        backend.editWaypoint(ind, newWaypoint.x, newWaypoint.y, t.getNewValue());
+                    else if (t.getTableColumn() == colWaypointY)
+                        backend.editWaypoint(ind, newWaypoint.x, t.getNewValue(), newWaypoint.angle);
+                    else
+                        backend.editWaypoint(ind, t.getNewValue(), newWaypoint.y, newWaypoint.angle);
+                };
 
         colWaypointX.setCellFactory(doubleCallback);
         colWaypointY.setCellFactory(doubleCallback);
@@ -188,8 +188,12 @@ public class MPGenController {
 
         File result = fileChooser.showSaveDialog(root.getScene().getWindow());
 
-        if (result != null)
-            backend.exportTrajectories(result);
+        if (result != null && generateTrajectories()) {
+            String parentPath = result.getAbsolutePath();
+            parentPath = parentPath.substring(0, parentPath.lastIndexOf(".csv"));
+
+            backend.exportTrajectories(new File(parentPath));
+        }
     }
 
     @FXML
@@ -282,11 +286,20 @@ public class MPGenController {
                 tblWaypoints.refresh();
             }
         });
-
     }
 
     @FXML
-    private void generateTrajectories() {
+    private void synchronizeTextData() {
+        backend.setTimeStep(Double.parseDouble(txtTimeStep.getText().trim()));
+        backend.setVelocity(Double.parseDouble(txtVelocity.getText().trim()));
+        backend.setAcceleration(Double.parseDouble(txtAcceleration.getText().trim()));
+        backend.setJerk(Double.parseDouble(txtJerk.getText().trim()));
+        backend.setWheelBaseW(Double.parseDouble(txtWheelBaseW.getText().trim()));
+        backend.setWheelBaseD(Double.parseDouble(txtWheelBaseD.getText().trim()));
+    }
+
+    @FXML
+    private boolean generateTrajectories() {
         if (backend.getWaypointsSize() < 2) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
 
@@ -295,10 +308,17 @@ public class MPGenController {
             alert.setContentText("Make sure you have at least two waypoints before trying to generate a trajectory!");
 
             alert.showAndWait();
+
+            return false;
         } else {
+            synchronizeTextData();
+
             backend.updateTrajectories();
 
             repopulatePosChart();
+            repopulateVelChart();
+
+            return true;
         }
     }
 
@@ -320,15 +340,70 @@ public class MPGenController {
     }
 
     private void repopulatePosChart() {
+        SegmentSeries
+            fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
+            fr = new SegmentSeries(backend.getFrontRightTrajectory());
+
         XYChart.Series<Double, Double>
-                cube = new XYChart.Series<>();
+            flSeries = fl.getPositionSeries(),
+            frSeries = fr.getPositionSeries();
 
-        SegmentSeries fl = new SegmentSeries(backend.getFrontLeftTrajectory());
-        SegmentSeries fr = new SegmentSeries(backend.getFrontLeftTrajectory());
-
+        // Clear data from position graph
         chtPosition.getData().clear();
-        chtPosition.getData().addAll(
-        		fl.getPositionSeries(), 
-        		fr.getPositionSeries());
+
+        if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
+            SegmentSeries
+                    bl = new SegmentSeries(backend.getBackLeftTrajectory()),
+                    br = new SegmentSeries(backend.getBackRightTrajectory());
+
+            XYChart.Series<Double, Double>
+                    blSeries = bl.getPositionSeries(),
+                    brSeries = br.getPositionSeries();
+
+            chtPosition.getData().addAll(blSeries, brSeries, flSeries, frSeries);
+            flSeries.getNode().setStyle("-fx-stroke: red");
+            frSeries.getNode().setStyle("-fx-stroke: red");
+            blSeries.getNode().setStyle("-fx-stroke: blue");
+            brSeries.getNode().setStyle("-fx-stroke: blue");
+        } else {
+            chtPosition.getData().addAll(flSeries, frSeries);
+
+            flSeries.getNode().setStyle("-fx-stroke: magenta");
+            frSeries.getNode().setStyle("-fx-stroke: magenta");
+        }
+    }
+
+    private void repopulateVelChart() {
+        SegmentSeries
+                fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
+                fr = new SegmentSeries(backend.getFrontRightTrajectory());
+
+        XYChart.Series<Double, Double>
+                flSeries = fl.getVelocitySeries(),
+                frSeries = fr.getVelocitySeries();
+
+        // Clear data from velocity graph
+        chtVelocity.getData().clear();
+        chtVelocity.getData().addAll(flSeries, frSeries);
+
+        if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
+            SegmentSeries
+                    bl = new SegmentSeries(backend.getBackLeftTrajectory()),
+                    br = new SegmentSeries(backend.getBackRightTrajectory());
+
+            XYChart.Series<Double, Double>
+                    blSeries = bl.getVelocitySeries(),
+                    brSeries = br.getVelocitySeries();
+
+            chtVelocity.getData().addAll(blSeries, brSeries);
+
+            flSeries.setName("Front Left Trajectory");
+            frSeries.setName("Front Right Trajectory");
+            blSeries.setName("Back Left Trajectory");
+            brSeries.setName("Back Right Trajectory");
+        } else {
+            flSeries.setName("Left Trajectory");
+            frSeries.setName("Right Trajectory");
+        }
     }
 }

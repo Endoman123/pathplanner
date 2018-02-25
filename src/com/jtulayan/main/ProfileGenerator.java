@@ -303,13 +303,21 @@ public class ProfileGenerator {
     public Trajectory getSourceTrajectory() {
         return source;
     }
-    
+
     public Trajectory getFrontLeftTrajectory() {
         return fl;
     }
-    
+
     public Trajectory getFrontRightTrajectory() {
         return fr;
+    }
+
+    public Trajectory getBackLeftTrajectory() {
+        return bl;
+    }
+
+    public Trajectory getBackRightTrajectory() {
+        return br;
     }
 
     // endregion
