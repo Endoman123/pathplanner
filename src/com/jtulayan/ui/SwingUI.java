@@ -171,7 +171,7 @@ public class SwingUI {
                             break;
                     }
 
-                    if (!backend.exportTrajectories(savePath))
+                    if (!backend.exportTrajectoriesCSV(savePath))
                         JOptionPane.showMessageDialog(
                                 frmMain,
                                 "Invalid location!",

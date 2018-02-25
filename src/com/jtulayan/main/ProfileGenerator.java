@@ -1,21 +1,24 @@
 package com.jtulayan.main;
 
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.Trajectory.*;
+import jaci.pathfinder.Trajectory.Config;
+import jaci.pathfinder.Trajectory.FitMethod;
 import jaci.pathfinder.Waypoint;
 import jaci.pathfinder.modifiers.SwerveModifier;
 import jaci.pathfinder.modifiers.TankModifier;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteOrder;
-import java.nio.CharBuffer;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,7 +27,7 @@ import java.util.List;
  * Also handles saving, loading, etc.
  */
 public class ProfileGenerator {
-    public static final String PROJECT_EXTENSION = "bot";
+    public static final String PROJECT_EXTENSION = "xml";
     public enum DriveBase {
         TANK,
         SWERVE
@@ -84,36 +87,68 @@ public class ProfileGenerator {
         if (path.exists() && !path.delete())
             return false;
 
-        try {
-            FileWriter out = new FileWriter(path);
-            out.write("" + timeStep + System.lineSeparator());
-            out.write("" + velocity + System.lineSeparator());
-            out.write("" + acceleration + System.lineSeparator());
-            out.write("" + jerk + System.lineSeparator());
+        workingProject = path;
 
-            out.close();
-
-            workingProject = path;
-        } catch (Exception e) {
-            finished = false;
-        }
-
-        return finished;
+        return saveWorkingProject();
     }
 
     public boolean saveWorkingProject() {
         boolean finished = true;
-        if (workingProject != null && workingProject.delete()) {
-            try {
-                FileWriter out = new FileWriter(workingProject);
-                out.write("" + timeStep + System.lineSeparator());
-                out.write("" + velocity + System.lineSeparator());
-                out.write("" + acceleration + System.lineSeparator());
-                out.write("" + jerk + System.lineSeparator());
+        if (workingProject != null) {
+            if (workingProject.exists() && !workingProject.delete())
+                return false;
 
-                out.close();
+            try {
+                // Create document
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                Document dom = db.newDocument();
+
+                Element trajectoryEle = dom.createElement("Trajectory");
+
+                trajectoryEle.setAttribute("dt", "" + timeStep);
+                trajectoryEle.setAttribute("velocity", "" + velocity);
+                trajectoryEle.setAttribute("acceleration", "" + acceleration);
+                trajectoryEle.setAttribute("jerk", "" + jerk);
+                trajectoryEle.setAttribute("wheelBaseW", "" + wheelBaseW);
+                trajectoryEle.setAttribute("wheelBaseD", "" + wheelBaseD);
+                trajectoryEle.setAttribute("fitMethod", "" + fitMethod.toString());
+                trajectoryEle.setAttribute("driveBase", "" + driveBase.toString());
+
+                dom.appendChild(trajectoryEle);
+
+                for (Waypoint w : POINTS) {
+                    Element waypointEle = dom.createElement("Waypoint");
+                    Element xEle = dom.createElement("X");
+                    Element yEle = dom.createElement("Y");
+                    Element angleEle = dom.createElement("Angle");
+                    Text xText = dom.createTextNode("" + w.x);
+                    Text yText = dom.createTextNode("" + w.y);
+                    Text angleText = dom.createTextNode("" + w.angle);
+
+                    xEle.appendChild(xText);
+                    yEle.appendChild(yText);
+                    angleEle.appendChild(angleText);
+
+                    waypointEle.appendChild(xEle);
+                    waypointEle.appendChild(yEle);
+                    waypointEle.appendChild(angleEle);
+
+                    trajectoryEle.appendChild(waypointEle);
+                }
+
+                OutputFormat format = new OutputFormat(dom);
+
+                format.setIndenting(true);
+
+                XMLSerializer xmlSerializer = new XMLSerializer(
+                    new FileOutputStream(workingProject), format
+                );
+
+                xmlSerializer.serialize(dom);
             } catch (Exception e) {
                 finished = false;
+                e.printStackTrace();
             }
         } else {
             finished = false;
@@ -122,7 +157,7 @@ public class ProfileGenerator {
         return finished;
     }
 
-    public boolean exportTrajectories(File parentPath) {
+    public boolean exportTrajectoriesCSV(File parentPath) {
         boolean finished = true;
 
         try {
@@ -140,7 +175,11 @@ public class ProfileGenerator {
         }
 
         try {
-            if (driveBase == DriveBase.TANK) {
+            Pathfinder.writeToCSV(new File(parentPath + "_source_detailed.csv"), source);
+
+            if (driveBase == DriveBase.SWERVE) {
+
+            } else {
                 Pathfinder.writeToCSV(new File(parentPath + "_left_detailed.csv"), fl);
                 Pathfinder.writeToCSV(new File(parentPath + "_right_detailed.csv"), fr);
             }
@@ -188,6 +227,7 @@ public class ProfileGenerator {
         wheelBaseD = 0;
 
         fitMethod = FitMethod.HERMITE_CUBIC;
+        driveBase = DriveBase.TANK;
     }
 
     /**

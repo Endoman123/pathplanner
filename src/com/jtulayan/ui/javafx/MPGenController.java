@@ -5,22 +5,14 @@ import com.sun.javafx.collections.ObservableListWrapper;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ObservableDoubleValue;
-import javafx.beans.value.ObservableNumberValue;
-import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
@@ -31,21 +23,14 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
-import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.tools.Tool;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
-import java.util.List;
 
 public class MPGenController {
     private ProfileGenerator backend;
@@ -178,6 +163,44 @@ public class MPGenController {
     }
 
     @FXML
+    private void showSaveAsDialog() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setTitle("Save As");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Extensive Markup Language", "*.xml")
+        );
+
+        File result = fileChooser.showSaveDialog(root.getScene().getWindow());
+
+        if (result != null && !backend.saveProjectAs(result)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+
+            alert.setTitle("Save Failed");
+            alert.setHeaderText("Failed to Save Project!");
+            alert.setContentText("An error has occured with saving! Please try again.");
+
+            alert.showAndWait();
+        } else if (backend.hasWorkingProject()) {
+            mnuFileSave.setDisable(false);
+        }
+    }
+
+    @FXML
+    private void save() {
+        if (!backend.saveWorkingProject()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+
+            alert.setTitle("Save Failed");
+            alert.setHeaderText("Failed to Save Project!");
+            alert.setContentText("An error has occured with saving! Please try again.");
+
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
     private void showExportAsCSVDialog() {
         FileChooser fileChooser = new FileChooser();
 
@@ -193,7 +216,7 @@ public class MPGenController {
             String parentPath = result.getAbsolutePath();
             parentPath = parentPath.substring(0, parentPath.lastIndexOf(".csv"));
 
-            backend.exportTrajectories(new File(parentPath));
+            backend.exportTrajectoriesCSV(new File(parentPath));
         }
     }
 
@@ -302,6 +325,7 @@ public class MPGenController {
         result.ifPresent((ButtonType t) -> {
             if (t == ButtonType.OK) {
                 backend.resetValues();
+                backend.clearWorkingFiles();
 
                 txtTimeStep.setText("" + backend.getTimeStep());
                 txtVelocity.setText("" + backend.getVelocity());
@@ -312,6 +336,8 @@ public class MPGenController {
 
                 choDriveBase.setValue("Tank");
                 choFitMethod.setValue("Cubic");
+
+                mnuFileSave.setDisable(true);
             }
         });
     }

@@ -32,8 +32,8 @@
           <items>
             <MenuItem fx:id="btnFileNew" mnemonicParsing="false" onAction="#resetData" text="New" />
             <MenuItem fx:id="mnuOpen" mnemonicParsing="false" text="Open…" />
-            <MenuItem fx:id="mnuFileSave" disable="true" mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem fx:id="mnuFileSave" disable="true" mnemonicParsing="false" onAction="#save" text="Save" />
+            <MenuItem fx:id="mnuFileSaveAs" mnemonicParsing="false" onAction="#showSaveAsDialog" text="Save As…" />
             <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Import">
                      <items>

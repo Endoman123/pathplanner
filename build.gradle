@@ -34,6 +34,7 @@ dependencies {
     nativeLib fileTree(dir: 'lib', include: '*.exp')
     nativeLib fileTree(dir: 'lib', include: '*.lib')
     compile 'com.opencsv:opencsv:4.1'
+    compile 'xerces:xercesImpl:2.11.0'
 }
 
 task run(overwrite: true) {
