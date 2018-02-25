@@ -30,19 +30,25 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem fx:id="mnuOpen" mnemonicParsing="false" onAction="#showExportAsCSVDialog" text="Open…" />
-            <MenuItem mnemonicParsing="false" text="Save" />
+            <MenuItem fx:id="btnFileNew" mnemonicParsing="false" onAction="#resetData" text="New" />
+            <MenuItem fx:id="mnuOpen" mnemonicParsing="false" text="Open…" />
+            <MenuItem fx:id="mnuFileSave" disable="true" mnemonicParsing="false" text="Save" />
             <MenuItem mnemonicParsing="false" text="Save As…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-                  <Menu mnemonicParsing="false" text="Export As">
+                  <Menu mnemonicParsing="false" text="Import">
+                     <items>
+                        <MenuItem fx:id="btnExportCSV1" mnemonicParsing="false" onAction="#showExportAsCSVDialog" text="Comma Separated Values" />
+                        <MenuItem mnemonicParsing="false" text="Java Array" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Export">
                     <items>
                       <MenuItem fx:id="btnExportCSV" mnemonicParsing="false" onAction="#showExportAsCSVDialog" text="Comma Separated Values" />
                   <MenuItem mnemonicParsing="false" text="Java Array" />
                     </items>
                   </Menu>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Exit" />
+            <MenuItem fx:id="mnuFileExit" mnemonicParsing="false" onAction="#exit" text="Exit" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

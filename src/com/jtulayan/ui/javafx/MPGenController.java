@@ -64,7 +64,7 @@ public class MPGenController {
 
     @FXML
     private Label
-            lblWheelBaseD;
+        lblWheelBaseD;
 
     @FXML
     private TableView<Waypoint> tblWaypoints;
@@ -81,7 +81,13 @@ public class MPGenController {
             colWaypointAngle;
 
     @FXML
-    private MenuItem mnuOpen;
+    private MenuItem
+            mnuOpen,
+            mnuFileNew,
+            mnuFileSave,
+            mnuFileSaveAs,
+            mnuFileExportAsCSV,
+            mnuFileExit;
 
     @FXML
     private ChoiceBox
@@ -110,26 +116,26 @@ public class MPGenController {
         choFitMethod.setOnAction(this::updateFitMethod);
 
         Callback<TableColumn<Waypoint, Double>, TableCell<Waypoint, Double>> doubleCallback =
-                (TableColumn<Waypoint, Double> param) -> {
-                    TextFieldTableCell<Waypoint, Double> cell = new TextFieldTableCell<>();
+            (TableColumn<Waypoint, Double> param) -> {
+                TextFieldTableCell<Waypoint, Double> cell = new TextFieldTableCell<>();
 
-                    cell.setConverter(new DoubleStringConverter());
+                cell.setConverter(new DoubleStringConverter());
 
-                    return cell;
-                };
+                return cell;
+        };
 
         EventHandler<TableColumn.CellEditEvent<Waypoint, Double>> editHandler =
-                (TableColumn.CellEditEvent<Waypoint, Double> t) -> {
-                    int ind = t.getTablePosition().getRow();
-                    Waypoint newWaypoint = t.getRowValue();
+            (TableColumn.CellEditEvent<Waypoint, Double> t) -> {
+                int ind = t.getTablePosition().getRow();
+                Waypoint newWaypoint = t.getRowValue();
 
-                    if (t.getTableColumn() == colWaypointAngle)
-                        backend.editWaypoint(ind, newWaypoint.x, newWaypoint.y, t.getNewValue());
-                    else if (t.getTableColumn() == colWaypointY)
-                        backend.editWaypoint(ind, newWaypoint.x, t.getNewValue(), newWaypoint.angle);
-                    else
-                        backend.editWaypoint(ind, t.getNewValue(), newWaypoint.y, newWaypoint.angle);
-                };
+                if (t.getTableColumn() == colWaypointAngle)
+                    backend.editWaypoint(ind, newWaypoint.x, newWaypoint.y, t.getNewValue());
+                else if (t.getTableColumn() == colWaypointY)
+                    backend.editWaypoint(ind, newWaypoint.x, t.getNewValue(), newWaypoint.angle);
+                else
+                    backend.editWaypoint(ind, t.getNewValue(), newWaypoint.y, newWaypoint.angle);
+        };
 
         colWaypointX.setCellFactory(doubleCallback);
         colWaypointY.setCellFactory(doubleCallback);
@@ -140,41 +146,35 @@ public class MPGenController {
         colWaypointAngle.setOnEditCommit(editHandler);
 
         colWaypointX.setCellValueFactory((TableColumn.CellDataFeatures<Waypoint, Double> d) ->
-                new ObservableValueBase<Double>() {
-                    @Override
-                    public Double getValue() {
-                        return d.getValue().x;
-                    }
+            new ObservableValueBase<Double>() {
+                @Override
+                public Double getValue() {
+                    return d.getValue().x;
                 }
+            }
         );
 
         colWaypointY.setCellValueFactory((TableColumn.CellDataFeatures<Waypoint, Double> d) ->
-                new ObservableValueBase<Double>() {
-                    @Override
-                    public Double getValue() {
-                        return d.getValue().y;
-                    }
+            new ObservableValueBase<Double>() {
+                @Override
+                public Double getValue() {
+                    return d.getValue().y;
                 }
+           }
         );
 
         colWaypointAngle.setCellValueFactory((TableColumn.CellDataFeatures<Waypoint, Double> d) ->
-                new ObservableValueBase<Double>() {
-                    @Override
-                    public Double getValue() {
-                        return Pathfinder.r2d(d.getValue().angle);
-                    }
+            new ObservableValueBase<Double>() {
+                @Override
+                public Double getValue() {
+                    return Pathfinder.r2d(d.getValue().angle);
                 }
+            }
         );
 
         waypointsList = new ObservableListWrapper<>(backend.getWaypoints());
 
         tblWaypoints.setItems(waypointsList);
-
-        colWaypointX.setSortable(false);
-        colWaypointY.setSortable(false);
-        colWaypointAngle.setSortable(false);
-
-        chtPosition.setCreateSymbols(false);
     }
 
     @FXML
@@ -290,6 +290,33 @@ public class MPGenController {
     }
 
     @FXML
+    private void resetData() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+        alert.setTitle("Create New Project?");
+        alert.setHeaderText("Confirm Reset");
+        alert.setContentText("Are you sure you want to reset all data? Have you saved?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        result.ifPresent((ButtonType t) -> {
+            if (t == ButtonType.OK) {
+                backend.resetValues();
+
+                txtTimeStep.setText("" + backend.getTimeStep());
+                txtVelocity.setText("" + backend.getVelocity());
+                txtAcceleration.setText("" + backend.getAcceleration());
+                txtJerk.setText("" + backend.getJerk());
+                txtWheelBaseW.setText("" + backend.getWheelBaseW());
+                txtWheelBaseD.setText("" + backend.getWheelBaseD());
+
+                choDriveBase.setValue("Tank");
+                choFitMethod.setValue("Cubic");
+            }
+        });
+    }
+
+    @FXML
     private void synchronizeTextData() {
         backend.setTimeStep(Double.parseDouble(txtTimeStep.getText().trim()));
         backend.setVelocity(Double.parseDouble(txtVelocity.getText().trim()));
@@ -297,6 +324,11 @@ public class MPGenController {
         backend.setJerk(Double.parseDouble(txtJerk.getText().trim()));
         backend.setWheelBaseW(Double.parseDouble(txtWheelBaseW.getText().trim()));
         backend.setWheelBaseD(Double.parseDouble(txtWheelBaseD.getText().trim()));
+    }
+
+    @FXML
+    private void exit() {
+        System.exit(0);
     }
 
     @FXML
