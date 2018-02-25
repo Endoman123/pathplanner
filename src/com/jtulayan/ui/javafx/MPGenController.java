@@ -2,6 +2,7 @@ package com.jtulayan.ui.javafx;
 
 import com.jtulayan.main.ProfileGenerator;
 import com.sun.javafx.collections.ObservableListWrapper;
+import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
 import javafx.beans.InvalidationListener;
@@ -160,7 +161,7 @@ public class MPGenController {
                 new ObservableValueBase<Double>() {
                     @Override
                     public Double getValue() {
-                        return d.getValue().angle;
+                        return Pathfinder.r2d(d.getValue().angle);
                     }
                 }
         );
@@ -253,7 +254,7 @@ public class MPGenController {
                         y = Double.parseDouble(txtWY.getText().trim()),
                         angle = Double.parseDouble(txtWA.getText().trim());
 
-                return new Waypoint(x, y, angle);
+                return new Waypoint(x, y, Pathfinder.d2r(angle));
             }
 
             return null;

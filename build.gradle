@@ -22,8 +22,17 @@ repositories {
     }
 }
 
+configurations {
+    nativeLib {
+        description = "Collection of native files needed for pathfinder"
+    }
+}
+
 dependencies {
-    compile files("lib/pathfinder.jar")
+    compile fileTree(dir: 'lib', include: '*.jar')
+    nativeLib fileTree(dir: 'lib', include: '*.dll')
+    nativeLib fileTree(dir: 'lib', include: '*.exp')
+    nativeLib fileTree(dir: 'lib', include: '*.lib')
     compile 'com.opencsv:opencsv:4.1'
 }
 
@@ -43,11 +52,12 @@ task runJar(type: Exec) {
 
     workingDir "${projectDir}/build/libs"
 
-    commandLine 'java', '-jar', "${project.name}.jar"
+    commandLine 'java', '-jar', "${projectDir}/build/libs/${project.name}.jar"
 }
 
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.nativeLib.collect { it }
     // Set up manifest to point the main class to the right class.
     manifest {
         attributes 'Main-Class': mainClassName

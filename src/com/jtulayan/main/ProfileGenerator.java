@@ -10,6 +10,7 @@ import jaci.pathfinder.modifiers.TankModifier;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.nio.file.Path;
@@ -54,9 +55,13 @@ public class ProfileGenerator {
     // File stuff
     private File workingProject;
 
-//    static {
-//        System.loadLibrary("pathfinderjava");
-//    }
+    static {
+        try {
+            NativeUtils.loadLibraryFromJar("/pathfinderjava.dll");
+        } catch (IOException e) {
+            e.printStackTrace(); // This is probably not the best way to handle exception :-)
+        }
+    }
 
     public ProfileGenerator() {
         POINTS = new ArrayList<>();
