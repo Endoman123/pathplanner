@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
     compile files("lib/pathfinder.jar")
+    compile 'com.opencsv:opencsv:4.1'
 }
 
 task run(overwrite: true) {
