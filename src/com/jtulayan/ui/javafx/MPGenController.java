@@ -115,7 +115,7 @@ public class MPGenController {
                 Waypoint newWaypoint = t.getRowValue();
 
                 if (t.getTableColumn() == colWaypointAngle)
-                    backend.editWaypoint(ind, newWaypoint.x, newWaypoint.y, t.getNewValue());
+                    backend.editWaypoint(ind, newWaypoint.x, newWaypoint.y, Pathfinder.d2r(t.getNewValue()));
                 else if (t.getTableColumn() == colWaypointY)
                     backend.editWaypoint(ind, newWaypoint.x, t.getNewValue(), newWaypoint.angle);
                 else
@@ -160,6 +160,8 @@ public class MPGenController {
         waypointsList = new ObservableListWrapper<>(backend.getWaypoints());
 
         tblWaypoints.setItems(waypointsList);
+
+        updateFrontend();
     }
 
     @FXML
@@ -179,7 +181,7 @@ public class MPGenController {
 
             alert.setTitle("Save Failed");
             alert.setHeaderText("Failed to Save Project!");
-            alert.setContentText("An error has occured with saving! Please try again.");
+            alert.setContentText("An error has occurred with saving! Please try again.");
 
             alert.showAndWait();
         } else if (backend.hasWorkingProject()) {
@@ -188,7 +190,39 @@ public class MPGenController {
     }
 
     @FXML
+    private void showOpenDialog() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setTitle("Open Project");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Extensive Markup Language", "*.xml")
+        );
+
+        File result = fileChooser.showOpenDialog(root.getScene().getWindow());
+
+        if (result != null && !backend.loadProject(result)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+
+            alert.setTitle("Open Failed");
+            alert.setHeaderText("Failed to Open Project!");
+            alert.setContentText("An error has occurred with loading! Please try again.");
+
+            alert.showAndWait();
+        } else if (backend.hasWorkingProject()) {
+            tblWaypoints.refresh();
+            backend.updateTrajectories();
+
+            updateFrontend();
+
+            mnuFileSave.setDisable(false);
+        }
+    }
+
+    @FXML
     private void save() {
+        updateBackend();
+
         if (!backend.saveWorkingProject()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
 
@@ -324,18 +358,14 @@ public class MPGenController {
 
         result.ifPresent((ButtonType t) -> {
             if (t == ButtonType.OK) {
-                backend.resetValues();
                 backend.clearWorkingFiles();
-
-                txtTimeStep.setText("" + backend.getTimeStep());
-                txtVelocity.setText("" + backend.getVelocity());
-                txtAcceleration.setText("" + backend.getAcceleration());
-                txtJerk.setText("" + backend.getJerk());
-                txtWheelBaseW.setText("" + backend.getWheelBaseW());
-                txtWheelBaseD.setText("" + backend.getWheelBaseD());
+                backend.resetValues();
+                backend.clearPoints();
 
                 choDriveBase.setValue("Tank");
                 choFitMethod.setValue("Cubic");
+
+                updateFrontend();
 
                 mnuFileSave.setDisable(true);
             }
@@ -343,13 +373,30 @@ public class MPGenController {
     }
 
     @FXML
-    private void synchronizeTextData() {
+    private void updateBackend() {
         backend.setTimeStep(Double.parseDouble(txtTimeStep.getText().trim()));
         backend.setVelocity(Double.parseDouble(txtVelocity.getText().trim()));
         backend.setAcceleration(Double.parseDouble(txtAcceleration.getText().trim()));
         backend.setJerk(Double.parseDouble(txtJerk.getText().trim()));
         backend.setWheelBaseW(Double.parseDouble(txtWheelBaseW.getText().trim()));
         backend.setWheelBaseD(Double.parseDouble(txtWheelBaseD.getText().trim()));
+    }
+
+    /**
+     * Updates all fields and views in the UI.
+     */
+    private void updateFrontend() {
+        txtTimeStep.setText("" + backend.getTimeStep());
+        txtVelocity.setText("" + backend.getVelocity());
+        txtAcceleration.setText("" + backend.getAcceleration());
+        txtJerk.setText("" + backend.getJerk());
+        txtWheelBaseW.setText("" + backend.getWheelBaseW());
+        txtWheelBaseD.setText("" + backend.getWheelBaseD());
+
+        tblWaypoints.refresh();
+
+        repopulatePosChart();
+        repopulateVelChart();
     }
 
     @FXML
@@ -370,7 +417,7 @@ public class MPGenController {
 
             return false;
         } else {
-            synchronizeTextData();
+            updateBackend();
 
             backend.updateTrajectories();
 
@@ -399,70 +446,75 @@ public class MPGenController {
     }
 
     private void repopulatePosChart() {
-        SegmentSeries
-            fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
-            fr = new SegmentSeries(backend.getFrontRightTrajectory());
-
-        XYChart.Series<Double, Double>
-            flSeries = fl.getPositionSeries(),
-            frSeries = fr.getPositionSeries();
-
         // Clear data from position graph
         chtPosition.getData().clear();
 
-        if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
+        if (backend.getWaypointsSize() > 1) {
             SegmentSeries
-                    bl = new SegmentSeries(backend.getBackLeftTrajectory()),
-                    br = new SegmentSeries(backend.getBackRightTrajectory());
+                    fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
+                    fr = new SegmentSeries(backend.getFrontRightTrajectory());
 
             XYChart.Series<Double, Double>
-                    blSeries = bl.getPositionSeries(),
-                    brSeries = br.getPositionSeries();
+                    flSeries = fl.getPositionSeries(),
+                    frSeries = fr.getPositionSeries();
 
-            chtPosition.getData().addAll(blSeries, brSeries, flSeries, frSeries);
-            flSeries.getNode().setStyle("-fx-stroke: red");
-            frSeries.getNode().setStyle("-fx-stroke: red");
-            blSeries.getNode().setStyle("-fx-stroke: blue");
-            brSeries.getNode().setStyle("-fx-stroke: blue");
-        } else {
-            chtPosition.getData().addAll(flSeries, frSeries);
+            if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
+                SegmentSeries
+                        bl = new SegmentSeries(backend.getBackLeftTrajectory()),
+                        br = new SegmentSeries(backend.getBackRightTrajectory());
 
-            flSeries.getNode().setStyle("-fx-stroke: magenta");
-            frSeries.getNode().setStyle("-fx-stroke: magenta");
+                XYChart.Series<Double, Double>
+                        blSeries = bl.getPositionSeries(),
+                        brSeries = br.getPositionSeries();
+
+                chtPosition.getData().addAll(blSeries, brSeries, flSeries, frSeries);
+                flSeries.getNode().setStyle("-fx-stroke: red");
+                frSeries.getNode().setStyle("-fx-stroke: red");
+                blSeries.getNode().setStyle("-fx-stroke: blue");
+                brSeries.getNode().setStyle("-fx-stroke: blue");
+            } else {
+                chtPosition.getData().addAll(flSeries, frSeries);
+
+                flSeries.getNode().setStyle("-fx-stroke: magenta");
+                frSeries.getNode().setStyle("-fx-stroke: magenta");
+            }
         }
     }
 
     private void repopulateVelChart() {
-        SegmentSeries
-                fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
-                fr = new SegmentSeries(backend.getFrontRightTrajectory());
-
-        XYChart.Series<Double, Double>
-                flSeries = fl.getVelocitySeries(),
-                frSeries = fr.getVelocitySeries();
-
         // Clear data from velocity graph
         chtVelocity.getData().clear();
-        chtVelocity.getData().addAll(flSeries, frSeries);
 
-        if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
+        if (backend.getWaypointsSize() > 1) {
             SegmentSeries
-                    bl = new SegmentSeries(backend.getBackLeftTrajectory()),
-                    br = new SegmentSeries(backend.getBackRightTrajectory());
+                    fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
+                    fr = new SegmentSeries(backend.getFrontRightTrajectory());
 
             XYChart.Series<Double, Double>
-                    blSeries = bl.getVelocitySeries(),
-                    brSeries = br.getVelocitySeries();
+                    flSeries = fl.getVelocitySeries(),
+                    frSeries = fr.getVelocitySeries();
 
-            chtVelocity.getData().addAll(blSeries, brSeries);
+            chtVelocity.getData().addAll(flSeries, frSeries);
 
-            flSeries.setName("Front Left Trajectory");
-            frSeries.setName("Front Right Trajectory");
-            blSeries.setName("Back Left Trajectory");
-            brSeries.setName("Back Right Trajectory");
-        } else {
-            flSeries.setName("Left Trajectory");
-            frSeries.setName("Right Trajectory");
+            if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
+                SegmentSeries
+                        bl = new SegmentSeries(backend.getBackLeftTrajectory()),
+                        br = new SegmentSeries(backend.getBackRightTrajectory());
+
+                XYChart.Series<Double, Double>
+                        blSeries = bl.getVelocitySeries(),
+                        brSeries = br.getVelocitySeries();
+
+                chtVelocity.getData().addAll(blSeries, brSeries);
+
+                flSeries.setName("Front Left Trajectory");
+                frSeries.setName("Front Right Trajectory");
+                blSeries.setName("Back Left Trajectory");
+                brSeries.setName("Back Right Trajectory");
+            } else {
+                flSeries.setName("Left Trajectory");
+                frSeries.setName("Right Trajectory");
+            }
         }
     }
 }
