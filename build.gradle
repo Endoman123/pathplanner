@@ -30,9 +30,6 @@ configurations {
 
 dependencies {
     compile fileTree(dir: 'lib', include: '*.jar')
-    nativeLib fileTree(dir: 'lib', include: '*.dll')
-    nativeLib fileTree(dir: 'lib', include: '*.exp')
-    nativeLib fileTree(dir: 'lib', include: '*.lib')
     compile 'com.opencsv:opencsv:4.1'
     compile 'xerces:xercesImpl:2.11.0'
 }

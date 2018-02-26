@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -57,14 +56,6 @@ public class ProfileGenerator {
     // File stuff
     private DocumentBuilderFactory dbFactory;
     private File workingProject;
-
-    static {
-        try {
-            NativeUtils.loadLibraryFromJar("/pathfinderjava.dll");
-        } catch (IOException e) {
-            e.printStackTrace(); // This is probably not the best way to handle exception :-)
-        }
-    }
 
     public ProfileGenerator() {
         POINTS = new ArrayList<>();

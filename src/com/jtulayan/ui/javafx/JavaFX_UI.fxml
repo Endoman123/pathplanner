@@ -130,9 +130,9 @@
                               <Button fx:id="btnGenerateTrajectories" alignment="CENTER" layoutX="142.0" layoutY="32.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#generateTrajectories" prefHeight="27.0" prefWidth="187.0" text="Generate Trajectories" textAlignment="CENTER" GridPane.columnSpan="3" GridPane.rowIndex="2" />
                               <TableView fx:id="tblWaypoints" editable="true" prefHeight="160.0" prefWidth="304.0" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                 <columns>
-                                  <TableColumn fx:id="colWaypointX" prefWidth="107.0" sortable="false" text="X" />
-                                  <TableColumn fx:id="colWaypointY" prefWidth="108.0" sortable="false" text="Y" />
-                                    <TableColumn fx:id="colWaypointAngle" prefWidth="106.0" sortable="false" text="Angle" />
+                                  <TableColumn fx:id="colWaypointX" prefWidth="102.0" resizable="false" sortable="false" text="X" />
+                                  <TableColumn fx:id="colWaypointY" prefWidth="102.0" resizable="false" sortable="false" text="Y" />
+                                    <TableColumn fx:id="colWaypointAngle" prefWidth="102.0" resizable="false" sortable="false" text="Angle" />
                                 </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
