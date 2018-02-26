@@ -22,14 +22,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 
 public class MPGenController {
@@ -84,6 +87,10 @@ public class MPGenController {
             btnAddPoint,
             btnClearPoints,
             btnDeleteLast;
+
+    @FXML
+    private ImageView
+        imgMap;
 
     private ObservableList<Waypoint> waypointsList;
     private ObservableList<XYChart.Series<Double, Double>> trajPosList;
@@ -373,6 +380,31 @@ public class MPGenController {
     }
 
     @FXML
+    private void setMap() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setTitle("Change Position Map");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter(
+                    "Image Files",
+                    "*.jpg",
+                        "*.png"
+                )
+        );
+
+        File result = fileChooser.showOpenDialog(root.getScene().getWindow());
+
+        if (result != null && result.exists() && !result.isDirectory()) {
+            try {
+                updateMap(result);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
     private void updateBackend() {
         backend.setTimeStep(Double.parseDouble(txtTimeStep.getText().trim()));
         backend.setVelocity(Double.parseDouble(txtVelocity.getText().trim()));
@@ -449,6 +481,8 @@ public class MPGenController {
         // Clear data from position graph
         chtPosition.getData().clear();
 
+        drawField();
+
         if (backend.getWaypointsSize() > 1) {
             SegmentSeries
                     fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
@@ -516,5 +550,16 @@ public class MPGenController {
                 frSeries.setName("Right Trajectory");
             }
         }
+    }
+
+    private void updateMap(File image) throws IOException {
+        imgMap.setImage(new Image(new FileInputStream(image)));
+    }
+
+    private void drawField() {
+        XYChart.Series<Double, Double>
+            cubeA = new XYChart.Series<>();
+
+        chtPosition.getData().addAll(cubeA);
     }
 }
