@@ -77,7 +77,7 @@ public class MPGenController {
             mnuFileNew,
             mnuFileSave,
             mnuFileSaveAs,
-            mnuFileExportAsCSV,
+            mnuFileExport,
             mnuFileExit;
 
     @FXML
@@ -290,22 +290,23 @@ public class MPGenController {
     }
 
     @FXML
-    private void showExportAsCSVDialog() {
+    private void showExportDialog() {
         FileChooser fileChooser = new FileChooser();
 
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        fileChooser.setTitle("Export as CSV");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Comma Separated Values", "*.csv")
+        fileChooser.setTitle("Export");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Comma Separated Values", "*.csv"),
+                new FileChooser.ExtensionFilter("Binary Trajectory File", "*.traj")
         );
 
         File result = fileChooser.showSaveDialog(root.getScene().getWindow());
 
         if (result != null && generateTrajectories()) {
-            String parentPath = result.getAbsolutePath();
-            parentPath = parentPath.substring(0, parentPath.lastIndexOf(".csv"));
+            String parentPath = result.getAbsolutePath(), ext = parentPath.substring(parentPath.lastIndexOf("."));
+            parentPath = parentPath.substring(0, parentPath.lastIndexOf(ext));
 
-            backend.exportTrajectoriesCSV(new File(parentPath));
+            backend.exportTrajectories(new File(parentPath), ext);
         }
     }
 

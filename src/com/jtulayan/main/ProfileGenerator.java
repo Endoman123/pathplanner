@@ -139,37 +139,46 @@ public class ProfileGenerator {
         }
     }
 
-    public boolean exportTrajectoriesCSV(File parentPath) {
-        boolean finished = true;
-
-        try {
-            updateTrajectories();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void exportTrajectories(File parentPath, String ext) {
+        updateTrajectories();
 
         File dir = parentPath.getParentFile();
 
         if (dir != null && !dir.exists() && dir.isDirectory()) {
             if (!dir.mkdirs())
-                return false;
+                return;
         }
 
-        try {
-            Pathfinder.writeToCSV(new File(parentPath + "_source_detailed.csv"), source);
+        switch (ext) {
+            case ".csv":
+                Pathfinder.writeToCSV(new File(parentPath + "_source_detailed.csv"), source);
 
-            if (driveBase == DriveBase.SWERVE) {
+                if (driveBase == DriveBase.SWERVE) {
+                    Pathfinder.writeToCSV(new File(parentPath + "_fl_detailed.csv"), fl);
+                    Pathfinder.writeToCSV(new File(parentPath + "_fr_detailed.csv"), fr);
+                    Pathfinder.writeToCSV(new File(parentPath + "_bl_detailed.csv"), bl);
+                    Pathfinder.writeToCSV(new File(parentPath + "_br_detailed.csv"), br);
+                } else {
+                    Pathfinder.writeToCSV(new File(parentPath + "_left_detailed.csv"), fl);
+                    Pathfinder.writeToCSV(new File(parentPath + "_right_detailed.csv"), fr);
+                }
+            break;
+            case ".traj":
+                Pathfinder.writeToFile(new File(parentPath + "_source_detailed.traj"), source);
 
-            } else {
-                Pathfinder.writeToCSV(new File(parentPath + "_left_detailed.csv"), fl);
-                Pathfinder.writeToCSV(new File(parentPath + "_right_detailed.csv"), fr);
-            }
-        } catch (Exception e) {
-            finished = false;
+                if (driveBase == DriveBase.SWERVE) {
+                    Pathfinder.writeToFile(new File(parentPath + "_fl_detailed.traj"), fl);
+                    Pathfinder.writeToFile(new File(parentPath + "_fr_detailed.traj"), fr);
+                    Pathfinder.writeToFile(new File(parentPath + "_bl_detailed.traj"), bl);
+                    Pathfinder.writeToFile(new File(parentPath + "_br_detailed.traj"), br);
+                } else {
+                    Pathfinder.writeToFile(new File(parentPath + "_left_detailed.traj"), fl);
+                    Pathfinder.writeToFile(new File(parentPath + "_right_detailed.traj"), fr);
+                }
+            break;
+            default:
+                throw new IllegalArgumentException("Invalid file extension");
         }
-
-        return finished;
     }
 
     public void loadProject(File path) throws IOException, ParserConfigurationException, SAXException {

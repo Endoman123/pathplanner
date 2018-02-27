@@ -49,18 +49,16 @@
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator></MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-                  <Menu mnemonicParsing="false" text="Import">
-                     <items>
-                        <MenuItem fx:id="btnExportCSV1" mnemonicParsing="false" onAction="#showExportAsCSVDialog" text="Comma Separated Values" />
-                        <MenuItem mnemonicParsing="false" text="Java Array" />
-                     </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Export">
-                    <items>
-                      <MenuItem fx:id="btnExportCSV" mnemonicParsing="false" onAction="#showExportAsCSVDialog" text="Comma Separated Values" />
-                  <MenuItem mnemonicParsing="false" text="Java Array" />
-                    </items>
-                  </Menu>
+                  <MenuItem fx:id="btnImport" mnemonicParsing="false" text="Import...">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+                <MenuItem fx:id="btnExport" mnemonicParsing="false" onAction="#showExportDialog" text="Export...">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
                 <MenuItem fx:id="mnuEditSetBG" mnemonicParsing="false" onAction="#showSettingsDialog" text="Settings...">
                      <accelerator>
