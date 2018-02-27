@@ -34,6 +34,7 @@ import javafx.util.converter.DoubleStringConverter;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -173,14 +174,7 @@ public class MPGenController {
 
         tblWaypoints.setItems(waypointsList);
 
-        try {
-            setOverlayImg(properties.getProperty("ui.overlayDir", ""));
-        } catch (Exception e) {
-            Alert a = AlertFactory.createExceptionAlert(e);
-            a.showAndWait();
-        }
-
-        updateFrontend();
+        updateOverlayImg();
     }
 
     @FXML
@@ -217,11 +211,12 @@ public class MPGenController {
                     properties.setProperty("ui.overlayDir", overlayDir);
                     properties.setProperty("ui.units", units);
 
+                    updateOverlayImg();
                     PropWrapper.storeProperties();
                 } catch (IOException e) {
-                    Alert aExc = AlertFactory.createExceptionAlert(e);
+                    Alert alert = AlertFactory.createExceptionAlert(e);
 
-                    aExc.showAndWait();
+                    alert.showAndWait();
                 }
             }
         });
@@ -245,7 +240,9 @@ public class MPGenController {
 
                 mnuFileSave.setDisable(false);
             } catch (Exception e) {
-                AlertFactory.createExceptionAlert(e);
+                Alert alert = AlertFactory.createExceptionAlert(e);
+
+                alert.showAndWait();
         }
     }
 
@@ -272,7 +269,9 @@ public class MPGenController {
 
                 mnuFileSave.setDisable(false);
             } catch (Exception e) {
-                AlertFactory.createExceptionAlert(e);
+                Alert alert = AlertFactory.createExceptionAlert(e);
+
+                alert.showAndWait();
             }
         }
     }
@@ -284,7 +283,9 @@ public class MPGenController {
         try {
             backend.saveWorkingProject();
         } catch (Exception e) {
-            AlertFactory.createExceptionAlert(e);
+            Alert alert = AlertFactory.createExceptionAlert(e);
+
+            alert.showAndWait();
         }
     }
 
@@ -576,8 +577,18 @@ public class MPGenController {
         }
     }
 
-    private void setOverlayImg(String overlayDir) throws IOException {
-        imgOverlay.setImage(new Image(new FileInputStream(overlayDir)));
+    private void updateOverlayImg() {
+        String dir = properties.getProperty("ui.overlayDir", "");
+
+        if (!dir.isEmpty()) {
+            try {
+                imgOverlay.setImage(new Image(new FileInputStream(dir)));
+            } catch (FileNotFoundException e) {
+                Alert alert = AlertFactory.createExceptionAlert(e);
+
+                alert.showAndWait();
+            }
+        }
     }
 
     private void drawField() {
