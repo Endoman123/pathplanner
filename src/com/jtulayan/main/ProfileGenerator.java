@@ -9,10 +9,15 @@ import jaci.pathfinder.Trajectory.FitMethod;
 import jaci.pathfinder.Waypoint;
 import jaci.pathfinder.modifiers.SwerveModifier;
 import jaci.pathfinder.modifiers.TankModifier;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -63,9 +68,7 @@ public class ProfileGenerator {
         resetValues();
     }
 
-    public boolean saveProjectAs(File path) {
-        boolean finished = true;
-
+    public void saveProjectAs(File path) throws IOException, ParserConfigurationException {
         if (!path.getAbsolutePath().endsWith("." + PROJECT_EXTENSION))
             path = new File(path + "." + PROJECT_EXTENSION);
 
@@ -73,82 +76,67 @@ public class ProfileGenerator {
 
         if (dir != null && !dir.exists() && dir.isDirectory()) {
             if (!dir.mkdirs())
-                return false;
+                return;
         }
 
         if (path.exists() && !path.delete())
-            return false;
+            return;
 
         workingProject = path;
 
-        return saveWorkingProject();
+        saveWorkingProject();
     }
 
-    public boolean saveWorkingProject() {
+    public void saveWorkingProject() throws IOException, ParserConfigurationException {
         boolean finished = true;
         if (workingProject != null) {
+            // Create document
+            DocumentBuilder db = dbFactory.newDocumentBuilder();
+            Document dom = db.newDocument();
 
-//            if (workingProject.exists() && !workingProject.delete()) {
-//                System.out.println("ha");
-//                return false;
-//            }
+            Element trajectoryEle = dom.createElement("Trajectory");
 
-            try {
-                // Create document
-                DocumentBuilder db = dbFactory.newDocumentBuilder();
-                Document dom = db.newDocument();
+            trajectoryEle.setAttribute("dt", "" + timeStep);
+            trajectoryEle.setAttribute("velocity", "" + velocity);
+            trajectoryEle.setAttribute("acceleration", "" + acceleration);
+            trajectoryEle.setAttribute("jerk", "" + jerk);
+            trajectoryEle.setAttribute("wheelBaseW", "" + wheelBaseW);
+            trajectoryEle.setAttribute("wheelBaseD", "" + wheelBaseD);
+            trajectoryEle.setAttribute("fitMethod", "" + fitMethod.toString());
+            trajectoryEle.setAttribute("driveBase", "" + driveBase.toString());
 
-                Element trajectoryEle = dom.createElement("Trajectory");
+            dom.appendChild(trajectoryEle);
 
-                trajectoryEle.setAttribute("dt", "" + timeStep);
-                trajectoryEle.setAttribute("velocity", "" + velocity);
-                trajectoryEle.setAttribute("acceleration", "" + acceleration);
-                trajectoryEle.setAttribute("jerk", "" + jerk);
-                trajectoryEle.setAttribute("wheelBaseW", "" + wheelBaseW);
-                trajectoryEle.setAttribute("wheelBaseD", "" + wheelBaseD);
-                trajectoryEle.setAttribute("fitMethod", "" + fitMethod.toString());
-                trajectoryEle.setAttribute("driveBase", "" + driveBase.toString());
+            for (Waypoint w : POINTS) {
+                Element waypointEle = dom.createElement("Waypoint");
+                Element xEle = dom.createElement("X");
+                Element yEle = dom.createElement("Y");
+                Element angleEle = dom.createElement("Angle");
+                Text xText = dom.createTextNode("" + w.x);
+                Text yText = dom.createTextNode("" + w.y);
+                Text angleText = dom.createTextNode("" + w.angle);
 
-                dom.appendChild(trajectoryEle);
+                xEle.appendChild(xText);
+                yEle.appendChild(yText);
+                angleEle.appendChild(angleText);
 
-                for (Waypoint w : POINTS) {
-                    Element waypointEle = dom.createElement("Waypoint");
-                    Element xEle = dom.createElement("X");
-                    Element yEle = dom.createElement("Y");
-                    Element angleEle = dom.createElement("Angle");
-                    Text xText = dom.createTextNode("" + w.x);
-                    Text yText = dom.createTextNode("" + w.y);
-                    Text angleText = dom.createTextNode("" + w.angle);
+                waypointEle.appendChild(xEle);
+                waypointEle.appendChild(yEle);
+                waypointEle.appendChild(angleEle);
 
-                    xEle.appendChild(xText);
-                    yEle.appendChild(yText);
-                    angleEle.appendChild(angleText);
-
-                    waypointEle.appendChild(xEle);
-                    waypointEle.appendChild(yEle);
-                    waypointEle.appendChild(angleEle);
-
-                    trajectoryEle.appendChild(waypointEle);
-                }
-
-                OutputFormat format = new OutputFormat(dom);
-
-                format.setIndenting(true);
-
-                XMLSerializer xmlSerializer = new XMLSerializer(
-                    new FileOutputStream(workingProject), format
-                );
-
-                xmlSerializer.serialize(dom);
-            } catch (Exception e) {
-                finished = false;
-                e.printStackTrace();
+                trajectoryEle.appendChild(waypointEle);
             }
-        } else {
-            finished = false;
-        }
 
-        return finished;
+            OutputFormat format = new OutputFormat(dom);
+
+            format.setIndenting(true);
+
+            XMLSerializer xmlSerializer = new XMLSerializer(
+                    new FileOutputStream(workingProject), format
+            );
+
+            xmlSerializer.serialize(dom);
+        }
     }
 
     public boolean exportTrajectoriesCSV(File parentPath) {
@@ -184,60 +172,51 @@ public class ProfileGenerator {
         return finished;
     }
 
-    public boolean loadProject(File path) {
+    public void loadProject(File path) throws IOException, ParserConfigurationException, SAXException {
         boolean finished = true;
 
         if (!path.exists() || path.isDirectory())
-            return false;
+            return;
 
         if (path.getAbsolutePath().endsWith("." + PROJECT_EXTENSION)) {
-            try {
-                DocumentBuilder db = dbFactory.newDocumentBuilder();
+            DocumentBuilder db = dbFactory.newDocumentBuilder();
 
-                Document dom = db.parse(path);
+            Document dom = db.parse(path);
 
-                Element docEle = dom.getDocumentElement();
+            Element docEle = dom.getDocumentElement();
 
-                timeStep = Double.parseDouble(docEle.getAttribute("dt"));
-                velocity = Double.parseDouble(docEle.getAttribute("velocity"));
-                acceleration = Double.parseDouble(docEle.getAttribute("acceleration"));
-                jerk = Double.parseDouble(docEle.getAttribute("jerk"));
-                wheelBaseW = Double.parseDouble(docEle.getAttribute("wheelBaseW"));
-                wheelBaseD = Double.parseDouble(docEle.getAttribute("wheelBaseD"));
+            timeStep = Double.parseDouble(docEle.getAttribute("dt"));
+            velocity = Double.parseDouble(docEle.getAttribute("velocity"));
+            acceleration = Double.parseDouble(docEle.getAttribute("acceleration"));
+            jerk = Double.parseDouble(docEle.getAttribute("jerk"));
+            wheelBaseW = Double.parseDouble(docEle.getAttribute("wheelBaseW"));
+            wheelBaseD = Double.parseDouble(docEle.getAttribute("wheelBaseD"));
 
-                driveBase = DriveBase.valueOf(docEle.getAttribute("driveBase"));
-                fitMethod = FitMethod.valueOf(docEle.getAttribute("fitMethod"));
+            driveBase = DriveBase.valueOf(docEle.getAttribute("driveBase"));
+            fitMethod = FitMethod.valueOf(docEle.getAttribute("fitMethod"));
 
-                NodeList waypointEleList = docEle.getElementsByTagName("Waypoint");
+            NodeList waypointEleList = docEle.getElementsByTagName("Waypoint");
 
-                if (waypointEleList != null && waypointEleList.getLength() > 0) {
-                    POINTS.clear();
-                    for (int i = 0; i < waypointEleList.getLength(); i++) {
-                        Element waypointEle = (Element) waypointEleList.item(i);
+            if (waypointEleList != null && waypointEleList.getLength() > 0) {
+                POINTS.clear();
+                for (int i = 0; i < waypointEleList.getLength(); i++) {
+                    Element waypointEle = (Element) waypointEleList.item(i);
 
-                        String
+                    String
                             xText = waypointEle.getElementsByTagName("X").item(0).getTextContent(),
                             yText = waypointEle.getElementsByTagName("Y").item(0).getTextContent(),
                             angleText = waypointEle.getElementsByTagName("Angle").item(0).getTextContent();
 
-                        POINTS.add(new Waypoint(
+                    POINTS.add(new Waypoint(
                             Double.parseDouble(xText),
                             Double.parseDouble(yText),
                             Double.parseDouble(angleText)
-                        ));
-                    }
+                    ));
                 }
-
-                workingProject = path;
-            } catch (Exception e) {
-                e.printStackTrace();
-                finished = false;
             }
-        } else {
-            finished = false;
-        }
 
-        return finished;
+            workingProject = path;
+        }
     }
 
     public void addPoint(double x, double y, double angle) {

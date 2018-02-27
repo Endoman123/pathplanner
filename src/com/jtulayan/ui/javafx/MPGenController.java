@@ -1,6 +1,7 @@
 package com.jtulayan.ui.javafx;
 
 import com.jtulayan.main.ProfileGenerator;
+import com.jtulayan.main.PropWrapper;
 import com.sun.javafx.collections.ObservableListWrapper;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
@@ -12,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -24,7 +26,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
@@ -91,14 +92,17 @@ public class MPGenController {
 
     @FXML
     private ImageView
-        imgMap;
+            imgOverlay;
 
     private ObservableList<Waypoint> waypointsList;
     private ObservableList<XYChart.Series<Double, Double>> trajPosList;
 
+    private Properties properties;
+
     @FXML
     public void initialize() {
         backend = new ProfileGenerator();
+        properties = PropWrapper.getProperties();
 
         choDriveBase.setItems(FXCollections.observableArrayList("Tank", "Swerve"));
         choDriveBase.setValue(choDriveBase.getItems().get(0));
@@ -169,7 +173,58 @@ public class MPGenController {
 
         tblWaypoints.setItems(waypointsList);
 
+        try {
+            setOverlayImg(properties.getProperty("ui.overlayDir", ""));
+        } catch (Exception e) {
+            Alert a = AlertFactory.createExceptionAlert(e);
+            a.showAndWait();
+        }
+
         updateFrontend();
+    }
+
+    @FXML
+    private void showSettingsDialog() {
+        Dialog<Boolean> settingsDialog = new Dialog<>();
+        Optional<Boolean> result = null;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SettingsDialog.fxml"));
+            settingsDialog.setDialogPane(loader.load());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Some header stuff
+        settingsDialog.setTitle("Settings");
+        settingsDialog.setHeaderText("Manage settings");
+
+        settingsDialog.setResultConverter((ButtonType buttonType) ->
+                buttonType.getButtonData() == ButtonBar.ButtonData.APPLY
+        );
+
+        // Wait for the result
+        result = settingsDialog.showAndWait();
+
+        result.ifPresent((Boolean b) -> {
+            if (b) {
+                try {
+                    DialogPane pane = settingsDialog.getDialogPane();
+
+                    String overlayDir = ((TextField) pane.lookup("#txtOverlayDir")).getText().trim();
+                    String units = ((ChoiceBox<String>) pane.lookup("#choUnits")).getValue().trim();
+
+                    properties.setProperty("ui.overlayDir", overlayDir);
+                    properties.setProperty("ui.units", units);
+
+                    PropWrapper.storeProperties();
+                } catch (IOException e) {
+                    Alert aExc = AlertFactory.createExceptionAlert(e);
+
+                    aExc.showAndWait();
+                }
+            }
+        });
     }
 
     @FXML
@@ -184,16 +239,13 @@ public class MPGenController {
 
         File result = fileChooser.showSaveDialog(root.getScene().getWindow());
 
-        if (result != null && !backend.saveProjectAs(result)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+        if (result != null)
+            try {
+                backend.saveProjectAs(result);
 
-            alert.setTitle("Save Failed");
-            alert.setHeaderText("Failed to Save Project!");
-            alert.setContentText("An error has occurred with saving! Please try again.");
-
-            alert.showAndWait();
-        } else if (backend.hasWorkingProject()) {
-            mnuFileSave.setDisable(false);
+                mnuFileSave.setDisable(false);
+            } catch (Exception e) {
+                AlertFactory.createExceptionAlert(e);
         }
     }
 
@@ -209,21 +261,19 @@ public class MPGenController {
 
         File result = fileChooser.showOpenDialog(root.getScene().getWindow());
 
-        if (result != null && !backend.loadProject(result)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+        if (result != null) {
+            try {
+                backend.loadProject(result);
 
-            alert.setTitle("Open Failed");
-            alert.setHeaderText("Failed to Open Project!");
-            alert.setContentText("An error has occurred with loading! Please try again.");
+                tblWaypoints.refresh();
+                backend.updateTrajectories();
 
-            alert.showAndWait();
-        } else if (backend.hasWorkingProject()) {
-            tblWaypoints.refresh();
-            backend.updateTrajectories();
+                updateFrontend();
 
-            updateFrontend();
-
-            mnuFileSave.setDisable(false);
+                mnuFileSave.setDisable(false);
+            } catch (Exception e) {
+                AlertFactory.createExceptionAlert(e);
+            }
         }
     }
 
@@ -231,14 +281,10 @@ public class MPGenController {
     private void save() {
         updateBackend();
 
-        if (!backend.saveWorkingProject()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-
-            alert.setTitle("Save Failed");
-            alert.setHeaderText("Failed to Save Project!");
-            alert.setContentText("An error has occured with saving! Please try again.");
-
-            alert.showAndWait();
+        try {
+            backend.saveWorkingProject();
+        } catch (Exception e) {
+            AlertFactory.createExceptionAlert(e);
         }
     }
 
@@ -265,7 +311,7 @@ public class MPGenController {
     @FXML
     private void showAddPointDialog() {
         Dialog<Waypoint> waypointDialog = new Dialog<>();
-        ButtonType loginButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
         Optional<Waypoint> result = null;
         GridPane grid = new GridPane();
         TextField
@@ -291,8 +337,8 @@ public class MPGenController {
         waypointDialog.getDialogPane().setContent(grid);
 
         // Add all buttons
-        waypointDialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-        waypointDialog.getDialogPane().lookupButton(loginButtonType).addEventFilter(ActionEvent.ACTION, ae -> {
+        waypointDialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
+        waypointDialog.getDialogPane().lookupButton(addButtonType).addEventFilter(ActionEvent.ACTION, ae -> {
             try {
                 Double.parseDouble(txtWX.getText().trim());
                 Double.parseDouble(txtWY.getText().trim());
@@ -349,6 +395,8 @@ public class MPGenController {
             if (t.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                 backend.clearPoints();
 
+                repopulatePosChart();
+                repopulateVelChart();
                 tblWaypoints.refresh();
             }
         });
@@ -378,31 +426,6 @@ public class MPGenController {
                 mnuFileSave.setDisable(true);
             }
         });
-    }
-
-    @FXML
-    private void setMap() {
-        FileChooser fileChooser = new FileChooser();
-
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        fileChooser.setTitle("Change Position Map");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter(
-                    "Image Files",
-                    "*.jpg",
-                        "*.png"
-                )
-        );
-
-        File result = fileChooser.showOpenDialog(root.getScene().getWindow());
-
-        if (result != null && result.exists() && !result.isDirectory()) {
-            try {
-                updateMap(result);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @FXML
@@ -553,8 +576,8 @@ public class MPGenController {
         }
     }
 
-    private void updateMap(File image) throws IOException {
-        imgMap.setImage(new Image(new FileInputStream(image)));
+    private void setOverlayImg(String overlayDir) throws IOException {
+        imgOverlay.setImage(new Image(new FileInputStream(overlayDir)));
     }
 
     private void drawField() {

@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class Client extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Pane root = FXMLLoader.load(getClass().getResource("JavaFX_UI.fxml"));
+        Pane root = FXMLLoader.load(getClass().getResource("MainFXUI.fxml"));
         primaryStage.setTitle("Mercury Motion Profile Generator");
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);

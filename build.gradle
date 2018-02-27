@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-def mainClassName = "com.jtulayan.ui.javafx.Client"
+mainClassName = "com.jtulayan.ui.javafx.Client"
 
 sourceSets {
     main.java {
@@ -22,40 +22,14 @@ repositories {
     }
 }
 
-configurations {
-    nativeLib {
-        description = "Collection of native files needed for pathfinder"
-    }
-}
-
 dependencies {
     compile fileTree(dir: 'lib', include: '*.jar')
     compile 'com.opencsv:opencsv:4.1'
     compile 'xerces:xercesImpl:2.11.0'
 }
 
-task run(overwrite: true) {
-    group = null
-
-    doLast {
-        println "Use :runJar instead."
-    }
-}
-
-task runJar(type: Exec) {
-    group = "application"
-    description = "Runs the jarfile by building it and running it inside /build/libs"
-
-    dependsOn("jar")
-
-    workingDir "${projectDir}/build/libs"
-
-    commandLine 'java', '-jar', "${projectDir}/build/libs/${project.name}.jar"
-}
-
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.nativeLib.collect { it }
     // Set up manifest to point the main class to the right class.
     manifest {
         attributes 'Main-Class': mainClassName
