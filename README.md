@@ -3,7 +3,7 @@ Generate Motion Profiles to follow with a Talon SRX
  
 ![alt text][logo]
 
-[logo]: https://github.com/vannaka/Motion_Profile_Generator/blob/master/images/MotionWindow.PNG
+[logo]: https://github.com/Endoman123/motion-profile-generator/blob/master/images/motionwindow.jpg
 
 ## Motion Variables
 ---
