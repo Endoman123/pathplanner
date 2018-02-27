@@ -1,5 +1,7 @@
 # Motion Profile Generator
-Generate Motion Profiles to follow with a Talon SRX
+Generate Motion Profiles to follow with a Talon SRX.
+
+This is a program originally based off of Vannaka's Motion Profile Generator.
  
 ![alt text][logo]
 
@@ -81,7 +83,7 @@ Generate Motion Profiles to follow with a Talon SRX
 
 ![alt text][logo2]
 
-[logo2]: https://github.com/vannaka/Motion_Profile_Generator/blob/master/images/MenuBar.PNG
+[logo2]: https://github.com/Endoman123/motion-profile-generator/blob/master/images/menubar.jpg
 
 - **File Menu**
 	- New Profile
@@ -106,4 +108,4 @@ Generate Motion Profiles to follow with a Talon SRX
 ---
 
 - [Jaci](https://github.com/JacisNonsense/Pathfinder) for the path generation code
-- [KHEngineering](https://github.com/KHEngineering/SmoothPathPlanner) for the graph code
+- [Vannaka](https://github.com/vannaka/Motion_Profile_Generator) for the original MP generator
