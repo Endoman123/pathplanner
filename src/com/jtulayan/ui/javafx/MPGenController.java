@@ -175,6 +175,8 @@ public class MPGenController {
         tblWaypoints.setItems(waypointsList);
 
         updateOverlayImg();
+
+        updateFrontend();
     }
 
     @FXML
@@ -306,7 +308,13 @@ public class MPGenController {
             String parentPath = result.getAbsolutePath(), ext = parentPath.substring(parentPath.lastIndexOf("."));
             parentPath = parentPath.substring(0, parentPath.lastIndexOf(ext));
 
-            backend.exportTrajectories(new File(parentPath), ext);
+            try {
+                backend.exportTrajectories(new File(parentPath), ext);
+            } catch (Pathfinder.GenerationException e) {
+                Alert alert = AlertFactory.createExceptionAlert(e, "Invalid Trajectory!");
+
+                alert.showAndWait();
+            }
         }
     }
 
@@ -477,7 +485,14 @@ public class MPGenController {
         } else {
             updateBackend();
 
-            backend.updateTrajectories();
+            try {
+                backend.updateTrajectories();
+            } catch (Pathfinder.GenerationException e) {
+                Alert alert = AlertFactory.createExceptionAlert(e, "Invalid Trajectory!");
+
+                alert.showAndWait();
+                return false;
+            }
 
             repopulatePosChart();
             repopulateVelChart();

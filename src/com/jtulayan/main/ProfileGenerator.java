@@ -139,7 +139,7 @@ public class ProfileGenerator {
         }
     }
 
-    public void exportTrajectories(File parentPath, String ext) {
+    public void exportTrajectories(File parentPath, String ext) throws Pathfinder.GenerationException{
         updateTrajectories();
 
         File dir = parentPath.getParentFile();
@@ -284,7 +284,7 @@ public class ProfileGenerator {
     /**
      * Updates the trajectories
      */
-    public void updateTrajectories() {
+    public void updateTrajectories() throws Pathfinder.GenerationException {
         Config config = new Config(fitMethod, Config.SAMPLES_HIGH, timeStep, velocity, acceleration, jerk);
         source = Pathfinder.generate(POINTS.toArray(new Waypoint[1]), config);
 
