@@ -34,7 +34,7 @@ public class SettingsDialogController {
 
         properties = PropWrapper.getProperties();
 
-        txtOverlayDir.setText(properties.getProperty("ui.overlayDir", ""));
+        txtOverlayDir.setText(properties.getProperty("ui.overlayDir", "Imperial"));
         choUnits.setValue(properties.getOrDefault("ui.units", "Imperial").toString());
     }
 
