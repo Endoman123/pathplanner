@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -175,7 +176,6 @@ public class MPGenController {
         tblWaypoints.setItems(waypointsList);
 
         updateOverlayImg();
-
         updateFrontend();
     }
 
@@ -214,6 +214,7 @@ public class MPGenController {
                     properties.setProperty("ui.units", units);
 
                     updateOverlayImg();
+                    updateUnits();
                     PropWrapper.storeProperties();
                 } catch (IOException e) {
                     Alert alert = AlertFactory.createExceptionAlert(e);
@@ -604,6 +605,22 @@ public class MPGenController {
 
                 alert.showAndWait();
             }
+        }
+    }
+
+    private void updateUnits() {
+        switch (properties.getProperty("ui.units", "Imperial")) {
+            case "Imperial":
+                ((NumberAxis) chtPosition.getXAxis().lookup("NumberAxis")).setUpperBound(32);
+                ((NumberAxis) chtPosition.getYAxis().lookup("NumberAxis")).setUpperBound(27);
+
+                break;
+            case "Metric":
+                ((NumberAxis) chtPosition.getXAxis().lookup("NumberAxis")).setUpperBound(10);
+                ((NumberAxis) chtPosition.getYAxis().lookup("NumberAxis")).setUpperBound(8.23);
+
+                break;
+            default:
         }
     }
 
