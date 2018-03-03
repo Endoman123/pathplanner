@@ -39,6 +39,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 
@@ -82,7 +84,8 @@ public class MPGenController {
             mnuFileSave,
             mnuFileSaveAs,
             mnuFileExport,
-            mnuFileExit;
+            mnuFileExit,
+            mnuHelpAbout;
 
     @FXML
     private ChoiceBox
@@ -477,6 +480,15 @@ public class MPGenController {
         tblWaypoints.refresh();
 
         generateTrajectories();
+    }
+
+    @FXML
+    private void openGithubPage() {
+        try {
+            Desktop.getDesktop().browse(new URI("https://github.com/Endoman123/motion-profile-generator"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
