@@ -5,6 +5,8 @@ import com.jtulayan.main.PropWrapper;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -38,6 +40,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class MPGenController {
     private ProfileGenerator backend;
@@ -90,7 +93,7 @@ public class MPGenController {
     private Button
             btnAddPoint,
             btnClearPoints,
-            btnDeleteLast;
+            btnDelete;
 
     @FXML
     private ImageView
@@ -105,7 +108,7 @@ public class MPGenController {
         backend = new ProfileGenerator();
         properties = PropWrapper.getProperties();
 
-        btnDeleteLast.setDisable(true);
+        btnDelete.setDisable(true);
 
         choDriveBase.setItems(FXCollections.observableArrayList("Tank", "Swerve"));
         choDriveBase.setValue(choDriveBase.getItems().get(0));
@@ -175,11 +178,15 @@ public class MPGenController {
 
         waypointsList = FXCollections.observableList(backend.getWaypointsList());
         waypointsList.addListener((ListChangeListener<Waypoint>) c -> {
-            btnDeleteLast.setDisable(waypointsList.size() == 0);
+            tblWaypoints.refresh();
             generateTrajectories();
         });
 
         tblWaypoints.setItems(waypointsList);
+        tblWaypoints.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tblWaypoints.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) ->
+                btnDelete.setDisable(tblWaypoints.getSelectionModel().getSelectedIndices().get(0) == -1)
+        );
 
         updateOverlayImg();
         updateFrontend();
@@ -232,8 +239,13 @@ public class MPGenController {
     }
 
     @FXML
-    private void deleteLastPoint() {
-        waypointsList.remove(waypointsList.size() - 1);
+    private void deletePoints() {
+        List<Integer> selectedIndicies = tblWaypoints.getSelectionModel().getSelectedIndices();
+
+        int firstIndex = selectedIndicies.get(0);
+        int lastIndex = selectedIndicies.get(selectedIndicies.size() - 1);
+
+        waypointsList.remove(firstIndex, lastIndex + 1);
     }
 
     @FXML
@@ -396,11 +408,7 @@ public class MPGenController {
         // Wait for the result
         result = waypointDialog.showAndWait();
 
-        result.ifPresent((Waypoint w) -> {
-            waypointsList.add(w);
-
-            tblWaypoints.refresh();
-        });
+        result.ifPresent((Waypoint w) -> waypointsList.add(w));
     }
 
     @FXML
@@ -414,13 +422,8 @@ public class MPGenController {
         Optional<ButtonType> result = alert.showAndWait();
 
         result.ifPresent((ButtonType t) -> {
-            if (t.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+            if (t.getButtonData() == ButtonBar.ButtonData.OK_DONE)
                 waypointsList.clear();
-
-                repopulatePosChart();
-                repopulateVelChart();
-                tblWaypoints.refresh();
-            }
         });
     }
 
@@ -473,8 +476,7 @@ public class MPGenController {
 
         tblWaypoints.refresh();
 
-        repopulatePosChart();
-        repopulateVelChart();
+        generateTrajectories();
     }
 
     @FXML

@@ -117,11 +117,11 @@
                         <Font size="15.0" />
                      </font>
                      <content>
-                        <GridPane alignment="CENTER" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="342.0" prefWidth="346.0">
+                        <GridPane alignment="CENTER" hgap="10.0" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="342.0" prefWidth="346.0">
                            <columnConstraints>
-                              <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="33.333333" prefWidth="100.0" />
-                              <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="33.333333" prefWidth="100.0" />
-                              <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="33.333333" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="38.999999" prefWidth="100.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="92.0" minHeight="0.0" percentHeight="20.0" prefHeight="21.0" vgrow="SOMETIMES" />
@@ -130,7 +130,7 @@
                            <children>
                               <Button fx:id="btnAddPoint" alignment="CENTER" minWidth="-Infinity" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#showAddPointDialog" text="Add Point" textAlignment="CENTER" GridPane.halignment="CENTER" />
                               <Button fx:id="btnClearPoints" alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#showClearPointsDialog" text="Clear Points" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                              <Button fx:id="btnDeleteLast" alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#deleteLastPoint" text="Delete Last" textAlignment="CENTER" GridPane.columnIndex="2" />
+                              <Button fx:id="btnDelete" alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#deletePoints" text="Delete Selected" textAlignment="CENTER" GridPane.columnIndex="2" />
                               <TableView fx:id="tblWaypoints" editable="true" prefHeight="160.0" prefWidth="304.0" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                 <columns>
                                   <TableColumn fx:id="colWaypointX" prefWidth="102.0" resizable="false" sortable="false" text="X" />
