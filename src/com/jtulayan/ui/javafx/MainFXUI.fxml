@@ -161,7 +161,7 @@
                                     <NumberAxis fx:id="axisPosY" autoRanging="false" label="Y-Position (ft)" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="526.0" prefWidth="43.0" side="LEFT" tickUnit="1.0" upperBound="27.0" />
                                  </yAxis>
                               </LineChart>
-                              <ImageView fx:id="imgOverlay" fitHeight="527.0" fitWidth="604.0" layoutX="59.0" layoutY="16.0" opacity="0.5" pickOnBounds="true" />
+                              <ImageView fx:id="imgOverlay" fitHeight="526.0" fitWidth="604.0" layoutX="59.0" layoutY="15.0" opacity="0.5" pickOnBounds="true" AnchorPane.leftAnchor="59.0" />
                            </children></AnchorPane>
                      </content>
                 </Tab>
