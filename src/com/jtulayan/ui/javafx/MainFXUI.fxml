@@ -155,10 +155,10 @@
                            <children>
                               <LineChart fx:id="chtPosition" alternativeRowFillVisible="false" animated="false" axisSortingPolicy="NONE" createSymbols="false" legendSide="RIGHT" legendVisible="false" prefHeight="602.0" prefWidth="677.0">
                                  <xAxis>
-                                    <NumberAxis autoRanging="false" label="X-Position (ft)" side="BOTTOM" tickUnit="1.0" upperBound="32.0" />
+                                    <NumberAxis fx:id="axisPosX" autoRanging="false" label="X-Position (ft)" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="46.0" prefWidth="605.0" side="BOTTOM" tickUnit="1.0" upperBound="32.0" />
                                  </xAxis>
                                  <yAxis>
-                                    <NumberAxis autoRanging="false" label="Y-Position (ft)" side="LEFT" tickUnit="1.0" upperBound="27.0" />
+                                    <NumberAxis fx:id="axisPosY" autoRanging="false" label="Y-Position (ft)" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="526.0" prefWidth="43.0" side="LEFT" tickUnit="1.0" upperBound="27.0" />
                                  </yAxis>
                               </LineChart>
                               <ImageView fx:id="imgOverlay" fitHeight="527.0" fitWidth="604.0" layoutX="59.0" layoutY="16.0" opacity="0.5" pickOnBounds="true" />
@@ -171,10 +171,10 @@
                            <children>
                               <LineChart fx:id="chtVelocity" animated="false" axisSortingPolicy="NONE" createSymbols="false" legendSide="RIGHT" prefHeight="603.0" prefWidth="677.0">
                                 <xAxis>
-                                  <NumberAxis label="Time (s)" side="BOTTOM" />
+                                  <NumberAxis fx:id="axisTime" label="Time (s)" side="BOTTOM" />
                                 </xAxis>
                                 <yAxis>
-                                  <NumberAxis label="Velocity (ft/s)" side="LEFT" />
+                                  <NumberAxis fx:id="axisVel" label="Velocity (ft/s)" side="LEFT" />
                                 </yAxis>
                               </LineChart>
                            </children></AnchorPane>

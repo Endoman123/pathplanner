@@ -72,6 +72,13 @@ public class MPGenController {
             chtVelocity;
 
     @FXML
+    private NumberAxis
+        axisPosX,
+        axisPosY,
+        axisTime,
+        axisVel;
+
+    @FXML
     private TableColumn<Waypoint, Double>
             colWaypointX,
             colWaypointY,
@@ -193,6 +200,7 @@ public class MPGenController {
 
         updateOverlayImg();
         updateFrontend();
+        updateUnits();
     }
 
     @FXML
@@ -623,13 +631,21 @@ public class MPGenController {
     private void updateUnits() {
         switch (properties.getProperty("ui.units", "Imperial")) {
             case "Imperial":
-                ((NumberAxis) chtPosition.getXAxis().lookup("NumberAxis")).setUpperBound(32);
-                ((NumberAxis) chtPosition.getYAxis().lookup("NumberAxis")).setUpperBound(27);
+                axisPosX.setUpperBound(32);
+                axisPosX.setLabel("X-Position (ft)");
+                axisPosY.setUpperBound(27);
+                axisPosY.setLabel("Y-Position (ft)");
+
+                axisVel.setLabel("Velocity (ft/s)");
 
                 break;
             case "Metric":
-                ((NumberAxis) chtPosition.getXAxis().lookup("NumberAxis")).setUpperBound(10);
-                ((NumberAxis) chtPosition.getYAxis().lookup("NumberAxis")).setUpperBound(8.23);
+                axisPosX.setUpperBound(10);
+                axisPosX.setLabel("X-Position (m)");
+                axisPosY.setUpperBound(8.23);
+                axisPosY.setLabel("Y-Position (m)");
+
+                axisVel.setLabel("Velocity (m/s)");
 
                 break;
             default:
