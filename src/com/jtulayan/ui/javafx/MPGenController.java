@@ -632,8 +632,10 @@ public class MPGenController {
         switch (properties.getProperty("ui.units", "Imperial")) {
             case "Imperial":
                 axisPosX.setUpperBound(32);
+                axisPosX.setTickUnit(1);
                 axisPosX.setLabel("X-Position (ft)");
                 axisPosY.setUpperBound(27);
+                axisPosY.setTickUnit(1);
                 axisPosY.setLabel("Y-Position (ft)");
 
                 axisVel.setLabel("Velocity (ft/s)");
@@ -641,8 +643,10 @@ public class MPGenController {
                 break;
             case "Metric":
                 axisPosX.setUpperBound(10);
+                axisPosX.setTickUnit(0.5);
                 axisPosX.setLabel("X-Position (m)");
                 axisPosY.setUpperBound(8.23);
+                axisPosY.setTickUnit(0.5);
                 axisPosY.setLabel("Y-Position (m)");
 
                 axisVel.setLabel("Velocity (m/s)");
