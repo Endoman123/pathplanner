@@ -8,7 +8,6 @@ This is a program originally based off of Vannaka's Motion Profile Generator.
 [logo]: https://github.com/Endoman123/motion-profile-generator/blob/master/images/motionwindow.jpg
 
 ## Motion Variables
----
 - **Time Step**
 	- The rate at which the control loop on the RoboRio runs
 	- Units are in seconds
@@ -30,7 +29,6 @@ This is a program originally based off of Vannaka's Motion Profile Generator.
 	- Units are in feet
 	
 ## Waypoints
----
 - **All points are relative meaning you do not have to start at 0,0**
 - **X**
 	- Forward and Backwards movement of the robot
@@ -49,13 +47,11 @@ This is a program originally based off of Vannaka's Motion Profile Generator.
 	- After the point is replaced it will go back to normal behavoir and add points to the end
 
 ## Load Project
----
 - Motion profile projects are saved in XML format. 
 You can load them to continue editing them by using the "Load" option in.
 the "File" menu.
 	
 ## Export Profile
----
  
 ![alt text][logo1]
 
@@ -67,19 +63,18 @@ the "File" menu.
    - *.traj: Binary Trajectory file, not human readable
 
 3-5 trajectories should be exported, depending on the type of drive base you use:
-- Source trajectory: the center trajectory, what is created before the drive base modifiers.
-- Tank Drive:
+- Source trajectory: the center trajectory, what is created regardless of the drive base.
+- **Tank Drive:**
   - Left Trajectory: trajectory for the left side of the drive base.
   - Right Trajectory: trajectory for the right side of the drive base.
   
-- Swerve Drive:
+- **Swerve Drive:**
   - Front-Left Trajectory: trajectory for the front-left motor of the drive base.
   - Front-Right Trajectory: trajectory for the front-right motor of the drive base.
   - Back-Left Trajectory: trajectory for the back-left motor of the drive base.
   - Back-Right Trajectory: trajectory for the back-right motor of the drive base.
 
 ## Menu Bar
----
 
 ![alt text][logo2]
 
@@ -91,13 +86,22 @@ the "File" menu.
 	- Save: Saves to the working project file
 	- Save As...: Saves the project to a new file
 	- Export...: Exports the trajectory files to a directory
+	- Settings...: Change application settings
 	- Exit: Exits the application
 - **Help Menu**
 	- Help: Opens a browser window to this github
 	- About: Displays a window with information about the app. ie: The app version and the developers
+	
+## Settings
+    
+![alt text][logo3]
+
+[logo3]: https://github.com/Endoman123/motion-profile-generator/blob/master/images/settings.jpg
+**NOTE: Settings file saved to `%user.dir%\.motion-profile-generator\mpg.properties`**
+- Position graph overlay: 32:27 image to use as an overlay to the position chart
+- Distance units: Units to use for distance in speed and position calculation (WIP)
 		
 ## Acknowledgments
----
 
 - [Jaci](https://github.com/JacisNonsense/Pathfinder) for the path generation code
 - [Vannaka](https://github.com/vannaka/Motion_Profile_Generator) for the original MP generator
