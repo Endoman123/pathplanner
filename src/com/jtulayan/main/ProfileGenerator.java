@@ -378,7 +378,7 @@ public class ProfileGenerator {
         return workingProject != null;
     }
 
-    public List<Waypoint> getWaypoints() {
+    public List<Waypoint> getWaypointsList() {
         return POINTS;
     }
 

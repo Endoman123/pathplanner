@@ -2,12 +2,12 @@ package com.jtulayan.ui.javafx;
 
 import com.jtulayan.main.ProfileGenerator;
 import com.jtulayan.main.PropWrapper;
-import com.sun.javafx.collections.ObservableListWrapper;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
 import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -97,7 +97,6 @@ public class MPGenController {
             imgOverlay;
 
     private ObservableList<Waypoint> waypointsList;
-    private ObservableList<XYChart.Series<Double, Double>> trajPosList;
 
     private Properties properties;
 
@@ -105,6 +104,8 @@ public class MPGenController {
     public void initialize() {
         backend = new ProfileGenerator();
         properties = PropWrapper.getProperties();
+
+        btnDeleteLast.setDisable(true);
 
         choDriveBase.setItems(FXCollections.observableArrayList("Tank", "Swerve"));
         choDriveBase.setValue(choDriveBase.getItems().get(0));
@@ -125,15 +126,16 @@ public class MPGenController {
 
         EventHandler<TableColumn.CellEditEvent<Waypoint, Double>> editHandler =
             (TableColumn.CellEditEvent<Waypoint, Double> t) -> {
-                int ind = t.getTablePosition().getRow();
-                Waypoint newWaypoint = t.getRowValue();
+                Waypoint curWaypoint = t.getRowValue();
 
                 if (t.getTableColumn() == colWaypointAngle)
-                    backend.editWaypoint(ind, newWaypoint.x, newWaypoint.y, Pathfinder.d2r(t.getNewValue()));
+                    curWaypoint.angle = Pathfinder.d2r(t.getNewValue());
                 else if (t.getTableColumn() == colWaypointY)
-                    backend.editWaypoint(ind, newWaypoint.x, t.getNewValue(), newWaypoint.angle);
+                    curWaypoint.y = t.getNewValue();
                 else
-                    backend.editWaypoint(ind, t.getNewValue(), newWaypoint.y, newWaypoint.angle);
+                    curWaypoint.x = t.getNewValue();
+
+                generateTrajectories();
         };
 
         colWaypointX.setCellFactory(doubleCallback);
@@ -171,7 +173,11 @@ public class MPGenController {
             }
         );
 
-        waypointsList = new ObservableListWrapper<>(backend.getWaypoints());
+        waypointsList = FXCollections.observableList(backend.getWaypointsList());
+        waypointsList.addListener((ListChangeListener<Waypoint>) c -> {
+            btnDeleteLast.setDisable(waypointsList.size() == 0);
+            generateTrajectories();
+        });
 
         tblWaypoints.setItems(waypointsList);
 
@@ -223,6 +229,11 @@ public class MPGenController {
                 }
             }
         });
+    }
+
+    @FXML
+    private void deleteLastPoint() {
+        waypointsList.remove(waypointsList.size() - 1);
     }
 
     @FXML
@@ -386,7 +397,7 @@ public class MPGenController {
         result = waypointDialog.showAndWait();
 
         result.ifPresent((Waypoint w) -> {
-            backend.addPoint(w.x, w.y, w.angle);
+            waypointsList.add(w);
 
             tblWaypoints.refresh();
         });
@@ -404,7 +415,7 @@ public class MPGenController {
 
         result.ifPresent((ButtonType t) -> {
             if (t.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-                backend.clearPoints();
+                waypointsList.clear();
 
                 repopulatePosChart();
                 repopulateVelChart();
@@ -471,21 +482,10 @@ public class MPGenController {
         System.exit(0);
     }
 
-    @FXML
     private boolean generateTrajectories() {
-        if (backend.getWaypointsSize() < 2) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
+        updateBackend();
 
-            alert.setTitle("Error!");
-            alert.setHeaderText("Cannot Generate Trajectories!");
-            alert.setContentText("Make sure you have at least two waypoints before trying to generate a trajectory!");
-
-            alert.showAndWait();
-
-            return false;
-        } else {
-            updateBackend();
-
+        if (waypointsList.size() > 1) {
             try {
                 backend.updateTrajectories();
             } catch (Pathfinder.GenerationException e) {
@@ -494,12 +494,12 @@ public class MPGenController {
                 alert.showAndWait();
                 return false;
             }
-
-            repopulatePosChart();
-            repopulateVelChart();
-
-            return true;
         }
+
+        repopulatePosChart();
+        repopulateVelChart();
+
+        return true;
     }
 
     private void updateDriveBase(Event e) {
@@ -523,9 +523,7 @@ public class MPGenController {
         // Clear data from position graph
         chtPosition.getData().clear();
 
-        drawField();
-
-        if (backend.getWaypointsSize() > 1) {
+        if (waypointsList.size() > 1) {
             SegmentSeries
                     fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
                     fr = new SegmentSeries(backend.getFrontRightTrajectory());
@@ -561,7 +559,7 @@ public class MPGenController {
         // Clear data from velocity graph
         chtVelocity.getData().clear();
 
-        if (backend.getWaypointsSize() > 1) {
+        if (waypointsList.size() > 1) {
             SegmentSeries
                     fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
                     fr = new SegmentSeries(backend.getFrontRightTrajectory());
@@ -622,12 +620,5 @@ public class MPGenController {
                 break;
             default:
         }
-    }
-
-    private void drawField() {
-        XYChart.Series<Double, Double>
-            cubeA = new XYChart.Series<>();
-
-        chtPosition.getData().addAll(cubeA);
     }
 }
