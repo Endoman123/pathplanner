@@ -82,9 +82,9 @@
                         <GridPane alignment="CENTER" focusTraversable="true" hgap="10.0" prefHeight="289.0" prefWidth="311.0" vgap="10.0">
                           <columnConstraints>
                             <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-                            <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="89.0" minWidth="10.0" percentWidth="23.0" prefWidth="80.0" />
-                              <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="80.0" minWidth="10.0" percentWidth="24.0" prefWidth="79.0" />
-                              <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="89.0" minWidth="10.0" percentWidth="25.0" prefWidth="80.0" />
+                              <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="80.0" minWidth="10.0" percentWidth="25.0" prefWidth="79.0" />
+                              <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints maxHeight="92.0" minHeight="5.0" percentHeight="25.0" prefHeight="48.0" valignment="CENTER" vgrow="ALWAYS" />
@@ -124,9 +124,9 @@
                                  <tooltip>
                                     <Tooltip text="The distance between your front and back wheels (Swerve modifier only)" textAlignment="CENTER" wrapText="true" />
                                  </tooltip></TextField>
-                              <Label alignment="CENTER_RIGHT" layoutX="186.0" layoutY="172.0" prefHeight="39.0" prefWidth="72.0" text="Drive Base:" textAlignment="RIGHT" wrapText="true" />
+                              <Label alignment="CENTER_RIGHT" layoutX="186.0" layoutY="172.0" prefHeight="39.0" prefWidth="72.0" text="Drive Base:" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <Label alignment="CENTER_RIGHT" layoutX="186.0" layoutY="37.0" prefHeight="39.0" prefWidth="72.0" text="Fit Method:" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" />
-                              <ChoiceBox fx:id="choDriveBase" prefWidth="150.0" GridPane.columnIndex="1">
+                              <ChoiceBox fx:id="choDriveBase" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
                                  <tooltip>
                                     <Tooltip text="The type of drive base configuration your robot is using" textAlignment="CENTER" wrapText="true" />
                                  </tooltip></ChoiceBox>
@@ -134,8 +134,8 @@
                                  <tooltip>
                                     <Tooltip text="The hermitic equation to use to interpolate trajectory points from the waypoint list" textAlignment="CENTER" wrapText="true" />
                                  </tooltip></ChoiceBox>
-                              <Label alignment="CENTER_RIGHT" layoutX="46.0" layoutY="142.0" text="Units:" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              <ChoiceBox fx:id="choUnits" layoutX="251.0" layoutY="30.0" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                              <Label alignment="CENTER_RIGHT" layoutX="46.0" layoutY="142.0" text="Units:" textAlignment="RIGHT" wrapText="true" />
+                              <ChoiceBox fx:id="choUnits" layoutX="251.0" layoutY="30.0" prefWidth="150.0" GridPane.columnIndex="1">
                                  <tooltip>
                                     <Tooltip text="The hermitic equation to use to interpolate trajectory points from the waypoint list" textAlignment="CENTER" wrapText="true" />
                                  </tooltip>
