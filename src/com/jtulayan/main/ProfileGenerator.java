@@ -31,9 +31,15 @@ import java.util.List;
  */
 public class ProfileGenerator {
     public static final String PROJECT_EXTENSION = "xml";
+
     public enum DriveBase {
         TANK,
         SWERVE
+    }
+
+    public enum Units {
+        IMPERIAL,
+        METRIC
     }
 
     private double timeStep;
@@ -42,8 +48,10 @@ public class ProfileGenerator {
     private double jerk;
     private double wheelBaseW;
     private double wheelBaseD;
+
     private DriveBase driveBase;
     private FitMethod fitMethod;
+    private Units units;
 
     private final List<Waypoint> POINTS;
 
@@ -104,6 +112,7 @@ public class ProfileGenerator {
             trajectoryEle.setAttribute("wheelBaseD", "" + wheelBaseD);
             trajectoryEle.setAttribute("fitMethod", "" + fitMethod.toString());
             trajectoryEle.setAttribute("driveBase", "" + driveBase.toString());
+            trajectoryEle.setAttribute("units", "" + units.toString());
 
             dom.appendChild(trajectoryEle);
 
@@ -203,6 +212,7 @@ public class ProfileGenerator {
 
             driveBase = DriveBase.valueOf(docEle.getAttribute("driveBase"));
             fitMethod = FitMethod.valueOf(docEle.getAttribute("fitMethod"));
+            units = Units.valueOf(docEle.getAttribute("units"));
 
             NodeList waypointEleList = docEle.getElementsByTagName("Waypoint");
 
@@ -259,6 +269,7 @@ public class ProfileGenerator {
 
         fitMethod = FitMethod.HERMITE_CUBIC;
         driveBase = DriveBase.TANK;
+        units = Units.IMPERIAL;
     }
 
     /**
@@ -348,6 +359,14 @@ public class ProfileGenerator {
 
     public void setFitMethod(FitMethod fitMethod) {
         this.fitMethod = fitMethod;
+    }
+
+    public Units getUnits() {
+        return units;
+    }
+
+    public void setUnits(Units units) {
+        this.units = units;
     }
 
     public double getJerk() {

@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonType?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -31,8 +30,6 @@
             <Label text="Position graph overlay:" />
             <TextField fx:id="txtOverlayDir" editable="false" GridPane.columnIndex="1" />
             <Button fx:id="btnChooseOverlay" mnemonicParsing="false" onAction="#showChooseOverlayDialog" text="Find image..." GridPane.columnIndex="2" />
-            <ChoiceBox fx:id="choUnits" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label layoutX="38.0" layoutY="49.0" text="Distance units:" GridPane.rowIndex="1" />
          </children>
       </GridPane>
    </content>

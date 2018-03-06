@@ -23,19 +23,13 @@ public class SettingsDialogController {
     @FXML
     private Button btnChooseOverlay;
 
-    @FXML
-    private ChoiceBox<String> choUnits;
-
     private Properties properties;
 
     @FXML
     private void initialize() {
-        choUnits.getItems().addAll("Imperial", "Metric");
-
         properties = PropWrapper.getProperties();
 
         txtOverlayDir.setText(properties.getProperty("ui.overlayDir", "Imperial"));
-        choUnits.setValue(properties.getOrDefault("ui.units", "Imperial").toString());
     }
 
     @FXML

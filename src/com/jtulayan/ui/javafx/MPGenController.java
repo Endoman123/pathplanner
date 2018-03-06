@@ -97,7 +97,8 @@ public class MPGenController {
     @FXML
     private ChoiceBox
             choDriveBase,
-            choFitMethod;
+            choFitMethod,
+            choUnits;
 
     @FXML
     private Button
@@ -127,6 +128,10 @@ public class MPGenController {
         choFitMethod.setItems(FXCollections.observableArrayList("Cubic", "Quintic"));
         choFitMethod.setValue(choFitMethod.getItems().get(0));
         choFitMethod.setOnAction(this::updateFitMethod);
+
+        choUnits.setItems(FXCollections.observableArrayList("Imperial", "Metric"));
+        choUnits.setValue(choUnits.getItems().get(0));
+        choUnits.setOnAction(this::updateUnits);
 
         Callback<TableColumn<Waypoint, Double>, TableCell<Waypoint, Double>> doubleCallback =
             (TableColumn<Waypoint, Double> param) -> {
@@ -200,7 +205,6 @@ public class MPGenController {
 
         updateOverlayImg();
         updateFrontend();
-        updateUnits();
     }
 
     @FXML
@@ -232,13 +236,10 @@ public class MPGenController {
                     DialogPane pane = settingsDialog.getDialogPane();
 
                     String overlayDir = ((TextField) pane.lookup("#txtOverlayDir")).getText().trim();
-                    String units = ((ChoiceBox<String>) pane.lookup("#choUnits")).getValue().trim();
 
                     properties.setProperty("ui.overlayDir", overlayDir);
-                    properties.setProperty("ui.units", units);
 
                     updateOverlayImg();
-                    updateUnits();
                     PropWrapper.storeProperties();
                 } catch (IOException e) {
                     Alert alert = AlertFactory.createExceptionAlert(e);
@@ -628,9 +629,13 @@ public class MPGenController {
         }
     }
 
-    private void updateUnits() {
-        switch (properties.getProperty("ui.units", "Imperial")) {
-            case "Imperial":
+    private void updateUnits(Event e) {
+        String choice = ((ChoiceBox<String>)e.getSource()).getSelectionModel().getSelectedItem().toUpperCase();
+        ProfileGenerator.Units u = ProfileGenerator.Units.valueOf(choice);
+
+        backend.setUnits(u);
+        switch (backend.getUnits()) {
+            case IMPERIAL:
                 axisPosX.setUpperBound(32);
                 axisPosX.setTickUnit(1);
                 axisPosX.setLabel("X-Position (ft)");
@@ -641,7 +646,7 @@ public class MPGenController {
                 axisVel.setLabel("Velocity (ft/s)");
 
                 break;
-            case "Metric":
+            case METRIC:
                 axisPosX.setUpperBound(10);
                 axisPosX.setTickUnit(0.5);
                 axisPosX.setLabel("X-Position (m)");
@@ -653,6 +658,8 @@ public class MPGenController {
 
                 break;
             default:
+                backend.setUnits(ProfileGenerator.Units.IMPERIAL);
+                updateUnits(e);
         }
     }
 }
