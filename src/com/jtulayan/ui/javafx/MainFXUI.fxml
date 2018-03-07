@@ -137,7 +137,7 @@
                               <Label alignment="CENTER_RIGHT" layoutX="46.0" layoutY="142.0" text="Units:" textAlignment="RIGHT" wrapText="true" />
                               <ChoiceBox fx:id="choUnits" layoutX="251.0" layoutY="30.0" prefWidth="150.0" GridPane.columnIndex="1">
                                  <tooltip>
-                                    <Tooltip text="The hermitic equation to use to interpolate trajectory points from the waypoint list" textAlignment="CENTER" wrapText="true" />
+                                    <Tooltip text="The unit of measurement used for measuring distance" textAlignment="CENTER" wrapText="true" />
                                  </tooltip>
                               </ChoiceBox>
                            </children>

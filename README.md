@@ -13,21 +13,25 @@ This is a program originally based off of Vannaka's Motion Profile Generator.
 	- Units are in seconds
 - **Velocity**
 	- The max velocity rate your robot is capable of achieving
-	- Units are in ft/s
 - **Acceleration**
 	- The max acceleration rate your robot is capable of achieving
-	- Units are in ft/s/s
 - **Jerk**
 	- The rate of change of acceleration; that is, the derivative of acceleration with respect to time
-	- Units are in ft/s/s/s
 - **Wheel Base W**
 	- The distance between your left and right wheels
-	- Units are in feet
 - **Wheel Base D**
 	- The distance between your front and back wheels
 	- Used with the Swerve modifier
-	- Units are in feet
-	
+- **Drive Base**
+    - The type of configuration your drive base is using
+    - Can be Tank or Swerve
+- **Units**
+    - The unit of measurement used for measuring distance
+    - Can be Imperial (ft) or Metric (m)
+- **Fit Method**
+    - The hermitic method for interpolating points from waypoints
+    - Can be cubic or quintic	
+
 ## Waypoints
 - **All points are relative meaning you do not have to start at 0,0**
 - **X**
@@ -99,7 +103,6 @@ the "File" menu.
 [logo3]: https://github.com/Endoman123/motion-profile-generator/blob/master/images/settings.jpg
 **NOTE: Settings file saved to `%user.dir%\.motion-profile-generator\mpg.properties`**
 - Position graph overlay: 32:27 image to use as an overlay to the position chart
-- Distance units: Units to use for distance in speed and position calculation (WIP)
 		
 ## Acknowledgments
 
