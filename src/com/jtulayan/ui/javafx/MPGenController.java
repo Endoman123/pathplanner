@@ -16,6 +16,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -34,6 +35,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
 
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -123,15 +125,15 @@ public class MPGenController {
 
         choDriveBase.setItems(FXCollections.observableArrayList("Tank", "Swerve"));
         choDriveBase.setValue(choDriveBase.getItems().get(0));
-        choDriveBase.setOnAction(this::updateDriveBase);
+        choDriveBase.getSelectionModel().selectedItemProperty().addListener(this::updateDriveBase);
 
         choFitMethod.setItems(FXCollections.observableArrayList("Cubic", "Quintic"));
         choFitMethod.setValue(choFitMethod.getItems().get(0));
-        choFitMethod.setOnAction(this::updateFitMethod);
+        choFitMethod.getSelectionModel().selectedItemProperty().addListener(this::updateFitMethod);
 
         choUnits.setItems(FXCollections.observableArrayList("Imperial", "Metric"));
         choUnits.setValue(choUnits.getItems().get(0));
-        choUnits.setOnAction(this::updateUnits);
+        choUnits.getSelectionModel().selectedItemProperty().addListener(this::updateUnits);
 
         Callback<TableColumn<Waypoint, Double>, TableCell<Waypoint, Double>> doubleCallback =
             (TableColumn<Waypoint, Double> param) -> {
@@ -300,10 +302,10 @@ public class MPGenController {
             try {
                 backend.loadProject(result);
 
-                tblWaypoints.refresh();
-                backend.updateTrajectories();
-
                 updateFrontend();
+                updateChartAxes();
+
+                generateTrajectories();
 
                 mnuFileSave.setDisable(false);
             } catch (Exception e) {
@@ -399,7 +401,6 @@ public class MPGenController {
                 Toolkit.getDefaultToolkit().beep();
                 alert.showAndWait();
                 ae.consume();
-                e.printStackTrace();
             }
         });
 
@@ -455,10 +456,10 @@ public class MPGenController {
                 backend.resetValues();
                 backend.clearPoints();
 
-                choDriveBase.setValue("Tank");
-                choFitMethod.setValue("Cubic");
-
                 updateFrontend();
+
+                updateChartAxes();
+                generateTrajectories();
 
                 mnuFileSave.setDisable(true);
             }
@@ -486,9 +487,13 @@ public class MPGenController {
         txtWheelBaseW.setText("" + backend.getWheelBaseW());
         txtWheelBaseD.setText("" + backend.getWheelBaseD());
 
-        tblWaypoints.refresh();
+        System.out.println(backend.getUnits().ordinal());
 
-        generateTrajectories();
+        choDriveBase.setValue(choDriveBase.getItems().get(backend.getDriveBase().ordinal()));
+        choFitMethod.setValue(choFitMethod.getItems().get(backend.getFitMethod().ordinal()));
+        choUnits.setValue(choUnits.getItems().get(backend.getUnits().ordinal()));
+
+        tblWaypoints.refresh();
     }
 
     @FXML
@@ -525,21 +530,34 @@ public class MPGenController {
         return true;
     }
 
-    private void updateDriveBase(Event e) {
-        String choice = ((ChoiceBox<String>)e.getSource()).getSelectionModel().getSelectedItem().toUpperCase();
+    private void updateDriveBase(ObservableValue<String> observable, Object oldValue, Object newValue) {
+        String choice = ((String) newValue).toUpperCase();
         ProfileGenerator.DriveBase db = ProfileGenerator.DriveBase.valueOf(choice);
 
+        System.out.println(choice);
         backend.setDriveBase(db);
 
         txtWheelBaseD.setDisable(db == ProfileGenerator.DriveBase.TANK);
         lblWheelBaseD.setDisable(db == ProfileGenerator.DriveBase.TANK);
+
+        generateTrajectories();
     }
 
-    private void updateFitMethod(Event e) {
-        String choice = ((ChoiceBox<String>)e.getSource()).getSelectionModel().getSelectedItem().toUpperCase();
+    private void updateFitMethod(ObservableValue<String> observable, Object oldValue, Object newValue) {
+        String choice = ((String) newValue).toUpperCase();
         Trajectory.FitMethod fm = Trajectory.FitMethod.valueOf("HERMITE_" + choice);
 
         backend.setFitMethod(fm);
+
+        generateTrajectories();
+    }
+
+    private void updateUnits(ObservableValue<String> observable, Object oldValue, Object newValue) {
+        String choice = ((String) newValue).toUpperCase();
+        ProfileGenerator.Units u = ProfileGenerator.Units.valueOf(choice);
+
+        backend.setUnits(u);
+        updateChartAxes();
     }
 
     private void repopulatePosChart() {
@@ -629,11 +647,7 @@ public class MPGenController {
         }
     }
 
-    private void updateUnits(Event e) {
-        String choice = ((ChoiceBox<String>)e.getSource()).getSelectionModel().getSelectedItem().toUpperCase();
-        ProfileGenerator.Units u = ProfileGenerator.Units.valueOf(choice);
-
-        backend.setUnits(u);
+    private void updateChartAxes() {
         switch (backend.getUnits()) {
             case IMPERIAL:
                 axisPosX.setUpperBound(32);
@@ -659,7 +673,7 @@ public class MPGenController {
                 break;
             default:
                 backend.setUnits(ProfileGenerator.Units.IMPERIAL);
-                updateUnits(e);
+                updateChartAxes();
         }
     }
 }
