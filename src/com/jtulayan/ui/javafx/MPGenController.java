@@ -487,8 +487,6 @@ public class MPGenController {
         txtWheelBaseW.setText("" + backend.getWheelBaseW());
         txtWheelBaseD.setText("" + backend.getWheelBaseD());
 
-        System.out.println(backend.getUnits().ordinal());
-
         choDriveBase.setValue(choDriveBase.getItems().get(backend.getDriveBase().ordinal()));
         choFitMethod.setValue(choFitMethod.getItems().get(backend.getFitMethod().ordinal()));
         choUnits.setValue(choUnits.getItems().get(backend.getUnits().ordinal()));
@@ -534,7 +532,6 @@ public class MPGenController {
         String choice = ((String) newValue).toUpperCase();
         ProfileGenerator.DriveBase db = ProfileGenerator.DriveBase.valueOf(choice);
 
-        System.out.println(choice);
         backend.setDriveBase(db);
 
         txtWheelBaseD.setDisable(db == ProfileGenerator.DriveBase.TANK);
