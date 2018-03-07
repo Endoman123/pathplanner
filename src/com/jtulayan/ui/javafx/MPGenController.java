@@ -512,14 +512,7 @@ public class MPGenController {
         updateBackend();
 
         if (waypointsList.size() > 1) {
-            try {
-                backend.updateTrajectories();
-            } catch (Pathfinder.GenerationException e) {
-                Alert alert = AlertFactory.createExceptionAlert(e, "Invalid Trajectory!");
-
-                alert.showAndWait();
-                return false;
-            }
+            backend.updateTrajectories();
         }
 
         repopulatePosChart();

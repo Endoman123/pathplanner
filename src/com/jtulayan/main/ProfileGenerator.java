@@ -295,7 +295,7 @@ public class ProfileGenerator {
     /**
      * Updates the trajectories
      */
-    public void updateTrajectories() throws Pathfinder.GenerationException {
+    public void updateTrajectories() {
         Config config = new Config(fitMethod, Config.SAMPLES_HIGH, timeStep, velocity, acceleration, jerk);
         source = Pathfinder.generate(POINTS.toArray(new Waypoint[1]), config);
 

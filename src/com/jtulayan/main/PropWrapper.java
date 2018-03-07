@@ -18,13 +18,11 @@ public class PropWrapper {
                 propFile = new File(APPDATA_DIR, PROP_NAME + ".properties");
 
                 if (!propFile.exists()) {
-                    if (!APPDATA_DIR.mkdirs())
-                        System.out.println("Could not make app dir");
+                    APPDATA_DIR.mkdirs();
 
                     propFile.createNewFile();
 
                     propInstance.put("ui.overlayImg", "");
-                    propInstance.put("ui.units", "");
                 }
 
                 propInstance.load(new FileInputStream(propFile));

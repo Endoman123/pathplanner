@@ -29,7 +29,7 @@ public class SettingsDialogController {
     private void initialize() {
         properties = PropWrapper.getProperties();
 
-        txtOverlayDir.setText(properties.getProperty("ui.overlayDir", "Imperial"));
+        txtOverlayDir.setText(properties.getProperty("ui.overlayDir", ""));
     }
 
     @FXML
@@ -42,6 +42,7 @@ public class SettingsDialogController {
                 new FileChooser.ExtensionFilter(
                         "Image Files",
                         "*.jpg",
+                        "*.jpeg",
                         "*.png"
                 )
         );
