@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-mainClassName = "com.jtulayan.ui.javafx.Client"
+mainClassName = "com.jtulayan.main.Client"
 
 sourceSets {
     main.java {
@@ -26,6 +26,7 @@ dependencies {
     compile fileTree(dir: 'lib', include: '*.jar')
     compile 'com.opencsv:opencsv:4.1'
     compile 'xerces:xercesImpl:2.11.0'
+    compile 'commons-cli:commons-cli:1.4'
 }
 
 jar {
@@ -38,4 +39,12 @@ jar {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.5.1'
+}
+
+task runCLI(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = mainClassName
+
+    args 'no-gui'
 }
