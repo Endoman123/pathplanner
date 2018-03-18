@@ -3,6 +3,8 @@ package com.jtulayan.ui.cli;
 import com.jtulayan.main.ProfileGenerator;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * Helper class to interface with the MPG via CLI
@@ -22,16 +24,23 @@ public class MPGenCLI {
      * @param ext the file extension to export the trajectories as
      */
     public void export(String in, String out, String ext) {
-        String[] files = null;
+        String[] paths = null;
 
         File inputDir = new File(in);
 
         try {
             if (inputDir.exists() && inputDir.isDirectory()) {
                 // Get all project files inside the directory
-                files = inputDir.list((File dir, String name) -> isProjectFile(name));
+                // We need to re-loop through each file since this method only gets file names.
+                File[] files = inputDir.listFiles((File dir, String name) -> isProjectFile(name));
 
-                export(files, out, ext);
+                paths = new String[files.length];
+
+                // Append the full file path to the file
+                for (int i = 0; i < files.length; i++)
+                    paths[i] = files[i].getAbsolutePath();
+
+                export(paths, out, ext);
             } else {
                 throw new IllegalArgumentException("Invalid import directory!");
             }
@@ -57,13 +66,22 @@ public class MPGenCLI {
                     if (isProjectFile(projectDir)) {
                         File curProj = new File(projectDir);
                         String exportName = curProj.getName();
-                        exportName = exportName.substring(0, exportName.lastIndexOf('.'));
+                        exportName = exportName.substring(0, exportName.lastIndexOf('.')).trim();
 
                         System.out.println("Loading " + exportName + "...");
                         backend.loadProject(curProj);
 
-                        System.out.println("Exporting " + exportName + "...");
-                        backend.exportTrajectories(new File(exportDir, exportName), ext);
+                        if (backend.hasWorkingProject()) {
+                            if (backend.getWaypointsSize() > 1) {
+                                System.out.println("Exporting " + curProj + "...");
+                                backend.exportTrajectories(new File(exportDir, exportName), "." + ext);
+                            } else {
+                                System.out.println("Project " + curProj + " has less than 2 waypoints! Skipping....");
+                                System.out.println(backend.getWaypointsList());
+                            }
+                        } else {
+                            System.out.println("Failed to load " + curProj + "! Skipping....");
+                        }
                     }
                 }
             } else {

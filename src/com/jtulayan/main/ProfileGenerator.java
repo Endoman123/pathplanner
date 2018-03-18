@@ -216,8 +216,8 @@ public class ProfileGenerator {
 
             NodeList waypointEleList = docEle.getElementsByTagName("Waypoint");
 
+            POINTS.clear();
             if (waypointEleList != null && waypointEleList.getLength() > 0) {
-                POINTS.clear();
                 for (int i = 0; i < waypointEleList.getLength(); i++) {
                     Element waypointEle = (Element) waypointEleList.item(i);
 

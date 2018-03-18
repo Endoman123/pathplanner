@@ -63,6 +63,7 @@ public class Client extends Application {
             // TODO: Figure out why the program doesn't close when an exception is thrown
             System.out.println("Oops, something went wrong!");
             e.printStackTrace();
+        } finally {
             System.exit(0);
         }
     }
