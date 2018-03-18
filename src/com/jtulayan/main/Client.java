@@ -22,10 +22,7 @@ public class Client extends Application {
         Options options = new Options();
         CommandLineParser parser = new DefaultParser();
 
-        options.addOption("d", "export-directory", true,"export directory");
-        options.addOption("h", "help", false,"display help dialog");
-        options.addOption("n", "no-gui", false,"no-gui mode");
-
+        buildOptions(options);
 
         try {
             cmd = parser.parse(options, args);
@@ -41,7 +38,26 @@ public class Client extends Application {
         } catch (Exception e) {
             System.out.println("Oops, something went wrong!");
             e.printStackTrace();
+            System.exit(0);
         }
     }
 
+    private static void buildOptions(Options opt) {
+        // Flags
+        Option help = new Option("h", "help", false,"display help dialog");
+        Option noGUI = new Option("n", "no-gui", false,"no-gui mode");
+
+        // Args
+        Option exportDir = Option.builder("d")
+            .longOpt("export-dir")
+            .hasArg(true)
+            .argName("dir")
+            .desc("define export directory for all trajectories")
+            .build();
+
+        opt.addOption(help);
+        opt.addOption(noGUI);
+        opt.addOption(exportDir);
+
+    }
 }
