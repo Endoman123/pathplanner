@@ -148,7 +148,7 @@ public class ProfileGenerator {
         }
     }
 
-    public void exportTrajectories(File parentPath, String ext) throws Pathfinder.GenerationException{
+    public void exportTrajectories(File parentPath, String ext) throws Pathfinder.GenerationException {
         updateTrajectories();
 
         File dir = parentPath.getParentFile();

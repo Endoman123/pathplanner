@@ -11,26 +11,13 @@ workbench.xmi
 *.iws
 out/
 tmp/
-.settings/
-.loadpath
-.project
-/.idea
-.classpath
 **/lib/User_Libraries.properties
 
 # Toast/GradleRIO
 run/
-.gradle/
 gradle/.launch/
 
 # OS Files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.AppleDouble
-.LSOverride
-.Trashes
 ehthumbs.db
 Thumbs.db
 
@@ -41,8 +28,7 @@ Thumbs.db
 junit/
 
 # Don't commit log files
-.log/
 **/*.log
 
-# Don't commit test files
-test/
+# Use ".*" folders for easy ignore
+.*/
