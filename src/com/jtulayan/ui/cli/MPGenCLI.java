@@ -63,6 +63,11 @@ public class MPGenCLI {
             if (exportDir.isDirectory()) {
                 System.out.println("Exporting " + in.length + " files!");
                 for (String projectDir : in) {
+                    // Clear backend
+                    backend.resetValues();
+                    backend.clearPoints();
+                    backend.clearWorkingFiles();
+
                     if (isProjectFile(projectDir)) {
                         File curProj = new File(projectDir);
                         String exportName = curProj.getName();
