@@ -94,33 +94,33 @@
                               <RowConstraints maxHeight="208.0" minHeight="10.0" percentHeight="25.0" prefHeight="113.0" valignment="CENTER" vgrow="ALWAYS" />
                           </rowConstraints>
                            <children>
-                              <TextField fx:id="txtTimeStep" text="0.02" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <TextField fx:id="txtTimeStep" onAction="#validateFieldEdit" text="0.02" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <tooltip>
                                     <Tooltip text="The rate at which the control loop on the roboRIO runs" textAlignment="CENTER" wrapText="true" />
                                  </tooltip></TextField>
                               <Label alignment="CENTER_RIGHT" text="Time Step:" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="1" />
                               <Label alignment="CENTER_RIGHT" layoutX="22.0" layoutY="36.0" text="Velocity:" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="2" />
-                              <TextField fx:id="txtVelocity" layoutX="101.0" layoutY="24.0" text="4" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <TextField fx:id="txtVelocity" layoutX="101.0" layoutY="24.0" onAction="#validateFieldEdit" text="4" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <tooltip>
                                     <Tooltip text="The max velocity rate your robot is capable of achieving" textAlignment="CENTER" wrapText="true" />
                                  </tooltip></TextField>
                               <Label alignment="CENTER_RIGHT" layoutX="33.0" layoutY="62.0" text="Acceleration:" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="3" />
-                              <TextField fx:id="txtAcceleration" layoutX="111.0" layoutY="83.0" text="3" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <TextField fx:id="txtAcceleration" layoutX="111.0" layoutY="83.0" onAction="#validateFieldEdit" text="3" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <tooltip>
                                     <Tooltip text="The max acceleration rate your robot is capable of achieving" textAlignment="CENTER" wrapText="true" />
                                  </tooltip></TextField>
                               <Label alignment="CENTER_RIGHT" layoutX="43.0" layoutY="143.0" text="Jerk:" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="4" />
-                              <TextField fx:id="txtJerk" layoutX="111.0" layoutY="138.0" text="60" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                              <TextField fx:id="txtJerk" layoutX="111.0" layoutY="138.0" onAction="#validateFieldEdit" text="60" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                  <tooltip>
                                     <Tooltip text="The rate of change of acceleration; that is, the derivative of acceleration with respect to time" textAlignment="CENTER" wrapText="true" />
                                  </tooltip></TextField>
                               <Label alignment="CENTER_RIGHT" layoutX="38.0" layoutY="48.0" prefHeight="39.0" prefWidth="72.0" text="Wheel Base (Width):" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                               <Label fx:id="lblWheelBaseD" alignment="CENTER_RIGHT" disable="true" layoutX="186.0" layoutY="172.0" prefHeight="39.0" prefWidth="72.0" text="Wheel Base (Depth):" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <TextField fx:id="txtWheelBaseW" layoutX="104.0" layoutY="43.0" text="1.464" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                              <TextField fx:id="txtWheelBaseW" layoutX="104.0" layoutY="43.0" onAction="#validateFieldEdit" text="1.464" GridPane.columnIndex="3" GridPane.rowIndex="3">
                                  <tooltip>
                                     <Tooltip text="The distance between your left and right wheels" textAlignment="CENTER" wrapText="true" />
                                  </tooltip></TextField>
-                              <TextField fx:id="txtWheelBaseD" disable="true" layoutX="104.0" layoutY="178.0" text="0" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                              <TextField fx:id="txtWheelBaseD" disable="true" layoutX="104.0" layoutY="178.0" onAction="#validateFieldEdit" text="0" GridPane.columnIndex="3" GridPane.rowIndex="4">
                                  <tooltip>
                                     <Tooltip text="The distance between your front and back wheels (Swerve modifier only)" textAlignment="CENTER" wrapText="true" />
                                  </tooltip></TextField>

@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
@@ -36,6 +37,7 @@ import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
 
 import javax.swing.event.ChangeEvent;
+import javax.tools.Tool;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -157,6 +159,121 @@ public class MPGenController {
 
                 generateTrajectories();
         };
+
+        txtTimeStep.setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
+        txtVelocity.setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
+        txtAcceleration.setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
+        txtJerk.setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
+        txtWheelBaseW.setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
+        txtWheelBaseD.setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
+
+        txtTimeStep.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // On unfocus
+                String val = txtTimeStep.getText().trim();
+                double d = 0;
+
+                if (val.isEmpty()) {
+                    val = "0.02";
+                    txtTimeStep.setText(val);
+                } else {
+                    d = Double.parseDouble(val);
+                    if (d != 0) {
+                        txtTimeStep.setText("" + Math.abs(d));
+                        generateTrajectories();
+                    }
+                }
+            }
+        });
+
+        txtVelocity.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // On unfocus
+                String val = txtVelocity.getText().trim();
+                double d = 0;
+
+                if (val.isEmpty()) {
+                    val = "4.0";
+                    txtVelocity.setText(val);
+                } else {
+                    d = Double.parseDouble(val);
+                    if (d != 0) {
+                        txtVelocity.setText("" + Math.abs(d));
+                        generateTrajectories();
+                    }
+                }
+            }
+        });
+
+        txtAcceleration.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // On unfocus
+                String val = txtAcceleration.getText().trim();
+                double d = 0;
+
+                if (val.isEmpty()) {
+                    val = "3.0";
+                    txtAcceleration.setText(val);
+                } else {
+                    d = Double.parseDouble(val);
+                    if (d != 0) {
+                        txtAcceleration.setText("" + Math.abs(d));
+                        generateTrajectories();
+                    }
+                }
+            }
+        });
+
+        txtJerk.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // On unfocus
+                String val = txtJerk.getText().trim();
+                double d = 0;
+
+                if (val.isEmpty()) {
+                    val = "60.0";
+                    txtJerk.setText(val);
+                } else {
+                    d = Double.parseDouble(val);
+                    if (d != 0) {
+                        txtJerk.setText("" + Math.abs(d));
+                        generateTrajectories();
+                    }
+                }
+            }
+        });
+
+        txtWheelBaseW.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // On unfocus
+                String val = txtWheelBaseW.getText().trim();
+                double d = 0;
+
+                if (val.isEmpty()) {
+                    val = "1.464";
+                    txtWheelBaseW.setText(val);
+                } else {
+                    d = Double.parseDouble(val);
+                    if (d != 0) {
+                        txtWheelBaseW.setText("" + Math.abs(d));
+                        generateTrajectories();
+                    }
+                }
+            }
+        });
+
+        txtWheelBaseD.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // On unfocus
+                String val = txtWheelBaseD.getText().trim();
+                double d = 0;
+
+                if (val.isEmpty()) {
+                    val = "1.464";
+                    txtWheelBaseD.setText(val);
+                } else {
+                    d = Double.parseDouble(val);
+                    if (d != 0) {
+                        txtWheelBaseD.setText("" + Math.abs(d));
+                        generateTrajectories();
+                    }
+                }
+            }
+        });
 
         colWaypointX.setCellFactory(doubleCallback);
         colWaypointY.setCellFactory(doubleCallback);
@@ -464,6 +581,26 @@ public class MPGenController {
     }
 
     @FXML
+    private void validateFieldEdit(ActionEvent event) {
+        String val = ((TextField) event.getSource()).getText().trim();
+        double d = 0;
+        boolean validInput = true;
+
+        try {
+            d = Double.parseDouble(val);
+
+            validInput = d > 0;
+        } catch (NumberFormatException e) {
+            validInput = false;
+        } finally {
+            if (validInput)
+                generateTrajectories();
+            else
+                Toolkit.getDefaultToolkit().beep();
+        }
+    }
+
+    @FXML
     private void updateBackend() {
         backend.setTimeStep(Double.parseDouble(txtTimeStep.getText().trim()));
         backend.setVelocity(Double.parseDouble(txtVelocity.getText().trim()));
@@ -508,9 +645,8 @@ public class MPGenController {
     private boolean generateTrajectories() {
         updateBackend();
 
-        if (waypointsList.size() > 1) {
+        if (waypointsList.size() > 1)
             backend.updateTrajectories();
-        }
 
         repopulatePosChart();
         repopulateVelChart();
