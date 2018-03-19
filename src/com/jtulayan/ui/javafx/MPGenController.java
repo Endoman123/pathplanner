@@ -194,10 +194,7 @@ public class MPGenController {
         );
 
         waypointsList = FXCollections.observableList(backend.getWaypointsList());
-        waypointsList.addListener((ListChangeListener<Waypoint>) c -> {
-            tblWaypoints.refresh();
-            generateTrajectories();
-        });
+        waypointsList.addListener((ListChangeListener<Waypoint>) c -> generateTrajectories());
 
         tblWaypoints.setItems(waypointsList);
         tblWaypoints.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -491,7 +488,7 @@ public class MPGenController {
         choFitMethod.setValue(choFitMethod.getItems().get(backend.getFitMethod().ordinal()));
         choUnits.setValue(choUnits.getItems().get(backend.getUnits().ordinal()));
 
-        tblWaypoints.refresh();
+        refreshWaypointTable();
     }
 
     @FXML
@@ -665,5 +662,17 @@ public class MPGenController {
                 backend.setUnits(ProfileGenerator.Units.IMPERIAL);
                 updateChartAxes();
         }
+    }
+
+    /**
+     * Refreshes the waypoints table by clearing the waypoint list and repopulating it.
+     *
+     */
+    public void refreshWaypointTable() {
+        // Bad way to update the waypoint list...
+        // However, TableView.refresh() is apparently borked?
+        List<Waypoint> tmp = new ArrayList<>(backend.getWaypointsList());
+        waypointsList.clear();
+        waypointsList.addAll(tmp);
     }
 }
