@@ -320,7 +320,6 @@ public class ProfileGenerator {
         }
     }
 
-    // region Getters and Setters
     public double getTimeStep() {
         return timeStep;
     }
@@ -421,5 +420,4 @@ public class ProfileGenerator {
         return br;
     }
 
-    // endregion
 }
