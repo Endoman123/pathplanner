@@ -645,11 +645,23 @@ public class MPGenController {
     private boolean generateTrajectories() {
         updateBackend();
 
-        if (waypointsList.size() > 1)
-            backend.updateTrajectories();
+        if (waypointsList.size() > 1) {
+            try {
+                backend.updateTrajectories();
+                repopulatePosChart();
+                repopulateVelChart();
+            } catch (Pathfinder.GenerationException e) {
+                Toolkit.getDefaultToolkit().beep();
 
-        repopulatePosChart();
-        repopulateVelChart();
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+
+                alert.setTitle("Invalid Trajectory");
+                alert.setHeaderText("Invalid trajectory point!");
+                alert.setContentText("The trajectory point is invalid because one of the waypoints is invalid! " +
+                        "Please check the waypoints and try again.");
+                alert.showAndWait();
+            }
+        }
 
         return true;
     }
