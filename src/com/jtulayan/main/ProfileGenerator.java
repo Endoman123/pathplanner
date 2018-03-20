@@ -76,6 +76,13 @@ public class ProfileGenerator {
         resetValues();
     }
 
+    /**
+     * Saves the project in XML format
+     *
+     * @param path the absolute file path to save to, including file name and extension
+     * @throws IOException
+     * @throws ParserConfigurationException
+     */
     public void saveProjectAs(File path) throws IOException, ParserConfigurationException {
         if (!path.getAbsolutePath().endsWith("." + PROJECT_EXTENSION))
             path = new File(path + "." + PROJECT_EXTENSION);
@@ -95,6 +102,12 @@ public class ProfileGenerator {
         saveWorkingProject();
     }
 
+    /**
+     * Saves the working project
+     *
+     * @throws IOException
+     * @throws ParserConfigurationException
+     */
     public void saveWorkingProject() throws IOException, ParserConfigurationException {
         boolean finished = true;
         if (workingProject != null) {
@@ -148,6 +161,13 @@ public class ProfileGenerator {
         }
     }
 
+    /**
+     * Exports all trajectories to the parent folder, with the given root name and file extension
+     *
+     * @param parentPath the absolute file path to save to, excluding file extension
+     * @param ext        the file extension to save to, can be {@code *.csv} or {@code *.traj}
+     * @throws Pathfinder.GenerationException
+     */
     public void exportTrajectories(File parentPath, String ext) throws Pathfinder.GenerationException {
         updateTrajectories();
 
@@ -190,6 +210,14 @@ public class ProfileGenerator {
         }
     }
 
+    /**
+     * Loads a project from file
+     *
+     * @param path the absolute file path to load the project from
+     * @throws IOException
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     */
     public void loadProject(File path) throws IOException, ParserConfigurationException, SAXException {
         boolean finished = true;
 
@@ -295,7 +323,7 @@ public class ProfileGenerator {
     /**
      * Updates the trajectories
      */
-    public void updateTrajectories() {
+    public void updateTrajectories() throws Pathfinder.GenerationException {
         Config config = new Config(fitMethod, Config.SAMPLES_HIGH, timeStep, velocity, acceleration, jerk);
         source = Pathfinder.generate(POINTS.toArray(new Waypoint[1]), config);
 
