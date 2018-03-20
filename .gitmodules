@@ -1,0 +1,3 @@
+[submodule "Pathfinder"]
+	path = Pathfinder
+	url = git@github.com:Mercury1089/Pathfinder.git
