@@ -568,12 +568,10 @@ public class MPGenController {
             if (t == ButtonType.OK) {
                 backend.clearWorkingFiles();
                 backend.resetValues();
-                backend.clearPoints();
+                waypointsList.clear();
 
                 updateFrontend();
-
                 updateChartAxes();
-                generateTrajectories();
 
                 mnuFileSave.setDisable(true);
             }
@@ -648,8 +646,6 @@ public class MPGenController {
         if (waypointsList.size() > 1) {
             try {
                 backend.updateTrajectories();
-                repopulatePosChart();
-                repopulateVelChart();
             } catch (Pathfinder.GenerationException e) {
                 Toolkit.getDefaultToolkit().beep();
 
@@ -662,6 +658,9 @@ public class MPGenController {
                 alert.showAndWait();
             }
         }
+
+        repopulatePosChart();
+        repopulateVelChart();
 
         return true;
     }
@@ -814,7 +813,6 @@ public class MPGenController {
 
     /**
      * Refreshes the waypoints table by clearing the waypoint list and repopulating it.
-     *
      */
     public void refreshWaypointTable() {
         // Bad way to update the waypoint list...
