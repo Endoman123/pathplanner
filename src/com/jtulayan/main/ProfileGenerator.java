@@ -18,11 +18,11 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The "backend" of the motion profile generator.
@@ -77,7 +77,7 @@ public class ProfileGenerator {
     }
 
     /**
-     * Saves the project in XML format
+     * Saves the project in XML format.
      *
      * @param path the absolute file path to save to, including file name and extension
      * @throws IOException
@@ -103,13 +103,12 @@ public class ProfileGenerator {
     }
 
     /**
-     * Saves the working project
+     * Saves the working project.
      *
      * @throws IOException
      * @throws ParserConfigurationException
      */
     public void saveWorkingProject() throws IOException, ParserConfigurationException {
-        boolean finished = true;
         if (workingProject != null) {
             // Create document
             DocumentBuilder db = dbFactory.newDocumentBuilder();
@@ -162,7 +161,7 @@ public class ProfileGenerator {
     }
 
     /**
-     * Exports all trajectories to the parent folder, with the given root name and file extension
+     * Exports all trajectories to the parent folder, with the given root name and file extension.
      *
      * @param parentPath the absolute file path to save to, excluding file extension
      * @param ext        the file extension to save to, can be {@code *.csv} or {@code *.traj}
@@ -211,7 +210,7 @@ public class ProfileGenerator {
     }
 
     /**
-     * Loads a project from file
+     * Loads a project from file.
      *
      * @param path the absolute file path to load the project from
      * @throws IOException
@@ -219,12 +218,10 @@ public class ProfileGenerator {
      * @throws SAXException
      */
     public void loadProject(File path) throws IOException, ParserConfigurationException, SAXException {
-        boolean finished = true;
-
         if (!path.exists() || path.isDirectory())
             return;
 
-        if (path.getAbsolutePath().endsWith("." + PROJECT_EXTENSION)) {
+        if (path.getAbsolutePath().toLowerCase().endsWith("." + PROJECT_EXTENSION)) {
             DocumentBuilder db = dbFactory.newDocumentBuilder();
 
             Document dom = db.parse(path);
@@ -266,10 +263,72 @@ public class ProfileGenerator {
         }
     }
 
+    /**
+     * Imports a Vannaka properties (*.bot) file into the generator.
+     * This import method should work with vannaka properties files generated from version 2.3.0.
+     *
+     * @param path     the file path of the bot file
+     * @param botUnits the units to use for this bot file
+     * @throws IOException
+     */
+    public void importBotFile(File path, Units botUnits) throws IOException, NumberFormatException {
+        if (!path.exists() || path.isDirectory())
+            return;
+
+        if (path.getAbsolutePath().toLowerCase().endsWith(".bot")) {
+            BufferedReader botReader = new BufferedReader(new FileReader(path));
+            Stream<String> botStream = botReader.lines();
+            List<String> botLines = botStream.collect(Collectors.toList());
+
+            // First off we need to set the units of distance being used in the file.
+            // Unfortunately it is not explicitly saved to file; we will need some user input on that.
+            units = botUnits;
+
+            // Now we can read the first 7 lines and assign them accordingly.
+            timeStep = Math.abs(Double.parseDouble(botLines.get(0).trim()));
+            velocity = Math.abs(Double.parseDouble(botLines.get(1).trim()));
+            acceleration = Math.abs(Double.parseDouble(botLines.get(2).trim()));
+            jerk = Math.abs(Double.parseDouble(botLines.get(3).trim()));
+            wheelBaseW = Math.abs(Double.parseDouble(botLines.get(4).trim()));
+            wheelBaseD = Math.abs(Double.parseDouble(botLines.get(5).trim()));
+
+            fitMethod = FitMethod.valueOf("HERMITE_" + botLines.get(6).trim().toUpperCase());
+
+            if (wheelBaseD > 0) // Assume that the wheel base was swerve
+                driveBase = DriveBase.SWERVE;
+
+            // GLHF parse the rest of the file I guess...
+            for (int i = 7; i < botLines.size(); i++) {
+                String[] waypointVals = botLines.get(i).split(",");
+
+                POINTS.add(new Waypoint(
+                    Double.parseDouble(waypointVals[0].trim()),
+                    Double.parseDouble(waypointVals[1].trim()),
+                    Math.toRadians(Double.parseDouble(waypointVals[2].trim()))
+                ));
+            }
+        }
+    }
+
+    /**
+     * Adds a waypoint to the list of waypoints
+     *
+     * @param x     the x-location of the waypoint
+     * @param y     the y-location of the waypoint
+     * @param angle the angle of direction at the point, in radians
+     */
     public void addPoint(double x, double y, double angle) {
         POINTS.add(new Waypoint(x, y, angle));
     }
 
+    /**
+     * Adds a waypoint to the list of waypoints
+     *
+     * @param index the index of the waypoint to edit
+     * @param x     the x-location of the waypoint
+     * @param y     the y-location of the waypoint
+     * @param angle the angle of direction at the point, in radians
+     */
     public void editWaypoint(int index, double x, double y, double angle) {
         POINTS.get(index).x = x;
         POINTS.get(index).y = y;
