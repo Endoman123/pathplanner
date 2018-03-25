@@ -491,6 +491,7 @@ public class MPGenController {
             ButtonType okButtonType = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
             Optional<ProfileGenerator.Units> unitsResult = null;
             GridPane grid = new GridPane();
+            ToggleGroup radGroup = new ToggleGroup();
             RadioButton
                 radImperial = new RadioButton("Imperial (ft)"),
                 radMetric = new RadioButton("Metric (m)");
@@ -506,9 +507,9 @@ public class MPGenController {
             grid.add(radImperial, 0, 0);
             grid.add(radMetric, 0, 1);
 
-            radImperial.setId("test");
+            radImperial.setToggleGroup(radGroup);
             radImperial.selectedProperty().set(true);
-            radMetric.setId("test");
+            radMetric.setToggleGroup(radGroup);
 
             unitsSelector.getDialogPane().setContent(grid);
 
