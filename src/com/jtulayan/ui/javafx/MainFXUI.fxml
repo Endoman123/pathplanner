@@ -166,7 +166,7 @@
                            </rowConstraints>
                            <children>
                               <Button fx:id="btnAddPoint" alignment="CENTER" minWidth="-Infinity" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#showAddPointDialog" text="Add Point" textAlignment="CENTER" GridPane.halignment="CENTER" />
-                              <Button fx:id="btnClearPoints" alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#showClearPointsDialog" text="Clear Points" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                              <Button fx:id="btnClearPoints" alignment="CENTER" disable="true" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#showClearPointsDialog" text="Clear Points" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                               <Button fx:id="btnDelete" alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#deletePoints" text="Delete Selected" textAlignment="CENTER" GridPane.columnIndex="2" />
                               <TableView fx:id="tblWaypoints" editable="true" prefHeight="160.0" prefWidth="304.0" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                 <columns>

@@ -312,7 +312,10 @@ public class MPGenController {
         );
 
         waypointsList = FXCollections.observableList(backend.getWaypointsList());
-        waypointsList.addListener((ListChangeListener<Waypoint>) c -> generateTrajectories());
+        waypointsList.addListener((ListChangeListener<Waypoint>) c -> {
+            btnClearPoints.setDisable(waypointsList.size() == 0);
+            generateTrajectories();
+        });
 
         tblWaypoints.setItems(waypointsList);
         tblWaypoints.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
