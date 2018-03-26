@@ -17,7 +17,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -27,10 +26,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox fx:id="root" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jtulayan.ui.javafx.MPGenController">
   <children>
-    <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="1052.0">
+    <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="1052.0" VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
@@ -81,11 +79,11 @@
         </Menu>
       </menus>
     </MenuBar>
-      <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0">
+      <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" VBox.vgrow="ALWAYS">
          <children>
-            <VBox alignment="CENTER_LEFT" prefHeight="650.0" prefWidth="361.0" spacing="10.0">
+            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="705.0" prefWidth="420.0" spacing="10.0" HBox.hgrow="NEVER">
                <children>
-                  <TitledPane alignment="BOTTOM_CENTER" animated="false" collapsible="false" contentDisplay="BOTTOM" prefHeight="327.0" prefWidth="357.0" text="Motion Variables" textAlignment="CENTER" underline="true">
+                  <TitledPane alignment="BOTTOM_CENTER" animated="false" collapsible="false" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Motion Variables" textAlignment="CENTER" underline="true">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -163,20 +161,20 @@
                         </GridPane>
                      </content>
                   </TitledPane>
-                  <TitledPane alignment="BOTTOM_CENTER" animated="false" collapsible="false" contentDisplay="BOTTOM" layoutX="10.0" layoutY="10.0" prefHeight="324.0" prefWidth="348.0" text="Waypoints" textAlignment="CENTER" underline="true">
+                  <TitledPane alignment="BOTTOM_CENTER" animated="false" collapsible="false" contentDisplay="BOTTOM" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Waypoints" textAlignment="CENTER" underline="true">
                      <font>
                         <Font size="15.0" />
                      </font>
                      <content>
-                        <GridPane alignment="CENTER" hgap="10.0" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="342.0" prefWidth="346.0">
+                        <GridPane alignment="CENTER" hgap="10.0" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="342.0" prefWidth="346.0" vgap="20.0">
                            <columnConstraints>
-                              <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="28.0" prefWidth="100.0" />
-                              <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="33.0" prefWidth="100.0" />
-                              <ColumnConstraints halignment="CENTER" minWidth="10.0" percentWidth="38.999999" prefWidth="100.0" />
+                              <ColumnConstraints halignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="-Infinity" percentWidth="33.3333" />
+                              <ColumnConstraints halignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="-Infinity" percentWidth="33.3333" />
+                              <ColumnConstraints halignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="-Infinity" percentWidth="33.3333" />
                            </columnConstraints>
                            <rowConstraints>
-                              <RowConstraints maxHeight="92.0" minHeight="0.0" percentHeight="20.0" prefHeight="21.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="236.0" minHeight="10.0" prefHeight="232.0" vgrow="SOMETIMES" />
+                              <RowConstraints fillHeight="false" maxHeight="1.7976931348623157E308" minHeight="-Infinity" percentHeight="0.0" valignment="CENTER" vgrow="NEVER" />
+                              <RowConstraints maxHeight="296.0" minHeight="10.0" prefHeight="267.0" vgrow="ALWAYS" />
                            </rowConstraints>
                            <children>
                               <Button fx:id="btnAddPoint" alignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#showAddPointDialog" text="Add Point" textAlignment="CENTER" GridPane.halignment="CENTER" />
@@ -184,9 +182,9 @@
                               <Button fx:id="btnDelete" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#deletePoints" text="Delete Selected" textAlignment="CENTER" GridPane.columnIndex="2" />
                               <TableView fx:id="tblWaypoints" editable="true" prefHeight="160.0" prefWidth="304.0" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                 <columns>
-                                  <TableColumn fx:id="colWaypointX" prefWidth="102.0" resizable="false" sortable="false" text="X" />
-                                  <TableColumn fx:id="colWaypointY" prefWidth="102.0" resizable="false" sortable="false" text="Y" />
-                                    <TableColumn fx:id="colWaypointAngle" prefWidth="102.0" resizable="false" sortable="false" text="Angle" />
+                                  <TableColumn fx:id="colWaypointX" minWidth="-1.0" prefWidth="-1.0" sortable="false" text="X" />
+                                  <TableColumn fx:id="colWaypointY" minWidth="-1.0" prefWidth="-1.0" sortable="false" text="Y" />
+                                    <TableColumn fx:id="colWaypointAngle" minWidth="-1.0" prefWidth="-1.0" sortable="false" text="Angle" />
                                 </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -198,30 +196,29 @@
                   </TitledPane>
                </children>
             </VBox>
-            <TabPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="650.0" prefWidth="705.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="650.0" prefWidth="705.0" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS">
               <tabs>
                 <Tab text="Position View">
                      <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
                            <children>
-                              <LineChart fx:id="chtPosition" alternativeRowFillVisible="false" animated="false" axisSortingPolicy="NONE" createSymbols="false" legendSide="RIGHT" legendVisible="false" prefHeight="621.0" prefWidth="705.0">
+                              <LineChart fx:id="chtPosition" alternativeRowFillVisible="false" animated="false" axisSortingPolicy="NONE" createSymbols="false" legendSide="RIGHT" legendVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <xAxis>
-                                    <NumberAxis fx:id="axisPosX" autoRanging="false" label="X-Position (ft)" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="46.0" prefWidth="605.0" side="BOTTOM" tickUnit="1.0" upperBound="32.0" />
+                                    <NumberAxis fx:id="axisPosX" autoRanging="false" label="X-Position (ft)" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" side="BOTTOM" tickUnit="1.0" upperBound="32.0" />
                                  </xAxis>
                                  <yAxis>
-                                    <NumberAxis fx:id="axisPosY" autoRanging="false" label="Y-Position (ft)" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="526.0" prefWidth="43.0" side="LEFT" tickUnit="1.0" upperBound="27.0" />
+                                    <NumberAxis fx:id="axisPosY" autoRanging="false" label="Y-Position (ft)" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" side="LEFT" tickUnit="1.0" upperBound="27.0" />
                                  </yAxis>
                               </LineChart>
-                              <ImageView fx:id="imgOverlay" fitHeight="546.0" fitWidth="633.0" layoutX="58.0" layoutY="15.0" opacity="0.5" pickOnBounds="true" AnchorPane.leftAnchor="58.0" />
                            </children>
                         </AnchorPane>
                      </content>
                 </Tab>
                 <Tab text="Velocity View">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
                            <children>
-                              <LineChart fx:id="chtVelocity" animated="false" axisSortingPolicy="NONE" createSymbols="false" legendSide="RIGHT" prefHeight="603.0" prefWidth="677.0">
+                              <LineChart fx:id="chtVelocity" animated="false" axisSortingPolicy="NONE" createSymbols="false" prefHeight="603.0" prefWidth="677.0">
                                 <xAxis>
                                   <NumberAxis fx:id="axisTime" label="Time (s)" side="BOTTOM" />
                                 </xAxis>

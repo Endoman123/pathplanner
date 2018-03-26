@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -110,10 +111,6 @@ public class MPGenController {
             btnAddPoint,
             btnClearPoints,
             btnDelete;
-
-    @FXML
-    private ImageView
-            imgOverlay;
 
     private ObservableList<Waypoint> waypointsList;
 
@@ -640,8 +637,9 @@ public class MPGenController {
 
         result.ifPresent((ButtonType t) -> {
             if (t == ButtonType.OK) {
-                backend.clearWorkingFiles();
                 backend.resetValues();
+                backend.clearWorkingFiles();
+
                 waypointsList.clear();
 
                 updateFrontend();
@@ -846,8 +844,13 @@ public class MPGenController {
 
         if (!dir.isEmpty()) {
             try {
-                imgOverlay.setImage(new Image(new FileInputStream(dir)));
-            } catch (FileNotFoundException e) {
+                File img = new File(dir);
+                chtPosition.lookup(".chart-plot-background").setStyle(
+                        "-fx-background-image: url(" + img.toURI().toString() + ");" +
+                        "-fx-background-size: stretch;" +
+                        "-fx-background-position: top right;" +
+                        "-fx-background-repeat: no-repeat;");
+            } catch (Exception e) {
                 Alert alert = AlertFactory.createExceptionAlert(e);
 
                 alert.showAndWait();
