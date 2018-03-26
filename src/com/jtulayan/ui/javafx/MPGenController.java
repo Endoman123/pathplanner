@@ -485,7 +485,6 @@ public class MPGenController {
 
         if (result != null) {
             Dialog<ProfileGenerator.Units> unitsSelector = new Dialog<>();
-            ButtonType okButtonType = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
             Optional<ProfileGenerator.Units> unitsResult = null;
             GridPane grid = new GridPane();
             ToggleGroup radGroup = new ToggleGroup();
@@ -511,7 +510,7 @@ public class MPGenController {
             unitsSelector.getDialogPane().setContent(grid);
 
             // Add all buttons
-            unitsSelector.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+            unitsSelector.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
             unitsSelector.setResultConverter(buttonType -> {
                 if (buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                     if (radMetric.selectedProperty().getValue())
@@ -637,13 +636,16 @@ public class MPGenController {
 
         result.ifPresent((ButtonType t) -> {
             if (t == ButtonType.OK) {
-                backend.resetValues();
                 backend.clearWorkingFiles();
+                backend.resetValues();
+
+                System.out.println("Backend: " + backend.getTimeStep());
 
                 waypointsList.clear();
-
                 updateFrontend();
                 updateChartAxes();
+
+                System.out.println("You: " + txtTimeStep.getText());
 
                 mnuFileSave.setDisable(true);
             }
@@ -846,10 +848,11 @@ public class MPGenController {
             try {
                 File img = new File(dir);
                 chtPosition.lookup(".chart-plot-background").setStyle(
-                        "-fx-background-image: url(" + img.toURI().toString() + ");" +
-                        "-fx-background-size: stretch;" +
-                        "-fx-background-position: top right;" +
-                        "-fx-background-repeat: no-repeat;");
+                    "-fx-background-image: url(" + img.toURI().toString() + ");" +
+                    "-fx-background-size: stretch;" +
+                    "-fx-background-position: top right;" +
+                    "-fx-background-repeat: no-repeat;"
+                );
             } catch (Exception e) {
                 Alert alert = AlertFactory.createExceptionAlert(e);
 

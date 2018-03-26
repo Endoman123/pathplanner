@@ -18,7 +18,7 @@ public class Client extends Application {
         Pane root = FXMLLoader.load(getClass().getResource("/com/jtulayan/ui/javafx/MainFXUI.fxml"));
         primaryStage.setTitle("Mercury Motion Profile Generator");
         primaryStage.setScene(new Scene(root));
-        primaryStage.setResizable(true);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
