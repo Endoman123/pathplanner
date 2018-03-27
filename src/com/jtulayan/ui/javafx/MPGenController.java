@@ -639,13 +639,9 @@ public class MPGenController {
                 backend.clearWorkingFiles();
                 backend.resetValues();
 
-                System.out.println("Backend: " + backend.getTimeStep());
-
-                waypointsList.clear();
                 updateFrontend();
+                waypointsList.clear();
                 updateChartAxes();
-
-                System.out.println("You: " + txtTimeStep.getText());
 
                 mnuFileSave.setDisable(true);
             }
