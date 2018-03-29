@@ -4,6 +4,7 @@ import com.jtulayan.main.ProfileGenerator;
 import com.jtulayan.ui.javafx.factory.AlertFactory;
 import com.jtulayan.ui.javafx.factory.DialogFactory;
 import com.jtulayan.ui.javafx.factory.SeriesFactory;
+import com.jtulayan.util.Mathf;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
@@ -16,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -26,17 +28,22 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
+import org.apache.commons.math3.util.MathUtils;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 
 public class MPGenController {
     private ProfileGenerator backend;
@@ -291,7 +298,7 @@ public class MPGenController {
             new ObservableValueBase<Double>() {
                 @Override
                 public Double getValue() {
-                    return Pathfinder.r2d(d.getValue().angle);
+                    return Mathf.round(Pathfinder.r2d(d.getValue().angle), 2);
                 }
             }
         );
@@ -585,6 +592,18 @@ public class MPGenController {
         result = waypointDialog.showAndWait();
 
         result.ifPresent((Waypoint w) -> waypointsList.add(w));
+    }
+
+    @FXML
+    private void addPointOnClick(MouseEvent event) {
+        Point2D mouseSceneCoords = new Point2D(event.getSceneX(), event.getSceneY());
+        double xLocal = axisPosX.sceneToLocal(mouseSceneCoords).getX();
+        double yLocal = axisPosY.sceneToLocal(mouseSceneCoords).getY();
+
+        double x = Mathf.round(axisPosX.getValueForDisplay(xLocal).doubleValue(), 2);
+        double y = Mathf.round(axisPosY.getValueForDisplay(yLocal).doubleValue(), 2);
+
+        waypointsList.add(new Waypoint(x, y, 0));
     }
 
     @FXML
