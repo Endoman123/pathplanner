@@ -1,7 +1,6 @@
 package com.jtulayan.ui.javafx.dialog;
 
-import com.jtulayan.main.PropWrapper;
-import com.sun.javafx.collections.ObservableListWrapper;
+import com.jtulayan.ui.javafx.PropWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,7 +10,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Properties;
 
 public class SettingsDialogController {

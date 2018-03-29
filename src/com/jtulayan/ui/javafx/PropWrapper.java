@@ -1,4 +1,4 @@
-package com.jtulayan.main;
+package com.jtulayan.ui.javafx;
 
 import java.io.*;
 import java.util.Properties;
