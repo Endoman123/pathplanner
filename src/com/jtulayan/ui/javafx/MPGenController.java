@@ -2,24 +2,21 @@ package com.jtulayan.ui.javafx;
 
 import com.jtulayan.main.ProfileGenerator;
 import com.jtulayan.main.PropWrapper;
+import com.jtulayan.ui.javafx.factory.AlertFactory;
+import com.jtulayan.ui.javafx.factory.SeriesFactory;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -30,23 +27,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.tools.Tool;
 import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 
@@ -768,35 +757,60 @@ public class MPGenController {
         // Clear data from position graph
         chtPosition.getData().clear();
 
-        if (waypointsList.size() > 1) {
-            SegmentSeries
-                    fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
-                    fr = new SegmentSeries(backend.getFrontRightTrajectory());
+        XYChart.Series<Double, Double> waypointSeries;
 
+        if (waypointsList.size() > 1) {
             XYChart.Series<Double, Double>
-                    flSeries = fl.getPositionSeries(),
-                    frSeries = fr.getPositionSeries();
+                    flSeries = SeriesFactory.buildPositionSeries(backend.getFrontLeftTrajectory()),
+                    frSeries = SeriesFactory.buildPositionSeries(backend.getFrontRightTrajectory());
 
             if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
-                SegmentSeries
-                        bl = new SegmentSeries(backend.getBackLeftTrajectory()),
-                        br = new SegmentSeries(backend.getBackRightTrajectory());
-
                 XYChart.Series<Double, Double>
-                        blSeries = bl.getPositionSeries(),
-                        brSeries = br.getPositionSeries();
+                        blSeries = SeriesFactory.buildPositionSeries(backend.getBackLeftTrajectory()),
+                        brSeries = SeriesFactory.buildPositionSeries(backend.getBackRightTrajectory());
 
                 chtPosition.getData().addAll(blSeries, brSeries, flSeries, frSeries);
                 flSeries.getNode().setStyle("-fx-stroke: red");
                 frSeries.getNode().setStyle("-fx-stroke: red");
                 blSeries.getNode().setStyle("-fx-stroke: blue");
                 brSeries.getNode().setStyle("-fx-stroke: blue");
+
+                for (XYChart.Data<Double, Double> data : blSeries.getData())
+                    data.getNode().setVisible(false);
+
+                for (XYChart.Data<Double, Double> data : brSeries.getData())
+                    data.getNode().setVisible(false);
             } else {
                 chtPosition.getData().addAll(flSeries, frSeries);
 
                 flSeries.getNode().setStyle("-fx-stroke: magenta");
                 frSeries.getNode().setStyle("-fx-stroke: magenta");
             }
+
+            for (XYChart.Data<Double, Double> data : flSeries.getData())
+                data.getNode().setVisible(false);
+
+            for (XYChart.Data<Double, Double> data : frSeries.getData())
+                data.getNode().setVisible(false);
+        }
+
+        if (!waypointsList.isEmpty()) {
+            waypointSeries = SeriesFactory.buildWaypointsSeries(waypointsList.toArray(new Waypoint[1]));
+
+            if (waypointsList.size() > 1) {
+                XYChart.Series<Double, Double> sourceSeries =
+                        SeriesFactory.buildPositionSeries(backend.getSourceTrajectory());
+                chtPosition.getData().add(sourceSeries);
+                sourceSeries.getNode().setStyle("-fx-stroke: orange");
+
+                for (XYChart.Data<Double, Double> data : sourceSeries.getData())
+                    data.getNode().setVisible(false);
+            }
+
+            chtPosition.getData().add(waypointSeries);
+            waypointSeries.getNode().setStyle("-fx-stroke: transparent");
+            for (XYChart.Data<Double, Double> data : waypointSeries.getData())
+                data.getNode().setStyle("-fx-background-color: orange, white");
         }
     }
 
@@ -805,24 +819,16 @@ public class MPGenController {
         chtVelocity.getData().clear();
 
         if (waypointsList.size() > 1) {
-            SegmentSeries
-                    fl = new SegmentSeries(backend.getFrontLeftTrajectory()),
-                    fr = new SegmentSeries(backend.getFrontRightTrajectory());
-
             XYChart.Series<Double, Double>
-                    flSeries = fl.getVelocitySeries(),
-                    frSeries = fr.getVelocitySeries();
+                    flSeries = SeriesFactory.buildVelocitySeries(backend.getFrontLeftTrajectory()),
+                    frSeries = SeriesFactory.buildVelocitySeries(backend.getFrontRightTrajectory());
 
             chtVelocity.getData().addAll(flSeries, frSeries);
 
             if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
-                SegmentSeries
-                        bl = new SegmentSeries(backend.getBackLeftTrajectory()),
-                        br = new SegmentSeries(backend.getBackRightTrajectory());
-
                 XYChart.Series<Double, Double>
-                        blSeries = bl.getVelocitySeries(),
-                        brSeries = br.getVelocitySeries();
+                        blSeries = SeriesFactory.buildVelocitySeries(backend.getBackLeftTrajectory()),
+                        brSeries = SeriesFactory.buildVelocitySeries(backend.getBackRightTrajectory());
 
                 chtVelocity.getData().addAll(blSeries, brSeries);
 

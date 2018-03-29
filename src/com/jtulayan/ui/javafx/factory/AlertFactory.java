@@ -1,4 +1,4 @@
-package com.jtulayan.ui.javafx;
+package com.jtulayan.ui.javafx.factory;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
