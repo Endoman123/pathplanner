@@ -1,7 +1,8 @@
-package com.jtulayan.ui.javafx;
+package com.jtulayan.ui.javafx.dialog;
 
 import com.jtulayan.main.PropWrapper;
 import com.sun.javafx.collections.ObservableListWrapper;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -23,6 +24,9 @@ public class SettingsDialogController {
     @FXML
     private Button btnChooseOverlay;
 
+    @FXML
+    private ChoiceBox<String> choSourceDisplay;
+
     private Properties properties;
 
     @FXML
@@ -30,6 +34,9 @@ public class SettingsDialogController {
         properties = PropWrapper.getProperties();
 
         txtOverlayDir.setText(properties.getProperty("ui.overlayDir", ""));
+
+        choSourceDisplay.setItems(FXCollections.observableArrayList("None", "Waypoints only", "Waypoints + Source"));
+        choSourceDisplay.getSelectionModel().select(Integer.parseInt(properties.getProperty("ui.sourceDisplay", "2")));
     }
 
     @FXML

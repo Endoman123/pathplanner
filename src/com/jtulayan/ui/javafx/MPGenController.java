@@ -3,6 +3,7 @@ package com.jtulayan.ui.javafx;
 import com.jtulayan.main.ProfileGenerator;
 import com.jtulayan.main.PropWrapper;
 import com.jtulayan.ui.javafx.factory.AlertFactory;
+import com.jtulayan.ui.javafx.factory.DialogFactory;
 import com.jtulayan.ui.javafx.factory.SeriesFactory;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
@@ -315,23 +316,8 @@ public class MPGenController {
 
     @FXML
     private void showSettingsDialog() {
-        Dialog<Boolean> settingsDialog = new Dialog<>();
+        Dialog<Boolean> settingsDialog = DialogFactory.createSettingsDialog();
         Optional<Boolean> result = null;
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SettingsDialog.fxml"));
-            settingsDialog.setDialogPane(loader.load());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Some header stuff
-        settingsDialog.setTitle("Settings");
-        settingsDialog.setHeaderText("Manage settings");
-
-        settingsDialog.setResultConverter((ButtonType buttonType) ->
-                buttonType.getButtonData() == ButtonBar.ButtonData.APPLY
-        );
 
         // Wait for the result
         result = settingsDialog.showAndWait();
@@ -343,9 +329,15 @@ public class MPGenController {
 
                     String overlayDir = ((TextField) pane.lookup("#txtOverlayDir")).getText().trim();
 
+                    int sourceDisplay = ((ChoiceBox<String>) pane.lookup("#choSourceDisplay"))
+                            .getSelectionModel()
+                            .getSelectedIndex();
+
                     properties.setProperty("ui.overlayDir", overlayDir);
+                    properties.setProperty("ui.sourceDisplay", "" + sourceDisplay);
 
                     updateOverlayImg();
+                    repopulatePosChart();
                     PropWrapper.storeProperties();
                 } catch (IOException e) {
                     Alert alert = AlertFactory.createExceptionAlert(e);
@@ -754,11 +746,12 @@ public class MPGenController {
     }
 
     private void repopulatePosChart() {
+        XYChart.Series<Double, Double> waypointSeries;
+
         // Clear data from position graph
         chtPosition.getData().clear();
 
-        XYChart.Series<Double, Double> waypointSeries;
-
+        // Start by drawing drive train trajectories
         if (waypointsList.size() > 1) {
             XYChart.Series<Double, Double>
                     flSeries = SeriesFactory.buildPositionSeries(backend.getFrontLeftTrajectory()),
@@ -794,10 +787,14 @@ public class MPGenController {
                 data.getNode().setVisible(false);
         }
 
-        if (!waypointsList.isEmpty()) {
+        String srcDisplayStr = properties.getProperty("ui.sourceDisplay", "2");
+        int sourceDisplay = Integer.parseInt(srcDisplayStr);
+
+        // Draw source (center) trajectory and waypoints on top of everything
+        if (!waypointsList.isEmpty() && sourceDisplay > 0) {
             waypointSeries = SeriesFactory.buildWaypointsSeries(waypointsList.toArray(new Waypoint[1]));
 
-            if (waypointsList.size() > 1) {
+            if (waypointsList.size() > 1 && sourceDisplay == 2) {
                 XYChart.Series<Double, Double> sourceSeries =
                         SeriesFactory.buildPositionSeries(backend.getSourceTrajectory());
                 chtPosition.getData().add(sourceSeries);
