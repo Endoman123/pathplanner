@@ -34,7 +34,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
-import org.apache.commons.math3.util.MathUtils;
 
 import java.awt.*;
 import java.io.File;
@@ -306,7 +305,8 @@ public class MPGenController {
         waypointsList = FXCollections.observableList(backend.getWaypointsList());
         waypointsList.addListener((ListChangeListener<Waypoint>) c -> {
             btnClearPoints.setDisable(waypointsList.size() == 0);
-            generateTrajectories();
+            if (!generateTrajectories())
+                waypointsList.remove(waypointsList.size());
         });
 
         tblWaypoints.setItems(waypointsList);
@@ -695,12 +695,10 @@ public class MPGenController {
     }
 
     @FXML
-    private void openGithubPage() {
-        try {
-            Desktop.getDesktop().browse(new URI("https://github.com/Endoman123/motion-profile-generator"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void openAboutDialog() {
+        Dialog<Boolean> aboutDialog = DialogFactory.createAboutDialog();
+
+        aboutDialog.showAndWait();
     }
 
     @FXML

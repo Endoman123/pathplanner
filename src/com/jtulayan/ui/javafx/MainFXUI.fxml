@@ -74,7 +74,7 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
-            <MenuItem fx:id="mnuHelpAbout" mnemonicParsing="false" onAction="#openGithubPage" text="About" />
+            <MenuItem fx:id="mnuHelpAbout" mnemonicParsing="false" onAction="#openAboutDialog" text="About" />
           </items>
         </Menu>
       </menus>

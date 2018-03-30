@@ -4,6 +4,7 @@ plugins {
 }
 
 mainClassName = "com.jtulayan.main.Client"
+def version = "1.4.0"
 
 sourceSets {
     main.java {
@@ -27,8 +28,6 @@ dependencies {
     compile 'com.opencsv:opencsv:4.1'
     compile 'xerces:xercesImpl:2.11.0'
     compile 'commons-cli:commons-cli:1.4'
-    compile 'org.apache.commons:commons-math3:3.6.1'
-
 }
 
 jar {
@@ -36,6 +35,7 @@ jar {
     // Set up manifest to point the main class to the right class.
     manifest {
         attributes 'Main-Class': mainClassName
+        attributes 'Version': version
     }
 }
 
