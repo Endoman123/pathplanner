@@ -307,6 +307,9 @@ public class ProfileGenerator {
                     Math.toRadians(Double.parseDouble(waypointVals[2].trim()))
                 ));
             }
+
+            // Make sure you aren't trying to save to another project file
+            clearWorkingFiles();
         }
     }
 

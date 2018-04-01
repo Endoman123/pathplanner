@@ -517,6 +517,8 @@ public class MPGenController {
 
                     updateFrontend();
                     generateTrajectories();
+
+                    mnuFileSave.setDisable(!backend.hasWorkingProject());
                 } catch (Exception e) {
                     Alert alert = AlertFactory.createExceptionAlert(e);
 

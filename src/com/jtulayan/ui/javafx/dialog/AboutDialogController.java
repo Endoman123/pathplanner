@@ -8,14 +8,14 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 
 import java.awt.*;
-import java.io.IOException;
-import java.net.JarURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+/**
+ * Controller for the About dialog
+ * Mainly just to initialize the links and version number
+ */
 public class AboutDialogController {
     @FXML
     private Label lblVersion;
