@@ -60,40 +60,38 @@ public class MPGenCLI {
         File exportDir = new File(out);
 
         try {
-            if (exportDir.mkdirs()) {
-                System.out.println("Exporting " + in.length + " files!");
-                for (String projectDir : in) {
-                    // Clear backend
-                    backend.resetValues();
-                    backend.clearPoints();
-                    backend.clearWorkingFiles();
+            exportDir.mkdirs();
 
-                    if (isProjectFile(projectDir)) {
-                        File curProj = new File(projectDir);
-                        String exportName = curProj.getName();
-                        exportName = exportName.substring(0, exportName.lastIndexOf('.')).trim();
+            System.out.println("Exporting " + in.length + " files!");
+            for (String projectDir : in) {
+                // Clear backend
+                backend.resetValues();
+                backend.clearPoints();
+                backend.clearWorkingFiles();
 
-                        System.out.println("Loading " + exportName + "...");
-                        backend.loadProject(curProj);
+                if (isProjectFile(projectDir)) {
+                    File curProj = new File(projectDir);
+                    String exportName = curProj.getName();
+                    exportName = exportName.substring(0, exportName.lastIndexOf('.')).trim();
 
-                        if (backend.hasWorkingProject()) {
-                            if (backend.getWaypointsSize() > 1) {
-                                System.out.println("Exporting " + curProj + "...");
-                                backend.exportTrajectories(new File(exportDir, exportName), "." + ext);
-                            } else {
-                                System.out.println("Project " + curProj + " has less than 2 waypoints! Skipping....");
-                                System.out.println(backend.getWaypointsList());
-                            }
+                    System.out.println("Loading " + exportName + "...");
+                    backend.loadProject(curProj);
+
+                    if (backend.hasWorkingProject()) {
+                        if (backend.getWaypointsSize() > 1) {
+                            System.out.println("Exporting " + curProj + "...");
+                            backend.exportTrajectories(new File(exportDir, exportName), "." + ext);
                         } else {
-                            System.out.println("Failed to load " + curProj + "! Skipping....");
+                            System.out.println("Project " + curProj + " has less than 2 waypoints! Skipping....");
+                            System.out.println(backend.getWaypointsList());
                         }
+                    } else {
+                        System.out.println("Failed to load " + curProj + "! Skipping....");
                     }
                 }
-            } else {
-                throw new IllegalArgumentException("Invalid export directory!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Invalid export directory!", e);
         }
     }
 
