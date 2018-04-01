@@ -60,7 +60,7 @@ public class MPGenCLI {
         File exportDir = new File(out);
 
         try {
-            if (exportDir.isDirectory()) {
+            if (exportDir.mkdirs()) {
                 System.out.println("Exporting " + in.length + " files!");
                 for (String projectDir : in) {
                     // Clear backend
