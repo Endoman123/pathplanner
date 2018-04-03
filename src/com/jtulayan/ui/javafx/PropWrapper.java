@@ -35,6 +35,6 @@ public class PropWrapper {
     }
 
     public static void storeProperties() throws IOException {
-        propInstance.store(new FileOutputStream(propFile), "Properites");
+        propInstance.store(new FileOutputStream(propFile), "Properties");
     }
 }
