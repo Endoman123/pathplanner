@@ -4,6 +4,7 @@ import com.jtulayan.ui.javafx.PropWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -25,6 +26,9 @@ public class SettingsDialogController {
     @FXML
     private ChoiceBox<String> choSourceDisplay;
 
+    @FXML
+    private CheckBox chkAddWaypointOnClick;
+
     private Properties properties;
 
     @FXML
@@ -35,6 +39,8 @@ public class SettingsDialogController {
 
         choSourceDisplay.setItems(FXCollections.observableArrayList("None", "Waypoints only", "Waypoints + Source"));
         choSourceDisplay.getSelectionModel().select(Integer.parseInt(properties.getProperty("ui.sourceDisplay", "2")));
+
+        chkAddWaypointOnClick.setSelected(Boolean.parseBoolean(properties.getProperty("ui.addWaypointOnClick", "false")));
     }
 
     @FXML

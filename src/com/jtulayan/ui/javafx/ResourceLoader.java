@@ -28,8 +28,6 @@ public class ResourceLoader {
 
         try {
             mf.read(getResourceAsStream("/META-INF/MANIFEST.MF"));
-
-            System.out.println(Arrays.toString(mf.getEntries().entrySet().toArray()));
         } catch (IOException e) {
             e.printStackTrace();
         }
