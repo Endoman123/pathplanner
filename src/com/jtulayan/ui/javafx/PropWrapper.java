@@ -9,7 +9,7 @@ public class PropWrapper {
 
     private static final String PROP_NAME = "mpg";
     private static final String DIR_NAME = "motion-profile-generator";
-    private static final File APPDATA_DIR = new File(System.getProperty("user.home") + "\\." + DIR_NAME);
+    private static final File APPDATA_DIR = new File(System.getProperty("user.home") + File.separator + "." + DIR_NAME);
 
     public static Properties getProperties() {
         if (propInstance == null) {
@@ -37,6 +37,6 @@ public class PropWrapper {
     }
 
     public static void storeProperties() throws IOException {
-        propInstance.store(new FileOutputStream(propFile), "Properites");
+        propInstance.store(new FileOutputStream(propFile), "Properties");
     }
 }
