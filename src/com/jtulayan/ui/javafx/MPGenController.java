@@ -533,65 +533,8 @@ public class MPGenController {
 
     @FXML
     private void showAddPointDialog() {
-        Dialog<Waypoint> waypointDialog = new Dialog<>();
-        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        Dialog<Waypoint> waypointDialog = DialogFactory.createWaypointDialog();
         Optional<Waypoint> result = null;
-        GridPane grid = new GridPane();
-        TextField
-                txtWX = new TextField(),
-                txtWY = new TextField(),
-                txtWA = new TextField();
-
-        // Some header stuff
-        waypointDialog.setTitle("Add Point");
-        waypointDialog.setHeaderText("Add a new waypoint");
-
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        grid.add(new Label("X:"), 0, 0);
-        grid.add(txtWX, 1, 0);
-        grid.add(new Label("Y:"), 0, 1);
-        grid.add(txtWY, 1, 1);
-        grid.add(new Label("Angle:"), 0, 2);
-        grid.add(txtWA, 1, 2);
-
-        waypointDialog.getDialogPane().setContent(grid);
-
-        // Add all buttons
-        waypointDialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
-        waypointDialog.getDialogPane().lookupButton(addButtonType).addEventFilter(ActionEvent.ACTION, ae -> {
-            try {
-                Double.parseDouble(txtWX.getText().trim());
-                Double.parseDouble(txtWY.getText().trim());
-                Double.parseDouble(txtWA.getText().trim());
-            } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-
-                alert.setTitle("Invalid Point!");
-                alert.setHeaderText("Invalid point input!");
-                alert.setContentText("Please check your fields and try again.");
-
-                Toolkit.getDefaultToolkit().beep();
-                alert.showAndWait();
-                ae.consume();
-            }
-        });
-
-
-        waypointDialog.setResultConverter((ButtonType buttonType) -> {
-            if (buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-                double
-                        x = Double.parseDouble(txtWX.getText().trim()),
-                        y = Double.parseDouble(txtWY.getText().trim()),
-                        angle = Double.parseDouble(txtWA.getText().trim());
-
-                return new Waypoint(x, y, Pathfinder.d2r(angle));
-            }
-
-            return null;
-        });
 
         // Wait for the result
         result = waypointDialog.showAndWait();
