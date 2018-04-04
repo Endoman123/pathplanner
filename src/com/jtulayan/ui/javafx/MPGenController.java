@@ -338,8 +338,11 @@ public class MPGenController {
                             .getSelectionModel()
                             .getSelectedIndex();
 
+                    boolean addWaypointOnClick = ((CheckBox) pane.lookup("#chkAddWaypointOnClick")).isSelected();
+
                     properties.setProperty("ui.overlayDir", overlayDir);
                     properties.setProperty("ui.sourceDisplay", "" + sourceDisplay);
+                    properties.setProperty("ui.addWaypointOnClick", "" + addWaypointOnClick);
 
                     updateOverlayImg();
                     repopulatePosChart();
@@ -598,14 +601,22 @@ public class MPGenController {
 
     @FXML
     private void addPointOnClick(MouseEvent event) {
-        Point2D mouseSceneCoords = new Point2D(event.getSceneX(), event.getSceneY());
-        double xLocal = axisPosX.sceneToLocal(mouseSceneCoords).getX();
-        double yLocal = axisPosY.sceneToLocal(mouseSceneCoords).getY();
+        boolean addWaypointOnClick = Boolean.parseBoolean(
+                properties.getProperty("ui.addWaypointOnClick", "false")
+        );
 
-        double x = Mathf.round(axisPosX.getValueForDisplay(xLocal).doubleValue(), 2);
-        double y = Mathf.round(axisPosY.getValueForDisplay(yLocal).doubleValue(), 2);
+        if (addWaypointOnClick) {
+            Point2D mouseSceneCoords = new Point2D(event.getSceneX(), event.getSceneY());
+            double xLocal = axisPosX.sceneToLocal(mouseSceneCoords).getX();
+            double yLocal = axisPosY.sceneToLocal(mouseSceneCoords).getY();
 
-        waypointsList.add(new Waypoint(x, y, 0));
+            double x = Mathf.round(axisPosX.getValueForDisplay(xLocal).doubleValue(), 2);
+            double y = Mathf.round(axisPosY.getValueForDisplay(yLocal).doubleValue(), 2);
+
+            waypointsList.add(new Waypoint(x, y, 0));
+        } else {
+            event.consume();
+        }
     }
 
     @FXML

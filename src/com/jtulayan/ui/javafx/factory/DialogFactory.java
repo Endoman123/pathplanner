@@ -27,6 +27,8 @@ public class DialogFactory {
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         }
 
+        dialog.setTitle("About");
+
         return dialog;
     }
 

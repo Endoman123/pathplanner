@@ -23,6 +23,8 @@ public class PropWrapper {
                     propFile.createNewFile();
 
                     propInstance.put("ui.overlayImg", "");
+                    propInstance.put("ui.sourceDisplay", "2");
+                    propInstance.put("ui.addWaypointOnClick", "false");
                 }
 
                 propInstance.load(new FileInputStream(propFile));

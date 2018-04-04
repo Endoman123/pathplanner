@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
@@ -33,6 +34,7 @@
             <Button fx:id="btnChooseOverlay" mnemonicParsing="false" onAction="#showChooseOverlayDialog" text="Find image..." GridPane.columnIndex="2" />
             <ChoiceBox fx:id="choSourceDisplay" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label layoutX="38.0" layoutY="31.0" text="Source Trajectory Display:" GridPane.rowIndex="1" />
+            <CheckBox fx:id="chkAddWaypointOnClick" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Add waypoints on click" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
    </content>
