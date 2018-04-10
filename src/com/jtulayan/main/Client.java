@@ -8,16 +8,25 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.apache.commons.cli.*;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.awt.*;
 
 public class Client extends Application {
     private static CommandLine cmd;
     @Override
     public void start(Stage primaryStage) throws Exception {
         Pane root = FXMLLoader.load(getClass().getResource("/com/jtulayan/ui/javafx/MainFXUI.fxml"));
+        Scene scene = new Scene(root);
+        Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = res.width - 269;
+        int height = res.height - 111;
+
+        primaryStage.setScene(scene);
         primaryStage.setTitle("Mercury Motion Profile Generator");
-        primaryStage.setScene(new Scene(root));
+
+        primaryStage.setWidth(width);
+        primaryStage.setHeight(height);
+        primaryStage.centerOnScreen();
+
         primaryStage.setResizable(false);
         primaryStage.show();
     }

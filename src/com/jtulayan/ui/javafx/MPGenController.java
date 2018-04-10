@@ -285,12 +285,12 @@ public class MPGenController {
         );
 
         colWaypointY.setCellValueFactory((TableColumn.CellDataFeatures<Waypoint, Double> d) ->
-            new ObservableValueBase<Double>() {
-                @Override
-                public Double getValue() {
-                    return d.getValue().y;
+                new ObservableValueBase<Double>() {
+                    @Override
+                    public Double getValue() {
+                        return d.getValue().y;
+                    }
                 }
-           }
         );
 
         colWaypointAngle.setCellValueFactory((TableColumn.CellDataFeatures<Waypoint, Double> d) ->
