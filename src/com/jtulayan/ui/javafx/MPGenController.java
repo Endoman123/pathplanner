@@ -28,6 +28,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -318,6 +319,15 @@ public class MPGenController {
         tblWaypoints.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) ->
                 btnDelete.setDisable(tblWaypoints.getSelectionModel().getSelectedIndices().get(0) == -1)
         );
+
+        tblWaypoints.setOnKeyPressed(event -> {
+            KeyCode code = event.getCode();
+            if (code.equals(KeyCode.INSERT)) {
+                showAddPointDialog();
+            } else if (code.equals(KeyCode.DELETE)) {
+                deletePoints();
+            }
+        });
 
         updateOverlayImg();
         updateFrontend();
