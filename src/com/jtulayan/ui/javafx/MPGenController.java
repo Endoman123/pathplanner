@@ -52,12 +52,12 @@ public class MPGenController {
 
     @FXML
     private TextField
-            txtTimeStep,
-            txtVelocity,
-            txtAcceleration,
-            txtJerk,
-            txtWheelBaseW,
-            txtWheelBaseD;
+        txtTimeStep,
+        txtVelocity,
+        txtAcceleration,
+        txtJerk,
+        txtWheelBaseW,
+        txtWheelBaseD;
 
     @FXML
     private Label
@@ -68,8 +68,8 @@ public class MPGenController {
 
     @FXML
     private LineChart<Double, Double>
-            chtPosition,
-            chtVelocity;
+        chtPosition,
+        chtVelocity;
 
     @FXML
     private NumberAxis
@@ -110,10 +110,14 @@ public class MPGenController {
 
     private Properties properties;
 
+    private File workingDirectory;
+
     @FXML
     public void initialize() {
         backend = new ProfileGenerator();
         properties = PropWrapper.getProperties();
+
+        workingDirectory = new File(properties.getProperty("file.workingDir", System.getProperty("user.dir")));
 
         btnDelete.setDisable(true);
 
@@ -317,6 +321,15 @@ public class MPGenController {
 
         updateOverlayImg();
         updateFrontend();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            properties.setProperty("file.workingDir", workingDirectory.getAbsolutePath());
+            try {
+                PropWrapper.storeProperties();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }));
     }
 
     @FXML
@@ -370,7 +383,7 @@ public class MPGenController {
     private void showSaveAsDialog() {
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setInitialDirectory(workingDirectory);
         fileChooser.setTitle("Save As");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Extensive Markup Language", "*.xml")
@@ -380,6 +393,8 @@ public class MPGenController {
 
         if (result != null)
             try {
+                workingDirectory = result.getParentFile();
+
                 backend.saveProjectAs(result);
 
                 mnuFileSave.setDisable(false);
@@ -394,7 +409,7 @@ public class MPGenController {
     private void showOpenDialog() {
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setInitialDirectory(workingDirectory);
         fileChooser.setTitle("Open Project");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Extensive Markup Language", "*.xml")
@@ -404,6 +419,7 @@ public class MPGenController {
 
         if (result != null) {
             try {
+                workingDirectory = result.getParentFile();
                 backend.loadProject(result);
 
                 updateFrontend();
@@ -464,7 +480,7 @@ public class MPGenController {
     private void showImportDialog() {
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setInitialDirectory(workingDirectory);
         fileChooser.setTitle("Import");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Vannaka Properties File", "*.bot")
@@ -480,6 +496,9 @@ public class MPGenController {
             RadioButton
                 radImperial = new RadioButton("Imperial (ft)"),
                 radMetric = new RadioButton("Metric (m)");
+
+            // Reset working directory
+            workingDirectory = result.getParentFile();
 
             // Some header stuff
             unitsSelector.setTitle("Select Units");
