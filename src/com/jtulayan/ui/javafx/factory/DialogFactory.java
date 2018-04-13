@@ -20,11 +20,14 @@ public class DialogFactory {
         Dialog<Boolean> dialog = new Dialog<>();
 
         try {
+            DialogPane pane = null;
             FXMLLoader loader = new FXMLLoader(
                     ResourceLoader.getResource("/com/jtulayan/ui/javafx/dialog/AboutDialog.fxml")
             );
 
-            dialog.setDialogPane(loader.load());
+            pane = loader.load();
+            pane.autosize();
+            dialog.setDialogPane(pane);
 
             dialog.setResultConverter((ButtonType buttonType) ->
                     buttonType.getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE
@@ -43,11 +46,14 @@ public class DialogFactory {
         Dialog<Boolean> dialog = new Dialog<>();
 
         try {
+            DialogPane pane = null;
             FXMLLoader loader = new FXMLLoader(
                     ResourceLoader.getResource("/com/jtulayan/ui/javafx/dialog/SettingsDialog.fxml")
             );
 
-            dialog.setDialogPane(loader.load());
+            pane = loader.load();
+            pane.autosize();
+            dialog.setDialogPane(pane);
 
             ((Button) dialog.getDialogPane().lookupButton(ButtonType.APPLY)).setDefaultButton(true);
             ((Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL)).setDefaultButton(false);
@@ -74,12 +80,14 @@ public class DialogFactory {
                     ResourceLoader.getResource("/com/jtulayan/ui/javafx/dialog/AddWaypointDialog.fxml")
             );
             ButtonType add = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
-            DialogPane root = loader.load();
+            DialogPane pane;
 
             AddWaypointDialogController controller = null;
             TextField txtWX, txtWY, txtWA;
 
-            dialog.setDialogPane(root);
+            pane = loader.load();
+            pane.autosize();
+            dialog.setDialogPane(pane);
 
             controller = loader.getController();
 
@@ -106,7 +114,7 @@ public class DialogFactory {
                 return null;
             });
 
-            root.lookupButton(add).addEventFilter(ActionEvent.ACTION, ae -> {
+            pane.lookupButton(add).addEventFilter(ActionEvent.ACTION, ae -> {
                 try {
                     Double.parseDouble(txtWX.getText().trim());
                     Double.parseDouble(txtWY.getText().trim());

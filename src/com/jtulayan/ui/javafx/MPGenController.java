@@ -575,7 +575,10 @@ public class MPGenController {
             double x = Mathf.round(axisPosX.getValueForDisplay(xLocal).doubleValue(), 2);
             double y = Mathf.round(axisPosY.getValueForDisplay(yLocal).doubleValue(), 2);
 
-            waypointsList.add(new Waypoint(x, y, 0));
+            if (x >= axisPosX.getLowerBound() && x <= axisPosX.getUpperBound() &&
+                y >= axisPosY.getLowerBound() && y <= axisPosY.getUpperBound())
+                waypointsList.add(new Waypoint(x, y, 0));
+
         } else {
             event.consume();
         }
