@@ -15,17 +15,18 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Pane root = FXMLLoader.load(getClass().getResource("/com/jtulayan/ui/javafx/MainFXUI.fxml"));
-        Scene scene = new Scene(root);
         Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = res.width - 269;
-        int height = res.height - 111;
-
-        primaryStage.setScene(scene);
+//        int width = res.width - 269;
+//        int height = res.height - 111;
+//
+        root.autosize();
+        primaryStage.setScene(new Scene(root));
+        primaryStage.sizeToScene();
         primaryStage.setTitle("Mercury Motion Profile Generator");
-
-        primaryStage.setWidth(width);
-        primaryStage.setHeight(height);
-        primaryStage.centerOnScreen();
+//
+//        primaryStage.setWidth(width);
+//        primaryStage.setHeight(height);
+//        primaryStage.centerOnScreen();
 
         primaryStage.setResizable(false);
         primaryStage.show();

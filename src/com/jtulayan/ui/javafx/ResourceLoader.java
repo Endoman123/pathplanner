@@ -3,8 +3,6 @@ package com.jtulayan.ui.javafx;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 /**

@@ -81,7 +81,7 @@
     </MenuBar>
       <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" VBox.vgrow="ALWAYS">
          <children>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="705.0" prefWidth="420.0" spacing="10.0" HBox.hgrow="ALWAYS">
+            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" HBox.hgrow="ALWAYS">
                <children>
                   <TitledPane alignment="BOTTOM_CENTER" animated="false" collapsible="false" contentDisplay="BOTTOM" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Motion Variables" textAlignment="CENTER" underline="true">
                      <font>
@@ -179,7 +179,7 @@
                            <children>
                               <Button fx:id="btnAddPoint" alignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#showAddPointDialog" text="Add Point" textAlignment="CENTER" GridPane.halignment="CENTER" />
                               <Button fx:id="btnClearPoints" alignment="CENTER" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#showClearPointsDialog" text="Clear Points" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                              <Button fx:id="btnDelete" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#deletePoints" text="Delete Selected" textAlignment="CENTER" GridPane.columnIndex="2" />
+                              <Button fx:id="btnDelete" alignment="CENTER" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#deletePoints" text="Delete Selected" textAlignment="CENTER" GridPane.columnIndex="2" />
                               <TableView fx:id="tblWaypoints" editable="true" prefHeight="160.0" prefWidth="304.0" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                 <columns>
                                   <TableColumn fx:id="colWaypointX" minWidth="-1.0" prefWidth="-1.0" sortable="false" text="X" />
