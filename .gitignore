@@ -12,6 +12,8 @@ workbench.xmi
 out/
 tmp/
 **/lib/User_Libraries.properties
+.classpath
+.project
 
 # Toast/GradleRIO
 run/
