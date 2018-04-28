@@ -311,7 +311,7 @@ public class MPGenController {
         waypointsList.addListener((ListChangeListener<Waypoint>) c -> {
             btnClearPoints.setDisable(waypointsList.size() == 0);
             if (!generateTrajectories())
-                waypointsList.remove(waypointsList.size());
+                waypointsList.remove(waypointsList.size() - 1);
         });
 
         tblWaypoints.setItems(waypointsList);
@@ -710,6 +710,8 @@ public class MPGenController {
                 alert.setContentText("The trajectory point is invalid because one of the waypoints is invalid! " +
                         "Please check the waypoints and try again.");
                 alert.showAndWait();
+
+                return false;
             }
         }
 
