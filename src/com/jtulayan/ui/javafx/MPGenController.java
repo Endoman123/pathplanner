@@ -589,7 +589,8 @@ public class MPGenController {
 
             if (!waypointsList.isEmpty()) {
                 Waypoint prev = waypointsList.get(waypointsList.size() - 1);
-                angle = Math.atan2(y - prev.y, x - prev.x);
+                angle = Pathfinder.r2d(Math.atan2(y - prev.y, x - prev.x));
+                angle = Pathfinder.d2r(Mathf.round(angle, 45.0));
             }
 
             if (x >= axisPosX.getLowerBound() && x <= axisPosX.getUpperBound() &&

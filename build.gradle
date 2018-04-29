@@ -42,6 +42,8 @@ task wrapper(type: Wrapper) {
     gradleVersion = '4.7'
 }
 
+run.jvmArgs "-XX:ErrorFile=/.error/"
+
 task runCLI(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 
