@@ -312,13 +312,11 @@ public class MPGenController {
             btnClearPoints.setDisable(waypointsList.size() == 0);
             if (!generateTrajectories())
                 waypointsList.remove(waypointsList.size() - 1);
+
+            tblWaypoints.getSelectionModel().clearSelection();
         });
 
         tblWaypoints.setItems(waypointsList);
-        tblWaypoints.focusedProperty().addListener(((observable, oldValue, newValue) -> {
-            if (!newValue)
-                tblWaypoints.getSelectionModel().clearSelection();
-        }));
         tblWaypoints.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblWaypoints.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) ->
                 btnDelete.setDisable(tblWaypoints.getSelectionModel().getSelectedIndices().get(0) == -1)
