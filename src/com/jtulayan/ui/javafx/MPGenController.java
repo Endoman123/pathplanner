@@ -315,6 +315,10 @@ public class MPGenController {
         });
 
         tblWaypoints.setItems(waypointsList);
+        tblWaypoints.focusedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (!newValue)
+                tblWaypoints.getSelectionModel().clearSelection();
+        }));
         tblWaypoints.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblWaypoints.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) ->
                 btnDelete.setDisable(tblWaypoints.getSelectionModel().getSelectedIndices().get(0) == -1)
