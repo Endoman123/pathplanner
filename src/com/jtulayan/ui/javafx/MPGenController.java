@@ -159,7 +159,7 @@ public class MPGenController {
                     curWaypoint.x = t.getNewValue();
 
                 // If the point is invalid
-                if (!currentTrajValid) {
+                if (!generateTrajectories()) {
                     curWaypoint.x = history.x;
                     curWaypoint.y = history.y;
                     curWaypoint.angle = history.angle;
