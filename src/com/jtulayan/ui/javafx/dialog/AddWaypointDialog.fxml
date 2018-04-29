@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
 <DialogPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jtulayan.ui.javafx.dialog.AddWaypointDialogController">
    <content>
       <GridPane hgap="10.0" prefHeight="130.0" prefWidth="259.0" vgap="10.0">
@@ -25,9 +24,9 @@
             <Label text="X:" />
             <Label layoutX="20.0" layoutY="27.0" text="Angle:" GridPane.rowIndex="2" />
             <Label layoutX="20.0" layoutY="27.0" text="Y:" GridPane.rowIndex="1" />
-            <TextField fx:id="txtWX" GridPane.columnIndex="1" />
-            <TextField fx:id="txtWY" layoutX="130.0" layoutY="23.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="txtWA" layoutX="130.0" layoutY="63.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="txtWX" text="0.0" GridPane.columnIndex="1" />
+            <TextField fx:id="txtWY" layoutX="130.0" layoutY="23.0" text="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txtWA" layoutX="130.0" layoutY="63.0" text="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
       </GridPane>
    </content>
