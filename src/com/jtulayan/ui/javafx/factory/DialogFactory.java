@@ -95,6 +95,10 @@ public class DialogFactory {
             txtWY = controller.getTxtWY();
             txtWA = controller.getTxtWA();
 
+            txtWX.setText("0.0");
+            txtWY.setText("0.0");
+            txtWA.setText("0.0");
+
             // Some header stuff
             dialog.setTitle("Add Waypoint");
             dialog.setHeaderText("Add a new waypoint");
