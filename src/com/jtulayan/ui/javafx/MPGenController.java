@@ -113,6 +113,8 @@ public class MPGenController {
 
     private File workingDirectory;
 
+    private boolean currentTrajValid = false;
+
     @FXML
     public void initialize() {
         backend = new ProfileGenerator();
@@ -145,7 +147,9 @@ public class MPGenController {
 
         EventHandler<TableColumn.CellEditEvent<Waypoint, Double>> editHandler =
             (TableColumn.CellEditEvent<Waypoint, Double> t) -> {
-                Waypoint curWaypoint = t.getRowValue();
+                Waypoint
+                    curWaypoint = t.getRowValue(),
+                    history = new Waypoint(curWaypoint.x, curWaypoint.y, curWaypoint.angle);
 
                 if (t.getTableColumn() == colWaypointAngle)
                     curWaypoint.angle = Pathfinder.d2r(t.getNewValue());
@@ -154,7 +158,12 @@ public class MPGenController {
                 else
                     curWaypoint.x = t.getNewValue();
 
-                generateTrajectories();
+                // If the point is invalid
+                if (!currentTrajValid) {
+                    curWaypoint.x = history.x;
+                    curWaypoint.y = history.y;
+                    curWaypoint.angle = history.angle;
+                }
         };
 
         txtTimeStep.setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
@@ -310,8 +319,8 @@ public class MPGenController {
         waypointsList = FXCollections.observableList(backend.getWaypointsList());
         waypointsList.addListener((ListChangeListener<Waypoint>) c -> {
             btnClearPoints.setDisable(waypointsList.size() == 0);
-            if (!generateTrajectories())
-                waypointsList.remove(waypointsList.size() - 1);
+
+            currentTrajValid = generateTrajectories();
 
             tblWaypoints.getSelectionModel().clearSelection();
         });
@@ -570,7 +579,11 @@ public class MPGenController {
         // Wait for the result
         result = waypointDialog.showAndWait();
 
-        result.ifPresent((Waypoint w) -> waypointsList.add(w));
+        result.ifPresent((Waypoint w) -> {
+            waypointsList.add(w);
+            if (!currentTrajValid)
+                waypointsList.remove(w);
+        });
     }
 
     @FXML
@@ -584,7 +597,6 @@ public class MPGenController {
             double xLocal = axisPosX.sceneToLocal(mouseSceneCoords).getX();
             double yLocal = axisPosY.sceneToLocal(mouseSceneCoords).getY();
 
-
             double x = Mathf.round(axisPosX.getValueForDisplay(xLocal).doubleValue(), 2);
             double y = Mathf.round(axisPosY.getValueForDisplay(yLocal).doubleValue(), 2);
             double angle = 0;
@@ -596,8 +608,11 @@ public class MPGenController {
             }
 
             if (x >= axisPosX.getLowerBound() && x <= axisPosX.getUpperBound() &&
-                y >= axisPosY.getLowerBound() && y <= axisPosY.getUpperBound())
+                y >= axisPosY.getLowerBound() && y <= axisPosY.getUpperBound()) {
                 waypointsList.add(new Waypoint(x, y, angle));
+                if (!currentTrajValid)
+                    waypointsList.remove(waypointsList.size() - 1);
+            }
 
         } else {
             event.consume();
