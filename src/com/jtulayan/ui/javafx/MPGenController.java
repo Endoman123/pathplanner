@@ -327,9 +327,36 @@ public class MPGenController {
 
         tblWaypoints.setItems(waypointsList);
         tblWaypoints.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        tblWaypoints.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) ->
-                btnDelete.setDisable(tblWaypoints.getSelectionModel().getSelectedIndices().get(0) == -1)
-        );
+        tblWaypoints.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            List<Integer> selectedIndicies = tblWaypoints.getSelectionModel().getSelectedIndices();
+            String srcDisplayStr = properties.getProperty("ui.sourceDisplay", "2");
+            int sourceDisplay = Integer.parseInt(srcDisplayStr);
+
+            btnDelete.setDisable(tblWaypoints.getSelectionModel().getSelectedIndices().get(0) == -1);
+
+            // Highlight selected waypoints if available
+            if (sourceDisplay > 0) {
+                List<XYChart.Data<Double, Double>> sourceSet = chtPosition.getData()
+                    .get(chtPosition.getData().size() - 1)
+                    .getData();
+
+                for (int i = 0; i < sourceSet.size(); i++) {
+                    boolean selected = false;
+                    XYChart.Data<Double, Double> data = sourceSet.get(i);
+                    for (int ind : selectedIndicies) {
+                        if (i == ind) {
+                            selected = true;
+                            break;
+                        }
+                    }
+
+                    if (selected)
+                        data.getNode().setStyle("-fx-background-color: green, white");
+                    else
+                        data.getNode().setStyle("-fx-background-color: orange, white");
+                }
+            }
+        });
 
         tblWaypoints.setOnKeyPressed(event -> {
             KeyCode code = event.getCode();
