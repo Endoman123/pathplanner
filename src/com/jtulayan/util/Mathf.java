@@ -4,6 +4,10 @@ package com.jtulayan.util;
  * Collection of math functions
  */
 public class Mathf {
+    public static final double
+        FT_TO_METERS = 0.3048,
+        METERS_TO_FT = 1.0 / FT_TO_METERS;
+
     private Mathf() {
         // Do not instantiate
     }

@@ -1,5 +1,6 @@
 package com.jtulayan.main;
 
+import com.jtulayan.util.Mathf;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import jaci.pathfinder.Pathfinder;
@@ -454,8 +455,45 @@ public class ProfileGenerator {
         return units;
     }
 
-    public void setUnits(Units units) {
-        this.units = units;
+    public void setUnits(Units u) {
+        // Convert points if necessary
+        if (units != u) {
+            // Get a conversion factor
+            double convertFactor = 0;
+            switch (u) {
+                case METRIC:
+                    convertFactor = Mathf.FT_TO_METERS;
+                    break;
+                case IMPERIAL:
+                default:
+                    convertFactor = Mathf.METERS_TO_FT;
+                    break;
+            }
+
+            // Update waypoints
+            for (Waypoint w : POINTS) {
+                w.x = Mathf.round(w.x * convertFactor, 4);
+                w.y = Mathf.round(w.y * convertFactor, 4);
+            }
+
+            // Update fields
+            velocity = Mathf.round(velocity * convertFactor, 4);
+            acceleration = Mathf.round(acceleration * convertFactor, 4);
+            jerk = Mathf.round(jerk * convertFactor, 4);
+            wheelBaseW = Mathf.round(wheelBaseW * convertFactor, 4);
+            wheelBaseD = Mathf.round(wheelBaseD * convertFactor, 4);
+
+            // Regen trajectories if necessary
+            if (POINTS.size() > 1) {
+                try {
+                    updateTrajectories();
+                } catch (Pathfinder.GenerationException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        units = u;
     }
 
     public double getJerk() {

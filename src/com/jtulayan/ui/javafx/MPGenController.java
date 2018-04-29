@@ -582,12 +582,19 @@ public class MPGenController {
             double xLocal = axisPosX.sceneToLocal(mouseSceneCoords).getX();
             double yLocal = axisPosY.sceneToLocal(mouseSceneCoords).getY();
 
+
             double x = Mathf.round(axisPosX.getValueForDisplay(xLocal).doubleValue(), 2);
             double y = Mathf.round(axisPosY.getValueForDisplay(yLocal).doubleValue(), 2);
+            double angle = 0;
+
+            if (!waypointsList.isEmpty()) {
+                Waypoint prev = waypointsList.get(waypointsList.size() - 1);
+                angle = Math.atan2(y - prev.y, x - prev.x);
+            }
 
             if (x >= axisPosX.getLowerBound() && x <= axisPosX.getUpperBound() &&
                 y >= axisPosY.getLowerBound() && y <= axisPosY.getUpperBound())
-                waypointsList.add(new Waypoint(x, y, 0));
+                waypointsList.add(new Waypoint(x, y, angle));
 
         } else {
             event.consume();
@@ -744,9 +751,19 @@ public class MPGenController {
 
     private void updateUnits(ObservableValue<String> observable, Object oldValue, Object newValue) {
         String choice = ((String) newValue).toUpperCase();
-        ProfileGenerator.Units u = ProfileGenerator.Units.valueOf(choice);
+        ProfileGenerator.Units
+            u = ProfileGenerator.Units.valueOf(choice),
+            oldUnits = backend.getUnits();
 
         backend.setUnits(u);
+
+        if (u != oldUnits) {
+            updateFrontend();
+            refreshWaypointTable();
+            repopulatePosChart();
+            repopulateVelChart();
+        }
+
         updateChartAxes();
     }
 
