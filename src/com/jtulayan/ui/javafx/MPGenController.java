@@ -335,27 +335,8 @@ public class MPGenController {
             btnDelete.setDisable(tblWaypoints.getSelectionModel().getSelectedIndices().get(0) == -1);
 
             // Highlight selected waypoints if available
-            if (sourceDisplay > 0) {
-                List<XYChart.Data<Double, Double>> sourceSet = chtPosition.getData()
-                    .get(chtPosition.getData().size() - 1)
-                    .getData();
-
-                for (int i = 0; i < sourceSet.size(); i++) {
-                    boolean selected = false;
-                    XYChart.Data<Double, Double> data = sourceSet.get(i);
-                    for (int ind : selectedIndicies) {
-                        if (i == ind) {
-                            selected = true;
-                            break;
-                        }
-                    }
-
-                    if (selected)
-                        data.getNode().setStyle("-fx-background-color: green, white");
-                    else
-                        data.getNode().setStyle("-fx-background-color: orange, white");
-                }
-            }
+            if (sourceDisplay > 0)
+                highlightPoints(tblWaypoints.getSelectionModel().getSelectedIndices());
         });
 
         tblWaypoints.setOnKeyPressed(event -> {
@@ -873,8 +854,8 @@ public class MPGenController {
 
             chtPosition.getData().add(waypointSeries);
             waypointSeries.getNode().setStyle("-fx-stroke: transparent");
-            for (XYChart.Data<Double, Double> data : waypointSeries.getData())
-                data.getNode().setStyle("-fx-background-color: orange, white");
+
+            highlightPoints(tblWaypoints.getSelectionModel().getSelectedIndices());
         }
     }
 
@@ -904,6 +885,33 @@ public class MPGenController {
                 flSeries.setName("Left Trajectory");
                 frSeries.setName("Right Trajectory");
             }
+        }
+    }
+
+    /**
+     * Highlights points given a list of selected indices
+     *
+     * @param selectedIndicies the list of selected indices
+     */
+    private void highlightPoints(List<Integer> selectedIndicies) {
+        List<XYChart.Data<Double, Double>> sourceSet = chtPosition.getData()
+                .get(chtPosition.getData().size() - 1)
+                .getData();
+
+        for (int i = 0; i < sourceSet.size(); i++) {
+            boolean selected = false;
+            XYChart.Data<Double, Double> data = sourceSet.get(i);
+            for (int ind : selectedIndicies) {
+                if (i == ind) {
+                    selected = true;
+                    break;
+                }
+            }
+
+            if (selected)
+                data.getNode().setStyle("-fx-background-color: green, white");
+            else
+                data.getNode().setStyle("-fx-background-color: orange, white");
         }
     }
 
