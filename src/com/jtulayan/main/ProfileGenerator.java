@@ -180,29 +180,29 @@ public class ProfileGenerator {
 
         switch (ext) {
             case ".csv":
-                Pathfinder.writeToCSV(new File(parentPath + "_source_detailed.csv"), source);
+                Pathfinder.writeToCSV(new File(parentPath + "_source.csv"), source);
 
                 if (driveBase == DriveBase.SWERVE) {
-                    Pathfinder.writeToCSV(new File(parentPath + "_fl_detailed.csv"), fl);
-                    Pathfinder.writeToCSV(new File(parentPath + "_fr_detailed.csv"), fr);
-                    Pathfinder.writeToCSV(new File(parentPath + "_bl_detailed.csv"), bl);
-                    Pathfinder.writeToCSV(new File(parentPath + "_br_detailed.csv"), br);
+                    Pathfinder.writeToCSV(new File(parentPath + "_fl.csv"), fl);
+                    Pathfinder.writeToCSV(new File(parentPath + "_fr.csv"), fr);
+                    Pathfinder.writeToCSV(new File(parentPath + "_bl.csv"), bl);
+                    Pathfinder.writeToCSV(new File(parentPath + "_br.csv"), br);
                 } else {
-                    Pathfinder.writeToCSV(new File(parentPath + "_left_detailed.csv"), fl);
-                    Pathfinder.writeToCSV(new File(parentPath + "_right_detailed.csv"), fr);
+                    Pathfinder.writeToCSV(new File(parentPath + "_left.csv"), fl);
+                    Pathfinder.writeToCSV(new File(parentPath + "_right.csv"), fr);
                 }
             break;
             case ".traj":
-                Pathfinder.writeToFile(new File(parentPath + "_source_detailed.traj"), source);
+                Pathfinder.writeToFile(new File(parentPath + "_source.traj"), source);
 
                 if (driveBase == DriveBase.SWERVE) {
-                    Pathfinder.writeToFile(new File(parentPath + "_fl_detailed.traj"), fl);
-                    Pathfinder.writeToFile(new File(parentPath + "_fr_detailed.traj"), fr);
-                    Pathfinder.writeToFile(new File(parentPath + "_bl_detailed.traj"), bl);
-                    Pathfinder.writeToFile(new File(parentPath + "_br_detailed.traj"), br);
+                    Pathfinder.writeToFile(new File(parentPath + "_fl.traj"), fl);
+                    Pathfinder.writeToFile(new File(parentPath + "_fr.traj"), fr);
+                    Pathfinder.writeToFile(new File(parentPath + "_bl.traj"), bl);
+                    Pathfinder.writeToFile(new File(parentPath + "_br.traj"), br);
                 } else {
-                    Pathfinder.writeToFile(new File(parentPath + "_left_detailed.traj"), fl);
-                    Pathfinder.writeToFile(new File(parentPath + "_right_detailed.traj"), fr);
+                    Pathfinder.writeToFile(new File(parentPath + "_left.traj"), fl);
+                    Pathfinder.writeToFile(new File(parentPath + "_right.traj"), fr);
                 }
             break;
             default:
