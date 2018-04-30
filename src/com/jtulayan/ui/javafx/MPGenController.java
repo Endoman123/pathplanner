@@ -39,7 +39,6 @@ import javafx.util.converter.DoubleStringConverter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -335,7 +334,7 @@ public class MPGenController {
             btnDelete.setDisable(tblWaypoints.getSelectionModel().getSelectedIndices().get(0) == -1);
 
             // Highlight selected waypoints if available
-            if (sourceDisplay > 0)
+            if (sourceDisplay > 0 && !waypointsList.isEmpty())
                 highlightPoints(tblWaypoints.getSelectionModel().getSelectedIndices());
         });
 
