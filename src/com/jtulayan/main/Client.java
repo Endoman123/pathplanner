@@ -22,7 +22,7 @@ public class Client extends Application {
         primaryStage.sizeToScene();
         primaryStage.setTitle("Pathplanner");
 
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         primaryStage.show();
     }
 
