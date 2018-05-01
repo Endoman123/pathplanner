@@ -1,0 +1,37 @@
+mainClassName = "com.jtulayan.main.Client"
+def version = "1.4.0"
+
+sourceSets {
+    main.java {
+        srcDirs = ['src']; include '**/*.java'
+    }
+
+    main.resources {
+        srcDirs = ['src']; exclude '**/*.java'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'lib', include: '*.jar')
+    compile 'com.opencsv:opencsv:4.1'
+    compile 'commons-cli:commons-cli:1.4'
+}
+
+jar {
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    // Set up manifest to point the main class to the right class.
+    manifest {
+        attributes 'Main-Class': mainClassName
+        attributes 'Version': version
+    }
+}
+
+run.jvmArgs "-XX:ErrorFile=/.error/"
+
+task runCLI(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = mainClassName
+
+    args 'no-gui'
+}
