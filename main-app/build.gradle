@@ -1,5 +1,6 @@
 mainClassName = "com.jtulayan.main.Client"
-def version = "1.4.0"
+archivesBaseName = "pathplanner"
+version = "v1.4.0"
 
 sourceSets {
     main.java {
