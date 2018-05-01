@@ -1,6 +1,6 @@
-[submodule "Pathfinder"]
-	path = Pathfinder
+[submodule "pathfinder"]
+	path = pathfinder
 	url = git@github.com:Mercury1089/Pathfinder.git
-[submodule "motion-profile-generator.wiki"]
-	path = motion-profile-generator.wiki
+[submodule "wiki"]
+	path = wiki
 	url = https://github.com/Endoman123/motion-profile-generator.wiki.git
