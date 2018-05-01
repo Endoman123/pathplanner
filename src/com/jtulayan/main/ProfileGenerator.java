@@ -314,35 +314,6 @@ public class ProfileGenerator {
         }
     }
 
-    /**
-     * Adds a waypoint to the list of waypoints
-     *
-     * @param x     the x-location of the waypoint
-     * @param y     the y-location of the waypoint
-     * @param angle the angle of direction at the point, in radians
-     */
-    public void addPoint(double x, double y, double angle) {
-        POINTS.add(new Waypoint(x, y, angle));
-    }
-
-    /**
-     * Adds a waypoint to the list of waypoints
-     *
-     * @param index the index of the waypoint to edit
-     * @param x     the x-location of the waypoint
-     * @param y     the y-location of the waypoint
-     * @param angle the angle of direction at the point, in radians
-     */
-    public void editWaypoint(int index, double x, double y, double angle) {
-        POINTS.get(index).x = x;
-        POINTS.get(index).y = y;
-        POINTS.get(index).angle = angle;
-    }
-
-    public void removePoint(int index) {
-        POINTS.remove(index);
-    }
-
     public int getWaypointsSize() {
         return POINTS.size();
     }
