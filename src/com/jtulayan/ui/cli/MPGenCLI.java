@@ -1,19 +1,17 @@
 package com.jtulayan.ui.cli;
 
-import com.jtulayan.main.ProfileGenerator;
+import com.jtulayan.main.Pathplanner;
 
 import java.io.File;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 
 /**
  * Helper class to interface with the MPG via CLI
  */
 public class MPGenCLI {
-    private ProfileGenerator backend;
+    private Pathplanner backend;
 
     public MPGenCLI() {
-        backend = new ProfileGenerator();
+        backend = new Pathplanner();
     }
 
     /**
@@ -99,10 +97,10 @@ public class MPGenCLI {
      * Checks whether or not the file name represents a project file.
      *
      * @param filename the name of the file to test against
-     * @return whether or not the filename has the project extension, specified in {@link ProfileGenerator}
+     * @return whether or not the filename has the project extension, specified in {@link Pathplanner}
      */
     private boolean isProjectFile(String filename) {
-        return ProfileGenerator.PROJECT_EXTENSION.equals(
+        return Pathplanner.PROJECT_EXTENSION.equals(
                 filename.substring(filename.lastIndexOf('.') + 1)
         );
     }

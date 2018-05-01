@@ -1,6 +1,6 @@
 package com.jtulayan.ui.javafx;
 
-import com.jtulayan.main.ProfileGenerator;
+import com.jtulayan.main.Pathplanner;
 import com.jtulayan.ui.javafx.factory.AlertFactory;
 import com.jtulayan.ui.javafx.factory.DialogFactory;
 import com.jtulayan.ui.javafx.factory.SeriesFactory;
@@ -45,7 +45,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class MPGenController {
-    private ProfileGenerator backend;
+    private Pathplanner backend;
 
     @FXML
     private Pane root;
@@ -116,7 +116,7 @@ public class MPGenController {
 
     @FXML
     public void initialize() {
-        backend = new ProfileGenerator();
+        backend = new Pathplanner();
         properties = PropWrapper.getProperties();
 
         workingDirectory = new File(properties.getProperty("file.workingDir", System.getProperty("user.dir")));
@@ -517,8 +517,8 @@ public class MPGenController {
         File result = fileChooser.showOpenDialog(root.getScene().getWindow());
 
         if (result != null) {
-            Dialog<ProfileGenerator.Units> unitsSelector = new Dialog<>();
-            Optional<ProfileGenerator.Units> unitsResult = null;
+            Dialog<Pathplanner.Units> unitsSelector = new Dialog<>();
+            Optional<Pathplanner.Units> unitsResult = null;
             GridPane grid = new GridPane();
             ToggleGroup radGroup = new ToggleGroup();
             RadioButton
@@ -550,9 +550,9 @@ public class MPGenController {
             unitsSelector.setResultConverter(buttonType -> {
                 if (buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                     if (radMetric.selectedProperty().getValue())
-                        return ProfileGenerator.Units.METRIC;
+                        return Pathplanner.Units.METRIC;
                     else
-                        return ProfileGenerator.Units.IMPERIAL;
+                        return Pathplanner.Units.IMPERIAL;
                 }
 
                 return null;
@@ -755,12 +755,12 @@ public class MPGenController {
 
     private void updateDriveBase(ObservableValue<String> observable, Object oldValue, Object newValue) {
         String choice = ((String) newValue).toUpperCase();
-        ProfileGenerator.DriveBase db = ProfileGenerator.DriveBase.valueOf(choice);
+        Pathplanner.DriveBase db = Pathplanner.DriveBase.valueOf(choice);
 
         backend.setDriveBase(db);
 
-        txtWheelBaseD.setDisable(db == ProfileGenerator.DriveBase.TANK);
-        lblWheelBaseD.setDisable(db == ProfileGenerator.DriveBase.TANK);
+        txtWheelBaseD.setDisable(db == Pathplanner.DriveBase.TANK);
+        lblWheelBaseD.setDisable(db == Pathplanner.DriveBase.TANK);
 
         generateTrajectories();
     }
@@ -776,8 +776,8 @@ public class MPGenController {
 
     private void updateUnits(ObservableValue<String> observable, Object oldValue, Object newValue) {
         String choice = ((String) newValue).toUpperCase();
-        ProfileGenerator.Units
-            u = ProfileGenerator.Units.valueOf(choice),
+        Pathplanner.Units
+            u = Pathplanner.Units.valueOf(choice),
             oldUnits = backend.getUnits();
 
         backend.setUnits(u);
@@ -804,7 +804,7 @@ public class MPGenController {
                     flSeries = SeriesFactory.buildPositionSeries(backend.getFrontLeftTrajectory()),
                     frSeries = SeriesFactory.buildPositionSeries(backend.getFrontRightTrajectory());
 
-            if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
+            if (backend.getDriveBase() == Pathplanner.DriveBase.SWERVE) {
                 XYChart.Series<Double, Double>
                         blSeries = SeriesFactory.buildPositionSeries(backend.getBackLeftTrajectory()),
                         brSeries = SeriesFactory.buildPositionSeries(backend.getBackRightTrajectory());
@@ -869,7 +869,7 @@ public class MPGenController {
 
             chtVelocity.getData().addAll(flSeries, frSeries);
 
-            if (backend.getDriveBase() == ProfileGenerator.DriveBase.SWERVE) {
+            if (backend.getDriveBase() == Pathplanner.DriveBase.SWERVE) {
                 XYChart.Series<Double, Double>
                         blSeries = SeriesFactory.buildVelocitySeries(backend.getBackLeftTrajectory()),
                         brSeries = SeriesFactory.buildVelocitySeries(backend.getBackRightTrajectory());
@@ -959,7 +959,7 @@ public class MPGenController {
 
                 break;
             default:
-                backend.setUnits(ProfileGenerator.Units.IMPERIAL);
+                backend.setUnits(Pathplanner.Units.IMPERIAL);
                 updateChartAxes();
         }
     }

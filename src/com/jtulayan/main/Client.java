@@ -16,17 +16,11 @@ public class Client extends Application {
     public void start(Stage primaryStage) throws Exception {
         Pane root = FXMLLoader.load(getClass().getResource("/com/jtulayan/ui/javafx/MainFXUI.fxml"));
         Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
-//        int width = res.width - 269;
-//        int height = res.height - 111;
-//
+
         root.autosize();
         primaryStage.setScene(new Scene(root));
         primaryStage.sizeToScene();
-        primaryStage.setTitle("Mercury Motion Profile Generator");
-//
-//        primaryStage.setWidth(width);
-//        primaryStage.setHeight(height);
-//        primaryStage.centerOnScreen();
+        primaryStage.setTitle("Pathplanner");
 
         primaryStage.setResizable(false);
         primaryStage.show();
@@ -43,7 +37,7 @@ public class Client extends Application {
 
             if (cmd.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("motion-profile-generator [OPTIONS]...", options);
+                formatter.printHelp("pathplanner [OPTIONS]...", options);
                 System.exit(0); // Break out here; there's no reason to use other arguments if you need help.
             }
 

@@ -1,5 +1,5 @@
-# Motion Profile Generator
-Generate Motion Profiles to follow with a Talon SRX.
+# Pathplanner
+A UI for Jaci's Pathfinder. Generate trajectories for your robot to follow.
 
 This is a program originally based off of Vannaka's Motion Profile Generator.
  

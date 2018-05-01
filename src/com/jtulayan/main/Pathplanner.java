@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * Mainly to interface with the entire system.
  * Also handles saving, loading, etc.
  */
-public class ProfileGenerator {
+public class Pathplanner {
     public static final String PROJECT_EXTENSION = "xml";
 
     public enum DriveBase {
@@ -71,7 +71,7 @@ public class ProfileGenerator {
     private DocumentBuilderFactory dbFactory;
     private File workingProject;
 
-    public ProfileGenerator() {
+    public Pathplanner() {
         POINTS = new ArrayList<>();
         dbFactory = DocumentBuilderFactory.newInstance();
         resetValues();
