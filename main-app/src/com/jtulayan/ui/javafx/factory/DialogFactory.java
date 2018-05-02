@@ -13,6 +13,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 
 import java.awt.*;
+import java.util.Optional;
 import java.util.Properties;
 
 public class DialogFactory {
@@ -22,12 +23,11 @@ public class DialogFactory {
         Dialog<Boolean> dialog = new Dialog<>();
 
         try {
-            DialogPane pane = null;
             FXMLLoader loader = new FXMLLoader(
                     ResourceLoader.getResource("/com/jtulayan/ui/javafx/dialog/AboutDialog.fxml")
             );
+            DialogPane pane = loader.load();
 
-            pane = loader.load();
             pane.autosize();
             dialog.setDialogPane(pane);
 
@@ -48,13 +48,12 @@ public class DialogFactory {
         Dialog<Properties> dialog = new Dialog<>();
 
         try {
-            DialogPane pane = null;
             FXMLLoader loader = new FXMLLoader(
                     ResourceLoader.getResource("/com/jtulayan/ui/javafx/dialog/SettingsDialog.fxml")
             );
-
-            pane = loader.load();
+            DialogPane pane = loader.load();
             SettingsDialogController controller = loader.getController();
+
             pane.autosize();
             dialog.setDialogPane(pane);
 
@@ -95,17 +94,14 @@ public class DialogFactory {
             FXMLLoader loader = new FXMLLoader(
                     ResourceLoader.getResource("/com/jtulayan/ui/javafx/dialog/AddWaypointDialog.fxml")
             );
-            ButtonType add = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
-            DialogPane pane;
+            DialogPane pane = loader.load();
+            AddWaypointDialogController controller = loader.getController();
 
-            AddWaypointDialogController controller = null;
+            ButtonType add = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
             TextField txtWX, txtWY, txtWA;
 
-            pane = loader.load();
             pane.autosize();
             dialog.setDialogPane(pane);
-
-            controller = loader.getController();
 
             txtWX = controller.getTxtWX();
             txtWY = controller.getTxtWY();

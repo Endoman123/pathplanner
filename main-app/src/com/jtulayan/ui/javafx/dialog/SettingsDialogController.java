@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.Properties;
 
 public class SettingsDialogController {
@@ -42,9 +43,13 @@ public class SettingsDialogController {
         txtOverlayDir.setText(properties.getProperty("ui.overlayDir", ""));
 
         choSourceDisplay.setItems(FXCollections.observableArrayList("None", "Waypoints only", "Waypoints + Source"));
-        choSourceDisplay.getSelectionModel().select(Integer.parseInt(properties.getProperty("ui.sourceDisplay", "2")));
+        choSourceDisplay.getSelectionModel().select(
+                Integer.parseInt(properties.getProperty("ui.sourceDisplay", "2")
+        ));
 
-        chkAddWaypointOnClick.setSelected(Boolean.parseBoolean(properties.getProperty("ui.addWaypointOnClick", "false")));
+        chkAddWaypointOnClick.setSelected(
+                Boolean.parseBoolean(properties.getProperty("ui.addWaypointOnClick", "false")
+        ));
 
         colTankTraj.setValue(Color.web(properties.getProperty(
                 "ui.colorTankTrajectory",
@@ -106,6 +111,26 @@ public class SettingsDialogController {
 
     public boolean getAddWaypointOnClick() {
         return chkAddWaypointOnClick.isSelected();
+    }
+
+    @FXML
+    private void confirmReset() {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        Optional<ButtonType> result = null;
+        confirm.setHeaderText("Confirm reset");
+        confirm.setContentText("Reset settings to default values?");
+
+        result = confirm.showAndWait();
+        result.ifPresent((ButtonType b) -> {
+            if (b == ButtonType.OK) {
+                txtOverlayDir.clear();
+                choSourceDisplay.getSelectionModel().select(2);
+                chkAddWaypointOnClick.setSelected(true);
+                colTankTraj.setValue(Color.MAGENTA);
+                colSourceTraj.setValue(Color.ORANGE);
+                colWPHighlight.setValue(Color.GREEN);
+            }
+        });
     }
 }
 
