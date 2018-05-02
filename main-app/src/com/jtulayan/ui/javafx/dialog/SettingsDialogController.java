@@ -3,11 +3,9 @@ package com.jtulayan.ui.javafx.dialog;
 import com.jtulayan.ui.javafx.PropWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -29,6 +27,12 @@ public class SettingsDialogController {
     @FXML
     private CheckBox chkAddWaypointOnClick;
 
+    @FXML
+    private ColorPicker
+        colTankTraj,
+        colSourceTraj,
+        colWPHighlight;
+
     private Properties properties;
 
     @FXML
@@ -41,6 +45,21 @@ public class SettingsDialogController {
         choSourceDisplay.getSelectionModel().select(Integer.parseInt(properties.getProperty("ui.sourceDisplay", "2")));
 
         chkAddWaypointOnClick.setSelected(Boolean.parseBoolean(properties.getProperty("ui.addWaypointOnClick", "false")));
+
+        colTankTraj.setValue(Color.web(properties.getProperty(
+                "ui.colorTankTrajectory",
+                "magenta"
+        )));
+
+        colSourceTraj.setValue(Color.valueOf(properties.getProperty(
+                "ui.colorSourceTrajectory",
+                "orange"
+        )));
+
+        colWPHighlight.setValue(Color.valueOf(properties.getProperty(
+                "ui.colorWaypointHighlight",
+                "green"
+        )));
     }
 
     @FXML

@@ -1,5 +1,7 @@
 package com.jtulayan.util;
 
+import javafx.scene.paint.Color;
+
 /**
  * Collection of math functions
  */
@@ -35,4 +37,28 @@ public class Mathf {
     public static double round(double val, double multiple) {
         return Math.round(val / multiple) * multiple;
     }
+
+    /**
+     * Converts color object into HTML/CSS string
+     * @param color color object to convert to HTML string
+     * @return HTML/CSS HSLA string representing color
+     */
+    public static String toWeb(Color color) {
+        return String.format(
+                "hsba(%f, %f%%, %f%%, %f)",
+                color.getHue(),
+                color.getSaturation() * 100,
+                color.getBrightness() * 100,
+                color.getOpacity()
+        );
+    };
+
+    /**
+     * Converts hex color into HTML/CSS string
+     * @param color hex string representing RGBA color
+     * @return HTML/CSS HSLA string representing color
+     */
+    public static String toWeb(String color) {
+        return toWeb(Color.web(color));
+    };
 }

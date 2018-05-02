@@ -375,6 +375,11 @@ public class MPGenController {
 
                     String overlayDir = ((TextField) pane.lookup("#txtOverlayDir")).getText().trim();
 
+                    ColorPicker
+                            colTankTraj = (ColorPicker) pane.lookup("#colTankTraj"),
+                            colSourceTraj = (ColorPicker) pane.lookup("#colSourceTraj"),
+                            colWPHighlight = (ColorPicker) pane.lookup("#colWPHighlight");
+
                     int sourceDisplay = ((ChoiceBox<String>) pane.lookup("#choSourceDisplay"))
                             .getSelectionModel()
                             .getSelectedIndex();
@@ -384,6 +389,9 @@ public class MPGenController {
                     properties.setProperty("ui.overlayDir", overlayDir);
                     properties.setProperty("ui.sourceDisplay", "" + sourceDisplay);
                     properties.setProperty("ui.addWaypointOnClick", "" + addWaypointOnClick);
+                    properties.setProperty("ui.colorTankTrajectory", colTankTraj.getValue().toString());
+                    properties.setProperty("ui.colorSourceTrajectory", colSourceTraj.getValue().toString());
+                    properties.setProperty("ui.colorWaypointHighlight", colWPHighlight.getValue().toString());
 
                     updateOverlayImg();
                     repopulatePosChart();
@@ -821,10 +829,17 @@ public class MPGenController {
                 for (XYChart.Data<Double, Double> data : brSeries.getData())
                     data.getNode().setVisible(false);
             } else {
+                String colorTankTrajectory = properties.getProperty(
+                        "ui.colorTankTrajectory",
+                        "magenta");
+
+                if (colorTankTrajectory.indexOf("0x") == 0)
+                    colorTankTrajectory = Mathf.toWeb(colorTankTrajectory);
+
                 chtPosition.getData().addAll(flSeries, frSeries);
 
-                flSeries.getNode().setStyle("-fx-stroke: magenta");
-                frSeries.getNode().setStyle("-fx-stroke: magenta");
+                flSeries.getNode().setStyle("-fx-stroke: " + colorTankTrajectory);
+                frSeries.getNode().setStyle("-fx-stroke: " + colorTankTrajectory);
             }
 
             for (XYChart.Data<Double, Double> data : flSeries.getData())
@@ -844,8 +859,16 @@ public class MPGenController {
             if (waypointsList.size() > 1 && sourceDisplay == 2) {
                 XYChart.Series<Double, Double> sourceSeries =
                         SeriesFactory.buildPositionSeries(backend.getSourceTrajectory());
+
+                String colorSourceTraj = properties.getProperty(
+                        "ui.colorSourceTrajectory",
+                        "orange");
+
+                if (colorSourceTraj.indexOf("0x") == 0)
+                    colorSourceTraj = Mathf.toWeb(colorSourceTraj);
+
                 chtPosition.getData().add(sourceSeries);
-                sourceSeries.getNode().setStyle("-fx-stroke: orange");
+                sourceSeries.getNode().setStyle("-fx-stroke: " + colorSourceTraj);
 
                 for (XYChart.Data<Double, Double> data : sourceSeries.getData())
                     data.getNode().setVisible(false);
@@ -897,6 +920,20 @@ public class MPGenController {
                 .get(chtPosition.getData().size() - 1)
                 .getData();
 
+        String
+            colorSourceTraj = properties.getProperty(
+                "ui.colorSourceTrajectory",
+                "orange"),
+            colorHighlight = properties.getProperty(
+                "ui.colorWaypointHighlight",
+                "green");
+
+        if (colorSourceTraj.indexOf("0x") == 0)
+            colorSourceTraj = Mathf.toWeb(colorSourceTraj);
+
+        if (colorHighlight.indexOf("0x") == 0)
+            colorHighlight = Mathf.toWeb(colorHighlight);
+
         for (int i = 0; i < sourceSet.size(); i++) {
             boolean selected = false;
             XYChart.Data<Double, Double> data = sourceSet.get(i);
@@ -907,10 +944,9 @@ public class MPGenController {
                 }
             }
 
-            if (selected)
-                data.getNode().setStyle("-fx-background-color: green, white");
-            else
-                data.getNode().setStyle("-fx-background-color: orange, white");
+            data.getNode().setStyle(String.format("-fx-background-color: %s, white",
+                    selected ? colorHighlight : colorSourceTraj
+            ));
         }
     }
 

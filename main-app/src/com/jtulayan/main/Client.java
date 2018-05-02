@@ -15,14 +15,13 @@ public class Client extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Pane root = FXMLLoader.load(getClass().getResource("/com/jtulayan/ui/javafx/MainFXUI.fxml"));
-        Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
 
         root.autosize();
         primaryStage.setScene(new Scene(root));
         primaryStage.sizeToScene();
         primaryStage.setTitle("Pathplanner");
 
-        primaryStage.setResizable(true);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
@@ -64,7 +63,6 @@ public class Client extends Application {
                 gen.export(files, outDir, ext);
             }
         } catch (Exception e) {
-            // TODO: Figure out why the program doesn't close when an exception is thrown
             System.out.println("Oops, something went wrong!");
             e.printStackTrace();
         } finally {
