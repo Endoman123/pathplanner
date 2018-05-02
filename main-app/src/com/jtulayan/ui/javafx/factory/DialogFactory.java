@@ -2,6 +2,7 @@ package com.jtulayan.ui.javafx.factory;
 
 import com.jtulayan.ui.javafx.ResourceLoader;
 import com.jtulayan.ui.javafx.dialog.AddWaypointDialogController;
+import com.jtulayan.ui.javafx.dialog.SettingsDialogController;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Waypoint;
 import javafx.event.ActionEvent;
@@ -12,6 +13,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 
 import java.awt.*;
+import java.util.Properties;
 
 public class DialogFactory {
     private DialogFactory() { }
@@ -42,8 +44,8 @@ public class DialogFactory {
         return dialog;
     }
 
-    public static Dialog<Boolean> createSettingsDialog() {
-        Dialog<Boolean> dialog = new Dialog<>();
+    public static Dialog<Properties> createSettingsDialog() {
+        Dialog<Properties> dialog = new Dialog<>();
 
         try {
             DialogPane pane = null;
@@ -52,6 +54,7 @@ public class DialogFactory {
             );
 
             pane = loader.load();
+            SettingsDialogController controller = loader.getController();
             pane.autosize();
             dialog.setDialogPane(pane);
 
@@ -62,9 +65,22 @@ public class DialogFactory {
             dialog.setTitle("Settings");
             dialog.setHeaderText("Manage settings");
 
-            dialog.setResultConverter((ButtonType buttonType) ->
-                    buttonType.getButtonData() == ButtonBar.ButtonData.APPLY
-            );
+            dialog.setResultConverter((ButtonType buttonType) -> {
+                if (buttonType == ButtonType.APPLY) {
+                    Properties properties = new Properties();
+
+                    properties.setProperty("ui.overlayDir", controller.getOverlayDir());
+                    properties.setProperty("ui.sourceDisplay", "" + controller.getSourceDisplay());
+                    properties.setProperty("ui.addWaypointOnClick", "" + controller.getAddWaypointOnClick());
+                    properties.setProperty("ui.colorTankTrajectory", controller.getTankTrajColor().toString());
+                    properties.setProperty("ui.colorSourceTrajectory", controller.getSourceTrajColor().toString());
+                    properties.setProperty("ui.colorWaypointHighlight", controller.getWPHighlightColor().toString());
+
+                    return properties;
+                }
+
+                return null;
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -362,45 +362,25 @@ public class MPGenController {
 
     @FXML
     private void showSettingsDialog() {
-        Dialog<Boolean> settingsDialog = DialogFactory.createSettingsDialog();
-        Optional<Boolean> result = null;
+        Dialog<Properties> settingsDialog = DialogFactory.createSettingsDialog();
+        Optional<Properties> result = null;
 
         // Wait for the result
         result = settingsDialog.showAndWait();
 
-        result.ifPresent((Boolean b) -> {
-            if (b) {
-                try {
-                    DialogPane pane = settingsDialog.getDialogPane();
+        result.ifPresent((Properties p) -> {
+            try {
+                properties.clear();
+                properties.putAll(p);
 
-                    String overlayDir = ((TextField) pane.lookup("#txtOverlayDir")).getText().trim();
+                updateOverlayImg();
+                repopulatePosChart();
 
-                    ColorPicker
-                            colTankTraj = (ColorPicker) pane.lookup("#colTankTraj"),
-                            colSourceTraj = (ColorPicker) pane.lookup("#colSourceTraj"),
-                            colWPHighlight = (ColorPicker) pane.lookup("#colWPHighlight");
+                PropWrapper.storeProperties();
+            } catch (IOException e) {
+                Alert alert = AlertFactory.createExceptionAlert(e);
 
-                    int sourceDisplay = ((ChoiceBox<String>) pane.lookup("#choSourceDisplay"))
-                            .getSelectionModel()
-                            .getSelectedIndex();
-
-                    boolean addWaypointOnClick = ((CheckBox) pane.lookup("#chkAddWaypointOnClick")).isSelected();
-
-                    properties.setProperty("ui.overlayDir", overlayDir);
-                    properties.setProperty("ui.sourceDisplay", "" + sourceDisplay);
-                    properties.setProperty("ui.addWaypointOnClick", "" + addWaypointOnClick);
-                    properties.setProperty("ui.colorTankTrajectory", colTankTraj.getValue().toString());
-                    properties.setProperty("ui.colorSourceTrajectory", colSourceTraj.getValue().toString());
-                    properties.setProperty("ui.colorWaypointHighlight", colWPHighlight.getValue().toString());
-
-                    updateOverlayImg();
-                    repopulatePosChart();
-                    PropWrapper.storeProperties();
-                } catch (IOException e) {
-                    Alert alert = AlertFactory.createExceptionAlert(e);
-
-                    alert.showAndWait();
-                }
+                alert.showAndWait();
             }
         });
     }

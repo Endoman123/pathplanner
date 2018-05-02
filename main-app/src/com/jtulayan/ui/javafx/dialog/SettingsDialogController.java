@@ -83,4 +83,29 @@ public class SettingsDialogController {
             txtOverlayDir.setText(result.getAbsolutePath());
         }
     }
+
+    public String getOverlayDir() {
+        return txtOverlayDir.getText();
+    }
+
+    public int getSourceDisplay() {
+        return choSourceDisplay.getSelectionModel().getSelectedIndex();
+    }
+
+    public Color getTankTrajColor() {
+        return colTankTraj.getValue();
+    }
+
+    public Color getSourceTrajColor() {
+        return colSourceTraj.getValue();
+    }
+
+    public Color getWPHighlightColor() {
+        return colWPHighlight.getValue();
+    }
+
+    public boolean getAddWaypointOnClick() {
+        return chkAddWaypointOnClick.isSelected();
+    }
 }
+
