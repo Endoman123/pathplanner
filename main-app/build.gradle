@@ -16,6 +16,7 @@ dependencies {
     compile fileTree(dir: 'lib', include: '*.jar')
     compile 'com.opencsv:opencsv:4.1'
     compile 'commons-cli:commons-cli:1.4'
+    compile 'com.jcraft:jsch:0.1.54'
 }
 
 jar {

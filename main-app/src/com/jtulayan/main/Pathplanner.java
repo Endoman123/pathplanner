@@ -1,5 +1,6 @@
 package com.jtulayan.main;
 
+import com.jcraft.jsch.*;
 import com.jtulayan.util.Mathf;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
@@ -20,8 +21,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -208,6 +213,35 @@ public class Pathplanner {
             default:
                 throw new IllegalArgumentException("Invalid file extension");
         }
+    }
+
+    public void deployTrajectories(String addr, int port, String trajName, String remotePath, String ext)
+            throws Pathfinder.GenerationException, JSchException, SftpException, IOException {
+        // Generate trajectory
+        Path tempDir = Files.createTempDirectory("mpg",
+                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("777"))
+        );
+        File parentPath = new File(tempDir.toString(), trajName);
+
+        exportTrajectories(parentPath, ext);
+
+        // Start SFTP connection
+        JSch jsch = new JSch();
+        Session session = jsch.getSession("lvuser", addr, port);
+        Channel c = null;
+        ChannelSftp csftp = null;
+
+        Properties config = new Properties();
+        config.put("StrictHostKeyChecking", "no");
+        session.setConfig(config);
+        session.connect();
+
+        c = session.openChannel("sftp");
+        c.connect();
+        csftp = (ChannelSftp) c;
+        
+        // Push files to remote
+        FileInputStream sourceStream = new FileInputStream(new File(parentPath + "_source" + ext));
     }
 
     /**

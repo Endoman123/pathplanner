@@ -17,13 +17,16 @@ public class SettingsDialogController {
     private Pane root;
 
     @FXML
-    private TextField txtOverlayDir;
+    private TextField
+        txtOverlayDir,
+        txtTeamNumber,
+        txtIP,
+        txtPort;
 
     @FXML
-    private Button btnChooseOverlay;
-
-    @FXML
-    private ChoiceBox<String> choSourceDisplay;
+    private ChoiceBox<String>
+        choSourceDisplay,
+        choTrajFormat;
 
     @FXML
     private CheckBox chkAddWaypointOnClick;
@@ -65,6 +68,17 @@ public class SettingsDialogController {
                 "ui.colorWaypointHighlight",
                 "green"
         )));
+
+
+        choTrajFormat.setItems(FXCollections.observableArrayList(
+                "Comma-Separated Values (*.csv)",
+                "Binary Trajectory File (*.traj)"
+        ));
+
+        choTrajFormat.getSelectionModel().select(
+                Integer.parseInt(properties.getProperty("deploy.trajFormat", "0")
+        ));
+
     }
 
     @FXML
