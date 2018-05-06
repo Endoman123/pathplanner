@@ -29,6 +29,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -583,32 +584,36 @@ public class MPGenController {
 
     @FXML
     private void addPointOnClick(MouseEvent event) {
-        boolean addWaypointOnClick = Boolean.parseBoolean(
-                properties.getProperty("ui.addWaypointOnClick", "false")
-        );
+        if (event.getButton() == MouseButton.PRIMARY) {
+            boolean addWaypointOnClick = Boolean.parseBoolean(
+                    properties.getProperty("ui.addWaypointOnClick", "false")
+            );
 
-        if (addWaypointOnClick) {
-            Point2D mouseSceneCoords = new Point2D(event.getSceneX(), event.getSceneY());
-            double xLocal = axisPosX.sceneToLocal(mouseSceneCoords).getX();
-            double yLocal = axisPosY.sceneToLocal(mouseSceneCoords).getY();
+            if (addWaypointOnClick) {
+                Point2D mouseSceneCoords = new Point2D(event.getSceneX(), event.getSceneY());
+                double xLocal = axisPosX.sceneToLocal(mouseSceneCoords).getX();
+                double yLocal = axisPosY.sceneToLocal(mouseSceneCoords).getY();
 
-            double x = Mathf.round(axisPosX.getValueForDisplay(xLocal).doubleValue(), 2);
-            double y = Mathf.round(axisPosY.getValueForDisplay(yLocal).doubleValue(), 2);
-            double angle = 0;
+                double x = Mathf.round(axisPosX.getValueForDisplay(xLocal).doubleValue(), 2);
+                double y = Mathf.round(axisPosY.getValueForDisplay(yLocal).doubleValue(), 2);
+                double angle = 0;
 
-            if (!waypointsList.isEmpty()) {
-                Waypoint prev = waypointsList.get(waypointsList.size() - 1);
-                angle = Pathfinder.r2d(Math.atan2(y - prev.y, x - prev.x));
-                angle = Pathfinder.d2r(Mathf.round(angle, 45.0));
+                if (!waypointsList.isEmpty()) {
+                    Waypoint prev = waypointsList.get(waypointsList.size() - 1);
+                    angle = Pathfinder.r2d(Math.atan2(y - prev.y, x - prev.x));
+                    angle = Pathfinder.d2r(Mathf.round(angle, 45.0));
+                }
+
+                if (x >= axisPosX.getLowerBound() && x <= axisPosX.getUpperBound() &&
+                        y >= axisPosY.getLowerBound() && y <= axisPosY.getUpperBound()) {
+                    waypointsList.add(new Waypoint(x, y, angle));
+                    if (!currentTrajValid)
+                        waypointsList.remove(waypointsList.size() - 1);
+                }
+
+            } else {
+                event.consume();
             }
-
-            if (x >= axisPosX.getLowerBound() && x <= axisPosX.getUpperBound() &&
-                y >= axisPosY.getLowerBound() && y <= axisPosY.getUpperBound()) {
-                waypointsList.add(new Waypoint(x, y, angle));
-                if (!currentTrajValid)
-                    waypointsList.remove(waypointsList.size() - 1);
-            }
-
         } else {
             event.consume();
         }
