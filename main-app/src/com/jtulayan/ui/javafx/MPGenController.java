@@ -15,6 +15,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -30,6 +31,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -799,8 +801,8 @@ public class MPGenController {
 
             if (backend.getDriveBase() == Pathplanner.DriveBase.SWERVE) {
                 XYChart.Series<Double, Double>
-                        blSeries = SeriesFactory.buildPositionSeries(backend.getBackLeftTrajectory()),
-                        brSeries = SeriesFactory.buildPositionSeries(backend.getBackRightTrajectory());
+                    blSeries = SeriesFactory.buildPositionSeries(backend.getBackLeftTrajectory()),
+                    brSeries = SeriesFactory.buildPositionSeries(backend.getBackRightTrajectory());
 
                 chtPosition.getData().addAll(blSeries, brSeries, flSeries, frSeries);
                 flSeries.getNode().setStyle("-fx-stroke: red");
@@ -855,8 +857,12 @@ public class MPGenController {
                 chtPosition.getData().add(sourceSeries);
                 sourceSeries.getNode().setStyle("-fx-stroke: " + colorSourceTraj);
 
-                for (XYChart.Data<Double, Double> data : sourceSeries.getData())
+                for (XYChart.Data<Double, Double> data : sourceSeries.getData()) {
                     data.getNode().setVisible(false);
+                    data.getNode().setOnMousePressed(event -> {
+                        data.getNode().setStyle("-fx-fill: black");
+                    });
+                }
             }
 
             chtPosition.getData().add(waypointSeries);
@@ -988,7 +994,7 @@ public class MPGenController {
     /**
      * Refreshes the waypoints table by clearing the waypoint list and repopulating it.
      */
-    public void refreshWaypointTable() {
+    private void refreshWaypointTable() {
         // Bad way to update the waypoint list...
         // However, TableView.refresh() is apparently borked?
         List<Waypoint> tmp = new ArrayList<>(backend.getWaypointsList());

@@ -1,4 +1,4 @@
-allprojects {
+subprojects {
     apply plugin: 'application'
     apply plugin: 'java'
 
