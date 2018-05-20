@@ -45,7 +45,11 @@ public class SettingsDialogController {
 
         txtOverlayDir.setText(properties.getProperty("ui.overlayDir", ""));
 
-        choSourceDisplay.setItems(FXCollections.observableArrayList("None", "Waypoints only", "Waypoints + Source"));
+        choSourceDisplay.setItems(FXCollections.observableArrayList(
+                "None",
+                "Waypoints only",
+                "Waypoints + Source",
+                "Robot Bounds + Source"));
         choSourceDisplay.getSelectionModel().select(
                 Integer.parseInt(properties.getProperty("ui.sourceDisplay", "2")
         ));

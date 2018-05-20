@@ -15,7 +15,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -31,10 +30,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
@@ -42,10 +41,8 @@ import javafx.util.converter.DoubleStringConverter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
 
 public class MPGenController {
     private Pathplanner backend;
@@ -338,7 +335,7 @@ public class MPGenController {
 
             // Highlight selected waypoints if available
             if (sourceDisplay > 0 && !waypointsList.isEmpty())
-                highlightPoints(tblWaypoints.getSelectionModel().getSelectedIndices());
+                highlightPoints(selectedIndicies);
         });
 
         tblWaypoints.setOnKeyPressed(event -> {
@@ -788,87 +785,115 @@ public class MPGenController {
     }
 
     private void repopulatePosChart() {
-        XYChart.Series<Double, Double> waypointSeries;
-
-        // Clear data from position graph
-        chtPosition.getData().clear();
-
-        // Start by drawing drive train trajectories
-        if (waypointsList.size() > 1) {
-            XYChart.Series<Double, Double>
-                    flSeries = SeriesFactory.buildPositionSeries(backend.getFrontLeftTrajectory()),
-                    frSeries = SeriesFactory.buildPositionSeries(backend.getFrontRightTrajectory());
-
-            if (backend.getDriveBase() == Pathplanner.DriveBase.SWERVE) {
-                XYChart.Series<Double, Double>
-                    blSeries = SeriesFactory.buildPositionSeries(backend.getBackLeftTrajectory()),
-                    brSeries = SeriesFactory.buildPositionSeries(backend.getBackRightTrajectory());
-
-                chtPosition.getData().addAll(blSeries, brSeries, flSeries, frSeries);
-                flSeries.getNode().setStyle("-fx-stroke: red");
-                frSeries.getNode().setStyle("-fx-stroke: red");
-                blSeries.getNode().setStyle("-fx-stroke: blue");
-                brSeries.getNode().setStyle("-fx-stroke: blue");
-
-                for (XYChart.Data<Double, Double> data : blSeries.getData())
-                    data.getNode().setVisible(false);
-
-                for (XYChart.Data<Double, Double> data : brSeries.getData())
-                    data.getNode().setVisible(false);
-            } else {
-                String colorTankTrajectory = properties.getProperty(
-                        "ui.colorTankTrajectory",
-                        "magenta");
-
-                if (colorTankTrajectory.indexOf("0x") == 0)
-                    colorTankTrajectory = Mathf.toWeb(colorTankTrajectory);
-
-                chtPosition.getData().addAll(flSeries, frSeries);
-
-                flSeries.getNode().setStyle("-fx-stroke: " + colorTankTrajectory);
-                frSeries.getNode().setStyle("-fx-stroke: " + colorTankTrajectory);
-            }
-
-            for (XYChart.Data<Double, Double> data : flSeries.getData())
-                data.getNode().setVisible(false);
-
-            for (XYChart.Data<Double, Double> data : frSeries.getData())
-                data.getNode().setVisible(false);
-        }
-
+        ObservableList<XYChart.Series<Double, Double>> posData = chtPosition.getData();
         String srcDisplayStr = properties.getProperty("ui.sourceDisplay", "2");
         int sourceDisplay = Integer.parseInt(srcDisplayStr);
 
-        // Draw source (center) trajectory and waypoints on top of everything
-        if (!waypointsList.isEmpty() && sourceDisplay > 0) {
-            waypointSeries = SeriesFactory.buildWaypointsSeries(waypointsList.toArray(new Waypoint[1]));
+        String colorSourceTraj = properties.getProperty("ui.colorSourceTrajectory", "orange");
+        String colorTankTraj = properties.getProperty("ui.colorTankTrajectory", "magenta");
 
-            if (waypointsList.size() > 1 && sourceDisplay == 2) {
-                XYChart.Series<Double, Double> sourceSeries =
-                        SeriesFactory.buildPositionSeries(backend.getSourceTrajectory());
+        // Clear data from position graph
+        posData.clear();
 
-                String colorSourceTraj = properties.getProperty(
-                        "ui.colorSourceTrajectory",
-                        "orange");
+        // Get theme stuff
+        if (colorSourceTraj.indexOf("0x") == 0)
+            colorSourceTraj = Mathf.toWeb(colorSourceTraj);
 
-                if (colorSourceTraj.indexOf("0x") == 0)
-                    colorSourceTraj = Mathf.toWeb(colorSourceTraj);
+        if (colorTankTraj.indexOf("0x") == 0)
+            colorTankTraj = Mathf.toWeb(colorTankTraj);
 
-                chtPosition.getData().add(sourceSeries);
-                sourceSeries.getNode().setStyle("-fx-stroke: " + colorSourceTraj);
+        if (!waypointsList.isEmpty()) {
+            switch (sourceDisplay) {
+                case 3: // Robot base
+                    XYChart.Series<Double, Double> robotBoxSeries =
+                            SeriesFactory.buildWaypointsSeries(waypointsList.toArray(new Waypoint[1]));
 
-                for (XYChart.Data<Double, Double> data : sourceSeries.getData()) {
-                    data.getNode().setVisible(false);
-                    data.getNode().setOnMousePressed(event -> {
-                        data.getNode().setStyle("-fx-fill: black");
-                    });
-                }
+                    double xMin = axisPosX.getDisplayPosition(axisPosX.getLowerBound());
+                    double xMax = axisPosX.getDisplayPosition(axisPosX.getUpperBound());
+                    double yMin = axisPosY.getDisplayPosition(axisPosY.getLowerBound());
+                    double yMax = axisPosY.getDisplayPosition(axisPosY.getUpperBound());
+                    double widthScale = (xMax - xMin) / axisPosX.getUpperBound();
+                    double heightScale = (yMax - yMin) / axisPosY.getUpperBound();
+                    double width = widthScale * 1.41;
+                    double height = heightScale * 1.41;
+
+                    posData.add(robotBoxSeries);
+                    robotBoxSeries.getNode().setStyle("-fx-stroke: transparent");
+
+                    for (int i = 0; i < waypointsList.size(); i++) {
+                        Waypoint curPoint = waypointsList.get(i);
+                        XYChart.Data<Double, Double> data = robotBoxSeries.getData().get(i);
+                        Rectangle robotBox = new Rectangle();
+
+                        robotBox.setWidth(width);
+                        robotBox.setHeight(height);
+                        robotBox.setArcWidth(0.5 * widthScale);
+                        robotBox.setArcHeight(0.5 * heightScale);
+                        robotBox.setStyle("-fx-color: white");
+                        robotBox.setRotate(Pathfinder.r2d(curPoint.angle));
+                        data.setNode(robotBox);
+                    }
+                case 2: // Source Trajectory
+                    if (waypointsList.size() > 1) {
+                        XYChart.Series<Double, Double> sourceSeries =
+                                SeriesFactory.buildPositionSeries(backend.getSourceTrajectory());
+
+                        posData.add(sourceSeries);
+                        sourceSeries.getNode().setStyle("-fx-stroke: " + colorSourceTraj);
+
+                        for (XYChart.Data<Double, Double> data : sourceSeries.getData())
+                            data.getNode().setVisible(false);
+                    }
+                case 1: // Waypoints
+                    XYChart.Series<Double, Double> waypointSeries =
+                            SeriesFactory.buildWaypointsSeries(waypointsList.toArray(new Waypoint[1]));
+                    int dataSize = posData.size();
+
+                    posData.add(0, waypointSeries);
+                    waypointSeries.getNode().setStyle("-fx-stroke: transparent");
+
+                    highlightPoints(waypointSeries, tblWaypoints.getSelectionModel().getSelectedIndices());
+                default: // Drive train trajectories
+                    if (waypointsList.size() > 1) {
+                        XYChart.Series<Double, Double>
+                                flSeries = SeriesFactory.buildPositionSeries(backend.getFrontLeftTrajectory()),
+                                frSeries = SeriesFactory.buildPositionSeries(backend.getFrontRightTrajectory());
+
+                        if (backend.getDriveBase() == Pathplanner.DriveBase.SWERVE) {
+                            XYChart.Series<Double, Double>
+                                    blSeries = SeriesFactory.buildPositionSeries(backend.getBackLeftTrajectory()),
+                                    brSeries = SeriesFactory.buildPositionSeries(backend.getBackRightTrajectory());
+
+                            posData.add(0, blSeries);
+                            posData.add(0, brSeries);
+                            posData.add(0, flSeries);
+                            posData.add(0, frSeries);
+
+                            flSeries.getNode().setStyle("-fx-stroke: red");
+                            frSeries.getNode().setStyle("-fx-stroke: red");
+                            blSeries.getNode().setStyle("-fx-stroke: blue");
+                            brSeries.getNode().setStyle("-fx-stroke: blue");
+
+                            for (XYChart.Data<Double, Double> data : blSeries.getData())
+                                data.getNode().setVisible(false);
+
+                            for (XYChart.Data<Double, Double> data : brSeries.getData())
+                                data.getNode().setVisible(false);
+                        } else {
+                            posData.add(0, flSeries);
+                            posData.add(0, frSeries);
+
+                            flSeries.getNode().setStyle("-fx-stroke: " + colorTankTraj);
+                            frSeries.getNode().setStyle("-fx-stroke: " + colorTankTraj);
+                        }
+
+                        for (XYChart.Data<Double, Double> data : flSeries.getData())
+                            data.getNode().setVisible(false);
+
+                        for (XYChart.Data<Double, Double> data : frSeries.getData())
+                            data.getNode().setVisible(false);
+                    }
             }
-
-            chtPosition.getData().add(waypointSeries);
-            waypointSeries.getNode().setStyle("-fx-stroke: transparent");
-
-            highlightPoints(tblWaypoints.getSelectionModel().getSelectedIndices());
         }
     }
 
@@ -902,14 +927,28 @@ public class MPGenController {
     }
 
     /**
-     * Highlights points given a list of selected indices
+     * Highlights position waypoints given a list of selected indices
      *
      * @param selectedIndicies the list of selected indices
      */
     private void highlightPoints(List<Integer> selectedIndicies) {
-        List<XYChart.Data<Double, Double>> sourceSet = chtPosition.getData()
-                .get(chtPosition.getData().size() - 1)
-                .getData();
+        int dataSize = chtPosition.getData().size();
+        XYChart.Series<Double, Double> points = chtPosition.getData().get(dataSize - 1);
+
+        highlightPoints(points, selectedIndicies);
+    }
+
+    /**
+     * Highlights points given a list of selected indices
+     *
+     * @param points the series of points to highlight
+     * @param selectedIndicies the list of selected indices
+     */
+    private void highlightPoints(
+        XYChart.Series<Double, Double> points,
+        List<Integer> selectedIndicies) {
+
+        List<XYChart.Data<Double, Double>> pointsList = points.getData();
 
         String
             colorSourceTraj = properties.getProperty(
@@ -925,9 +964,10 @@ public class MPGenController {
         if (colorHighlight.indexOf("0x") == 0)
             colorHighlight = Mathf.toWeb(colorHighlight);
 
-        for (int i = 0; i < sourceSet.size(); i++) {
+        for (int i = 0; i < pointsList.size(); i++) {
             boolean selected = false;
-            XYChart.Data<Double, Double> data = sourceSet.get(i);
+            XYChart.Data<Double, Double> data = pointsList.get(i);
+            // Figure out the current point is one of the selected elements in the table
             for (int ind : selectedIndicies) {
                 if (i == ind) {
                     selected = true;
@@ -935,6 +975,7 @@ public class MPGenController {
                 }
             }
 
+            // Highlight or don't highlight the node
             data.getNode().setStyle(String.format("-fx-background-color: %s, white",
                     selected ? colorHighlight : colorSourceTraj
             ));

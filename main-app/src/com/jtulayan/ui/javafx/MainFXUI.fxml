@@ -181,12 +181,12 @@
                               <Label alignment="CENTER_RIGHT" layoutX="22.0" layoutY="25.0" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="39.0" prefWidth="72.0" text="Robot Depth:" textAlignment="RIGHT" wrapText="true" GridPane.rowIndex="1" />
                               <TextField fx:id="txtRobotWidth" layoutX="133.0" layoutY="196.0" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" onAction="#validateFieldEdit" text="2.0" GridPane.columnIndex="1">
                                  <tooltip>
-                                    <Tooltip text="The distance between your left and right wheels" textAlignment="CENTER" wrapText="true" />
+                                    <Tooltip text="The full width of your robot, from the left edge to the right edge" textAlignment="CENTER" wrapText="true" />
                                  </tooltip>
                               </TextField>
                               <TextField fx:id="txtRobotDepth" layoutX="133.0" layoutY="31.0" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" onAction="#validateFieldEdit" text="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <tooltip>
-                                    <Tooltip text="The distance between your left and right wheels" textAlignment="CENTER" wrapText="true" />
+                                    <Tooltip text="The full depth of your robot, from the front edge to the back edge" textAlignment="CENTER" wrapText="true" />
                                  </tooltip>
                               </TextField>
                            </children>
