@@ -36,7 +36,7 @@ public class Client extends Application {
 
             if (cmd.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("pathplanner [OPTIONS]...", options);
+                formatter.printHelp("pathplanner [OPTIONS...]", options);
                 System.exit(0); // Break out here; there's no reason to use other arguments if you need help.
             }
 
